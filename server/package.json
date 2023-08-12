@@ -1,0 +1,11 @@
+{
+  "name": "server",
+  "version": "1.0.0",
+  "description": "IMS_Backend",
+  "main": "index.js",
+  "author": "Ihtisham",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2"
+  }
+}
