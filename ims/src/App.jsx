@@ -1,11 +1,17 @@
-import './App.css'
+import './assets/css/App.css';
+import { Route, Routes } from 'react-router-dom';
+import Login from './pages/Login';
+import Register from './pages/Register';
 
 function App() {
   return (
-    <div className='h-screen flex justify-center items-center'>
-      <h1 className='text-3xl font-sans text-black'>This is Tailwind + Vite + React</h1>
-    </div>
+    <>
+      <Routes>
+        <Route path='/login' element={<Login />} />
+        <Route path='/register' element={<Register />} />
+      </Routes>
+    </>
   );
 }
 
-export default App
+export default App;
