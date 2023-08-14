@@ -2,7 +2,7 @@ import React from 'react'
 import clsx from 'clsx'
 import { cn } from '../utils/utils'
 
-const Button = ({ children, danger, isLoading, fullWidth, onClick, secondary, type }) => {
+const Button = ({ children, danger, isLoading, fullWidth, onClick, secondary, type, className }) => {
     return (
         <button
             type={type}
@@ -30,6 +30,7 @@ const Button = ({ children, danger, isLoading, fullWidth, onClick, secondary, ty
                 secondary && 'text-gray-900 bg-transparent hover:bg-transparent',
                 danger && 'bg-rose-500 hover:bg-rose-600 focus-visible:outline-rose-600',
                 isLoading && danger && 'hover:bg-rose-500',
+                className
             )}
         >
             {
