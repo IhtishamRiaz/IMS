@@ -3,15 +3,16 @@ import { Outlet, Route, Routes } from 'react-router-dom';
 // Pages
 import Login from './pages/Login.jsx';
 import Register from './pages/Register.jsx';
-import Home from './pages/Home.jsx';
 import LandingPage from './pages/LandingPage.jsx';
+import Dashboard from './pages/Dashboard';
+import Customers from './pages/Customers';
 // Components
 import SideNav from './components/SideNav.jsx';
 
 const PageLayout = () => {
   return (
     <>
-      <div>
+      <div className='flex min-h-screen'>
         <SideNav />
         <main>
           <Outlet />
@@ -26,8 +27,9 @@ function App() {
     <>
       <Routes>
         {/* Routes With SideNav */}
-        <Route path='/user' element={<PageLayout />}>
-          <Route path='home' element={<Home />} />
+        <Route path='/app' element={<PageLayout />}>
+          <Route path='dashboard' element={<Dashboard />} />
+          <Route path='customers' element={<Customers />} />
         </Route>
 
         {/* Landing Page */}

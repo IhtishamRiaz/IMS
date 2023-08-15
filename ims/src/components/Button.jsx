@@ -27,7 +27,7 @@ const Button = ({ children, danger, isLoading, fullWidth, onClick, secondary, ty
             `,
                 isLoading && 'py-2.5 hover:bg-primary-500',
                 fullWidth && 'w-full',
-                secondary && 'text-gray-900 bg-transparent hover:bg-transparent',
+                secondary && 'text-gray-900 bg-transparent hover:bg-gray-200',
                 danger && 'bg-rose-500 hover:bg-rose-600 focus-visible:outline-rose-600',
                 isLoading && danger && 'hover:bg-rose-500',
                 className
