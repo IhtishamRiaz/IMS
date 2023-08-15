@@ -5,7 +5,7 @@ import Login from './pages/Login.jsx';
 import Register from './pages/Register.jsx';
 import LandingPage from './pages/LandingPage.jsx';
 import Dashboard from './pages/Dashboard';
-import Customers from './pages/Customers';
+import Accounts from './pages/Accounts';
 // Components
 import SideNav from './components/SideNav.jsx';
 
@@ -14,7 +14,7 @@ const PageLayout = () => {
     <>
       <div className='flex min-h-screen'>
         <SideNav />
-        <main>
+        <main className='min-h-screen px-8 py-5 border basis-full'>
           <Outlet />
         </main>
       </div>
@@ -29,7 +29,7 @@ function App() {
         {/* Routes With SideNav */}
         <Route path='/app' element={<PageLayout />}>
           <Route path='dashboard' element={<Dashboard />} />
-          <Route path='customers' element={<Customers />} />
+          <Route path='accounts' element={<Accounts />} />
         </Route>
 
         {/* Landing Page */}

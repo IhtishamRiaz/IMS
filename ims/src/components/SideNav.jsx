@@ -9,7 +9,7 @@ const SideNav = () => {
     const items = [
         { text: 'Dashboard', icon: LayoutDashboard, href: '/app/dashboard' },
         { text: 'Statistics', icon: BarChart3 },
-        { text: 'Customers', icon: UserCircle, href: '/app/customers' },
+        { text: 'Accounts', icon: UserCircle, href: '/app/accounts' },
         { text: 'Inventory', icon: Boxes },
         { text: 'Orders', icon: Package },
         { text: 'Billings', icon: Receipt },
