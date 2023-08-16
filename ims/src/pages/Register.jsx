@@ -5,12 +5,11 @@ import * as Yup from "yup";
 import Input from '../components/Input';
 import Button from '../components/Button';
 import { Link } from 'react-router-dom';
-import axios from 'axios';
+import axios from '../api/axios.js';
 import { toast } from 'react-hot-toast';
 
 const Register = () => {
     const [isLoading, setIsLoading] = useState(false);
-    const URL = import.meta.env.VITE_API_URL;
 
     // Yup Validation Schema
     const registerSchema = Yup.object({
@@ -19,6 +18,7 @@ const Register = () => {
         password: Yup.string().required('Please enter your password').min(8, 'Password must be atleast 8 characters'),
     });
 
+    // Formik 
     const { register, handleSubmit, formState: { errors } } = useForm({
         resolver: yupResolver(registerSchema),
         defaultValues: {
@@ -28,15 +28,18 @@ const Register = () => {
         }
     });
 
+    // OnSubmit
     const onSubmit = (data) => {
+        console.log("🚀 ~ file: Register.jsx:33 ~ onSubmit ~ data:", data)
+
         setIsLoading(true);
         axios
-            .post(`${URL}/register`, data)
+            .post('/user', data)
             .then((res) => {
-                toast.success(res.data.message);
+                toast.success(res?.data?.message);
             })
             .catch((error) => {
-                toast.error(error.response.data.message);
+                toast.error(error?.response?.data?.message);
             })
             .finally(() => setIsLoading(false));
     }
