@@ -69,7 +69,7 @@ export const login = async (req, res) => {
 
         const accessToken = generateAccessToken(user);
 
-        res.status(200).json({ message: 'Logged in Successfully!', userId: user._id, accessToken })
+        res.status(200).json({ message: 'Logged in Successfully!', userId: user._id, role: user.role, accessToken });
 
     } catch (error) {
         res.status(500).json({ message: 'Failed to Login!', error })

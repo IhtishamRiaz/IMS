@@ -1,16 +1,20 @@
-import React, { useState } from 'react'
+import React, { useState, useContext } from 'react'
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as Yup from "yup";
 import Input from '../components/Input';
 import Button from '../components/Button';
-import { Link } from 'react-router-dom';
-import axios from 'axios';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
+import axios from '../api/axios.js';
+import { useMyContext } from '../context/ContextProvider';
 
 const Login = () => {
     const [isLoading, setIsLoading] = useState(false);
-    const URL = import.meta.env.VITE_API_URL;
+    const { auth, setAuth } = useMyContext();
+    const navigate = useNavigate();
+    const location = useLocation();
+    const from = location?.state?.from?.pathname || '/';
 
     // Yup Validation Schema
     const loginSchema = Yup.object({
@@ -29,11 +33,19 @@ const Login = () => {
     const onSubmit = (data) => {
         setIsLoading(true);
         axios
-            .post(`${URL}/login`, data)
+            .post(`/login`, data)
             .then((res) => {
-                toast.success(res.data.message);
-                sessionStorage.setItem('accessToken', `Bearer ${res.data.accessToken}`);
-                sessionStorage.setItem('userId', res.data.userId);
+                const accessToken = res?.data?.accessToken;
+                const userId = res?.data?.userId;
+                const role = res?.data?.role;
+
+                toast.success(res?.data?.message);
+                // sessionStorage.setItem('accessToken', `Bearer ${accessToken}`);
+                // sessionStorage.setItem('userId', userId);
+
+                axios.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`;
+                setAuth({ userId, role, accessToken });
+                navigate(from, { replace: true });
             })
             .catch((error) => {
                 toast.error(error.response.data.message);
