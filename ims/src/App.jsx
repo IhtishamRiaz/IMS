@@ -32,7 +32,7 @@ const RequireAuth = ({ allowedRoles }) => {
     allowedRoles?.includes(auth?.role)
       ? <Outlet />
       : auth?.userId
-        ? < Navigate to={'/unauthorised'} state={{ from: location }} replace />
+        ? < Navigate to={'unauthorised'} state={{ from: location }} replace />
         : < Navigate to={'/login'} state={{ from: location }} replace />
   );
 };
@@ -41,24 +41,20 @@ function App() {
   return (
     <>
       <Routes>
-        {/* Only Admin Routes */}
-        <Route element={<RequireAuth allowedRoles={['admin']} />}>
-          <Route path='/app' element={<PageLayout />}>
+        <Route path='/app' element={<PageLayout />}>
+          {/* Only Admin Routes */}
+          <Route element={<RequireAuth allowedRoles={['admin']} />}>
             <Route path='dashboard' element={<Dashboard />} />
           </Route>
-        </Route>
-
-        {/* Protected Routes */}
-        <Route element={<RequireAuth allowedRoles={['admin', 'user']} />}>
-          <Route path='/app' element={<PageLayout />}>
-            <Route path='dashboard' element={<Dashboard />} />
+          {/* Protected Routes */}
+          <Route element={<RequireAuth allowedRoles={['admin', 'user']} />}>
             <Route path='accounts' element={<Accounts />} />
+            <Route path='unauthorised' element={<Unauthorised />} />
           </Route>
         </Route>
 
         {/* Public Routes */}
         <Route path='/' element={<LandingPage />} />
-        <Route path='/unauthorised' element={<Unauthorised />} />
         <Route path='/login' element={<Login />} />
         <Route path='/register' element={<Register />} />
       </Routes>
