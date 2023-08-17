@@ -7,7 +7,7 @@ import Button from '../components/Button';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
 import axios from '../api/axios.js';
-import { useMyContext } from '../context/ContextProvider';
+import useMyContext from '../hooks/useMyContext.js';
 
 const Login = () => {
     const [isLoading, setIsLoading] = useState(false);
@@ -33,22 +33,22 @@ const Login = () => {
     const onSubmit = (data) => {
         setIsLoading(true);
         axios
-            .post(`/login`, data)
+            .post('/auth', data, {
+                withCredentials: true
+            })
             .then((res) => {
                 const accessToken = res?.data?.accessToken;
                 const userId = res?.data?.userId;
                 const role = res?.data?.role;
 
                 toast.success(res?.data?.message);
-                // sessionStorage.setItem('accessToken', `Bearer ${accessToken}`);
-                // sessionStorage.setItem('userId', userId);
 
                 axios.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`;
                 setAuth({ userId, role, accessToken });
                 navigate(from, { replace: true });
             })
             .catch((error) => {
-                toast.error(error.response.data.message);
+                toast.error(error?.response?.data?.message);
             })
             .finally(() => setIsLoading(false));
     }

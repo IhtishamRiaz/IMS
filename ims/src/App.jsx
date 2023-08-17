@@ -9,7 +9,7 @@ import Accounts from './pages/Accounts';
 import Unauthorised from './pages/Unauthorised.jsx';
 // Components
 import SideNav from './components/SideNav.jsx';
-import { useMyContext } from './context/ContextProvider';
+import useMyContext from './hooks/useMyContext.js';
 
 const PageLayout = () => {
   return (

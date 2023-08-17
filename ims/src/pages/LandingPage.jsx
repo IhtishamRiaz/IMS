@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import Button from '../components/Button'
 import { Link } from 'react-router-dom';
-import { useAnimate, stagger } from "framer-motion"
+import { useAnimate, stagger } from 'framer-motion';
 
 const LandingPage = () => {
     const [scope, animate] = useAnimate();
@@ -57,7 +57,6 @@ const LandingPage = () => {
         enterAnimation();
 
     }, [])
-
 
     return (
         <div ref={scope} className="flex items-center justify-center h-screen bg-[url(/images/landingBg.png)] bg-center bg-no-repeat bg-cover">
