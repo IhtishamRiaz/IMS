@@ -12,6 +12,6 @@ router.route('/refresh')
     .get(refresh)
 
 router.route('/logout')
-    .post(logout)
+    .get(logout)
 
 export default router;

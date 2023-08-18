@@ -7,8 +7,10 @@ import Button from '../components/Button';
 import { Link } from 'react-router-dom';
 import axios from '../api/axios.js';
 import { toast } from 'react-hot-toast';
+import useTitle from '../hooks/useTitle';
 
 const Register = () => {
+    useTitle('SignUp');
     const [isLoading, setIsLoading] = useState(false);
 
     // Yup Validation Schema

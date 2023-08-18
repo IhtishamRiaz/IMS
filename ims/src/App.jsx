@@ -7,9 +7,11 @@ import LandingPage from './pages/LandingPage.jsx';
 import Dashboard from './pages/Dashboard';
 import Accounts from './pages/Accounts';
 import Unauthorised from './pages/Unauthorised.jsx';
+
 // Components
 import SideNav from './components/SideNav.jsx';
 import useMyContext from './hooks/useMyContext.js';
+import PersistLogin from './components/PersistLogin.jsx';
 
 const PageLayout = () => {
   return (
@@ -41,15 +43,17 @@ function App() {
   return (
     <>
       <Routes>
-        <Route path='/app' element={<PageLayout />}>
-          {/* Only Admin Routes */}
-          <Route element={<RequireAuth allowedRoles={['admin']} />}>
-            <Route path='dashboard' element={<Dashboard />} />
-          </Route>
-          {/* Protected Routes */}
-          <Route element={<RequireAuth allowedRoles={['admin', 'user']} />}>
-            <Route path='accounts' element={<Accounts />} />
-            <Route path='unauthorised' element={<Unauthorised />} />
+        <Route element={<PersistLogin />}>
+          <Route path='/app' element={<PageLayout />}>
+            {/* Only Admin Routes */}
+            <Route element={<RequireAuth allowedRoles={['admin']} />}>
+              <Route path='dashboard' element={<Dashboard />} />
+            </Route>
+            {/* Protected Routes */}
+            <Route element={<RequireAuth allowedRoles={['admin', 'user']} />}>
+              <Route path='accounts' element={<Accounts />} />
+              <Route path='unauthorised' element={<Unauthorised />} />
+            </Route>
           </Route>
         </Route>
 

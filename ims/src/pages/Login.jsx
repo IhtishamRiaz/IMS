@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react'
+import React, { useState } from 'react'
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as Yup from "yup";
@@ -8,8 +8,10 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
 import axios from '../api/axios.js';
 import useMyContext from '../hooks/useMyContext.js';
+import useTitle from '../hooks/useTitle';
 
 const Login = () => {
+    useTitle('Login');
     const [isLoading, setIsLoading] = useState(false);
     const { auth, setAuth } = useMyContext();
     const navigate = useNavigate();
@@ -43,7 +45,6 @@ const Login = () => {
 
                 toast.success(res?.data?.message);
 
-                axios.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`;
                 setAuth({ userId, role, accessToken });
                 navigate(from, { replace: true });
             })

@@ -58,7 +58,7 @@ const login = asyncHandler(async (req, res) => {
         maxAge: 7 * 24 * 60 * 60 * 1000 //cookie expiry: set to match refresh token i.e.'7d'
     })
 
-    // Send accessToken containing username and roles 
+    // Send accessToken
     res.json({ message: 'Logged in Successfully!', userId: user._id, role: user.role, accessToken });
 });
 
@@ -100,7 +100,7 @@ const refresh = async (req, res) => {
                 { expiresIn: '15m' }
             );
 
-            res.json({ accessToken });
+            res.json({ role: foundUser.role, userId: foundUser._id, accessToken });
         })
     );
 };
@@ -108,21 +108,23 @@ const refresh = async (req, res) => {
 // @desc Logout
 // @route GET /auth/logout
 // @access Public - just to clear cookie if exists
-const logout = asyncHandler(async (req, res) => {
+const logout = async (req, res) => {
     const cookies = req.cookies;
 
     if (!cookies?.jwt) {
-        return res.sendStatus(204)
+        // return res.sendStatus(204)
+        return res.status(201).json({ message: 'no cookie was found' });
     }
 
     res.clearCookie('jwt',
         {
             httpOnly: true,
-            sameSite: 'None',
-            secure: true
+            secure: true,
+            sameSite: 'None'
         }
     );
+
     res.json({ message: 'Cookie cleared' });
-});
+};
 
 export { login, refresh, logout };

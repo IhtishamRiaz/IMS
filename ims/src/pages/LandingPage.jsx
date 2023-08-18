@@ -2,8 +2,10 @@ import React, { useEffect } from 'react';
 import Button from '../components/Button'
 import { Link } from 'react-router-dom';
 import { useAnimate, stagger } from 'framer-motion';
+import useTitle from '../hooks/useTitle';
 
 const LandingPage = () => {
+    useTitle('StockUp');
     const [scope, animate] = useAnimate();
 
     useEffect(() => {
@@ -16,7 +18,7 @@ const LandingPage = () => {
             animate(
                 'span',
                 { y: [50, 5, 0], opacity: [0, 1] },
-                { duration: 0.4, delay: stagger(0.2, { startDelay: 1 }), type: "spring", stiffness: 200, damping: 15 },
+                { duration: 0.4, delay: stagger(0.15, { startDelay: 1 }), type: "spring", stiffness: 200, damping: 15 },
             );
             // animate(
             //     '.name-1',
@@ -46,12 +48,12 @@ const LandingPage = () => {
             animate(
                 '.para',
                 { opacity: [0, 1] },
-                { duration: 0.6, delay: 2.4 },
+                { duration: 0.6, delay: 2.2 },
             );
             animate(
                 '.btn',
                 { opacity: [0, 1, 1], scale: [0.5, 1.1, 1] },
-                { duration: 0.5, delay: 2.9 },
+                { duration: 0.5, delay: 2.7 },
             );
         }
         enterAnimation();

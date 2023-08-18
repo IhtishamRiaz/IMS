@@ -10,9 +10,12 @@ const useRefreshToken = () => {
         });
 
         setAuth((prevState) => {
-            console.log("🚀 ~ file: useRefreshToken.js:13 ~ setAuth ~ prevState:", prevState);
-            console.log(response.data.accessToken);
-            return { ...prevState, accessToken: response.data.accessToken }
+            return {
+                ...prevState,
+                role: response.data.role,
+                userId: response.data.userId,
+                accessToken: response.data.accessToken
+            }
         });
 
         return response.data.accessToken;
