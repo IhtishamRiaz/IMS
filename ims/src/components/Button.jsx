@@ -1,6 +1,5 @@
 import React from 'react'
-import clsx from 'clsx'
-import { cn } from '../utils/utils'
+import { cn } from '../libs/utils'
 
 const Button = ({ children, danger, isLoading, fullWidth, onClick, secondary, type, className }) => {
     return (

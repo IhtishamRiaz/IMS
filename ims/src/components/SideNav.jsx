@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { ChevronFirst, MoreVertical, LifeBuoy, Receipt, Boxes, Package, UserCircle, BarChart3, LayoutDashboard, Settings, ChevronLast } from 'lucide-react'
-import { cn } from '../utils/utils';
+import { cn } from '../libs/utils'
 import { Link, useLocation } from 'react-router-dom';
 
 const SideNav = () => {
