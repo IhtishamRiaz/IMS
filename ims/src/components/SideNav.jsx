@@ -1,10 +1,22 @@
 import React, { useState } from 'react'
 import { ChevronFirst, MoreVertical, LifeBuoy, Receipt, Boxes, Package, UserCircle, BarChart3, LayoutDashboard, Settings, ChevronLast } from 'lucide-react'
-import { cn } from '../libs/utils'
+import { cn } from '../lib/utils'
 import { Link, useLocation } from 'react-router-dom';
+import useLogout from '../hooks/useLogout'
+import {
+    DropdownMenu,
+    DropdownMenuCheckboxItem,
+    DropdownMenuContent,
+    DropdownMenuLabel,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger,
+    DropdownMenuItem
+} from "./ui/dropdown-menu"
 
 const SideNav = () => {
     const [expanded, setExpanded] = useState(true);
+
+    const logout = useLogout();
 
     const items = [
         { text: 'Dashboard', icon: LayoutDashboard, href: '/app/dashboard' },
@@ -18,7 +30,7 @@ const SideNav = () => {
     ]
 
     return (
-        <aside className='h-screen'>
+        <aside className='sticky top-0 h-screen'>
             <nav className='flex flex-col h-full bg-white border-r shadow-sm'>
                 {/* Logo */}
                 <div className='flex items-center justify-between p-4 pb-2'>
@@ -28,7 +40,7 @@ const SideNav = () => {
                         className={cn(`overflow-hidden transition-all`, expanded ? 'w-32' : 'w-0')}
                     />
                     <button
-                        className='p-1.5 rounded-lg bg-primary-50 hover:bg-primary-100'
+                        className='p-1.5 rounded-lg bg-main-50 hover:bg-main-100'
                         onClick={() => setExpanded(curr => !curr)}
                     >
                         {expanded ? <ChevronFirst /> : <ChevronLast />}
@@ -57,7 +69,22 @@ const SideNav = () => {
                             <h4 className='font-bold'>John Doe</h4>
                             <span className='text-sm text-gray-600'>johndow@gmail.com</span>
                         </div>
-                        <MoreVertical size={20} className='cursor-pointer' />
+                        {/* DropDownMenu */}
+                        <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                                <MoreVertical size={20} className='cursor-pointer' />
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent className="w-56">
+                                <DropdownMenuLabel>Settings</DropdownMenuLabel>
+                                <DropdownMenuSeparator />
+                                <DropdownMenuItem>
+                                    Profile
+                                </DropdownMenuItem>
+                                <DropdownMenuItem onClick={logout}>
+                                    Logout
+                                </DropdownMenuItem>
+                            </DropdownMenuContent>
+                        </DropdownMenu>
                     </div>
                 </div>
             </nav>
@@ -76,8 +103,8 @@ export const SidebarItem = ({ icon: Icon, text, expanded, href }) => {
             <li
                 className={
                     cn(`group relative flex items-center py-2 px-3 my-1 font-medium rounded-md cursor-pointer`,
-                        isActive ? 'bg-gradient-to-tr from-primary-200 to-primary-100 text-primary-800'
-                            : 'hover:bg-primary-50 text-gray-600'
+                        isActive ? 'bg-gradient-to-tr from-main-200 to-main-100 text-main-800'
+                            : 'hover:bg-main-50 text-gray-600'
                     )}
             >
                 {<Icon size={20} />}
@@ -86,7 +113,7 @@ export const SidebarItem = ({ icon: Icon, text, expanded, href }) => {
                 </span>
                 {!expanded &&
                     <div
-                        className='absolute invisible px-2 py-1 ml-6 text-sm transition-all -translate-x-3 rounded-md left-full bg-primary-100 text-primary-800 opacity-20 group-hover:visible group-hover:opacity-100 group-hover:translate-x-0'
+                        className='absolute invisible px-2 py-1 ml-6 text-sm transition-all -translate-x-3 rounded-md left-full bg-main-100 text-main-800 opacity-20 group-hover:visible group-hover:opacity-100 group-hover:translate-x-0'
                     >
                         {text}
                     </div>

@@ -1,5 +1,5 @@
 import React from 'react'
-import { cn } from '../libs/utils'
+import { cn } from '../lib/utils'
 
 const Input = ({ label, id, type, required, errors, register, disabled }) => {
     return (
@@ -32,7 +32,7 @@ const Input = ({ label, id, type, required, errors, register, disabled }) => {
                     placeholder:text-gray-400
                     focus:ring-2
                     focus:ring-inset
-                    focus:ring-primary-600
+                    focus:ring-main-600
                     sm:text-sm
                     sm:leading-6`,
                         errors[id] && "focus:ring-rose-500 ring-rose-500",

@@ -1,5 +1,5 @@
 import React from 'react'
-import { cn } from '../libs/utils'
+import { cn } from '../lib/utils'
 
 const Button = ({ children, danger, isLoading, fullWidth, onClick, secondary, type, className }) => {
     return (
@@ -20,11 +20,12 @@ const Button = ({ children, danger, isLoading, fullWidth, onClick, secondary, ty
             focus-visible:outline-2
             focus-visible:outline-offset-2
             text-white
-            bg-primary-500
-            hover:bg-primary-600
-            focus-visible:outline-primary-600
+            bg-main-500
+            hover:bg-main-600
+            focus-visible:outline-main-600
+            transition-colors
             `,
-                isLoading && 'py-2.5 hover:bg-primary-500',
+                isLoading && 'py-2.5 hover:bg-main-500',
                 fullWidth && 'w-full',
                 secondary && 'text-gray-900 bg-transparent hover:bg-gray-200',
                 danger && 'bg-rose-500 hover:bg-rose-600 focus-visible:outline-rose-600',

@@ -12,6 +12,7 @@ import Unauthorised from './pages/Unauthorised.jsx';
 import SideNav from './components/SideNav.jsx';
 import useMyContext from './hooks/useMyContext.js';
 import PersistLogin from './components/PersistLogin.jsx';
+import Error404 from './pages/Error404';
 
 const PageLayout = () => {
   return (
@@ -61,6 +62,7 @@ function App() {
         <Route path='/' element={<LandingPage />} />
         <Route path='/login' element={<Login />} />
         <Route path='/register' element={<Register />} />
+        <Route path='/error' element={<Error404 />} />
       </Routes>
     </>
   );
