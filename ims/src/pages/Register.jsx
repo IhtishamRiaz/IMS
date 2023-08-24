@@ -75,6 +75,7 @@ const Register = () => {
                             errors={errors}
                             disabled={isLoading}
                             required
+                            fullWidth
                         />
 
                         <Input
@@ -85,6 +86,7 @@ const Register = () => {
                             errors={errors}
                             disabled={isLoading}
                             required
+                            fullWidth
                         />
                         <Input
                             id="password"
@@ -94,6 +96,7 @@ const Register = () => {
                             errors={errors}
                             disabled={isLoading}
                             required
+                            fullWidth
                         />
 
                         <section>

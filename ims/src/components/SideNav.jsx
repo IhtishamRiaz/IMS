@@ -40,7 +40,7 @@ const SideNav = () => {
                         className={cn(`overflow-hidden transition-all`, expanded ? 'w-32' : 'w-0')}
                     />
                     <button
-                        className='p-1.5 rounded-lg bg-main-50 hover:bg-main-100'
+                        className='p-1.5 rounded-lg bg-brand-50 hover:bg-brand-100'
                         onClick={() => setExpanded(curr => !curr)}
                     >
                         {expanded ? <ChevronFirst /> : <ChevronLast />}
@@ -103,8 +103,8 @@ export const SidebarItem = ({ icon: Icon, text, expanded, href }) => {
             <li
                 className={
                     cn(`group relative flex items-center py-2 px-3 my-1 font-medium rounded-md cursor-pointer`,
-                        isActive ? 'bg-gradient-to-tr from-main-200 to-main-100 text-main-800'
-                            : 'hover:bg-main-50 text-gray-600'
+                        isActive ? 'bg-brand-800 text-white'
+                            : 'hover:bg-brand-100 text-gray-600'
                     )}
             >
                 {<Icon size={20} />}
@@ -113,7 +113,7 @@ export const SidebarItem = ({ icon: Icon, text, expanded, href }) => {
                 </span>
                 {!expanded &&
                     <div
-                        className='absolute invisible px-2 py-1 ml-6 text-sm transition-all -translate-x-3 rounded-md left-full bg-main-100 text-main-800 opacity-20 group-hover:visible group-hover:opacity-100 group-hover:translate-x-0'
+                        className='absolute z-50 invisible px-2 py-1 ml-6 text-sm transition-all -translate-x-3 rounded-md left-full bg-brand-100 text-brand-800 opacity-20 group-hover:visible group-hover:opacity-100 group-hover:translate-x-0'
                     >
                         {text}
                     </div>

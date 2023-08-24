@@ -85,6 +85,7 @@ const Login = () => {
                             errors={errors}
                             disabled={isLoading}
                             required
+                            fullWidth
                         />
 
                         <Input
@@ -95,6 +96,7 @@ const Login = () => {
                             errors={errors}
                             disabled={isLoading}
                             required
+                            fullWidth
                         />
 
                         <section>

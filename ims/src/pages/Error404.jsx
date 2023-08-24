@@ -1,14 +1,16 @@
 import React from 'react'
+import useTitle from '../hooks/useTitle';
 
 const Error404 = () => {
+    useTitle("404")
     return (
-        <section class="bg-white dark:bg-gray-900">
-            <div class="py-8 px-4 mx-auto max-w-screen-xl lg:py-16 lg:px-6">
-                <div class="mx-auto max-w-screen-sm text-center">
-                    <h1 class="mb-4 text-7xl tracking-tight font-extrabold lg:text-9xl text-main-600 dark:text-main-500">404</h1>
-                    <p class="mb-4 text-3xl tracking-tight font-bold text-gray-900 md:text-4xl dark:text-white">Something's missing.</p>
-                    <p class="mb-4 text-lg font-light text-gray-500 dark:text-gray-400">Sorry, we can't find that page. You'll find lots to explore on the home page. </p>
-                    <a href="#" class="inline-flex text-white bg-main-600 hover:bg-main-800 focus:ring-4 focus:outline-none focus:ring-main-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:focus:ring-main-900 my-4">Back to Homepage</a>
+        <section className="flex items-center justify-center min-h-screen bg-white dark:bg-gray-900 ">
+            <div className="max-w-screen-xl px-4 py-8 mx-auto lg:py-16 lg:px-6">
+                <div className="max-w-screen-xl mx-auto text-center">
+                    <h1 className="mb-4 font-extrabold tracking-tight text-7xl lg:text-9xl text-brand-600 dark:text-brand-500">404</h1>
+                    <p className="mb-4 text-3xl font-bold tracking-tight text-gray-900 md:text-4xl dark:text-white">Something's missing.</p>
+                    <p className="mb-4 text-lg font-medium text-gray-600 dark:text-gray-400">Sorry, the page you are looking for can't be found. Please check your url for any mistake.</p>
+                    <a href="#" className="inline-flex text-white bg-brand-600 hover:bg-brand-700 focus:ring-4 focus:outline-none focus:ring-brand-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:focus:ring-brand-900 my-4">Back to Homepage</a>
                 </div>
             </div>
         </section>

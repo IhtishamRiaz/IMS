@@ -75,7 +75,7 @@ const LandingPage = () => {
                     </section>
                 </div>
             </nav>
-            <main>
+            <brand>
                 <h1 className='font-extrabold leading-[4.5rem] text-gray-900 text-6xl text-center'>
                     <span className='inline-block name-1'>Professional&nbsp;</span>
                     <span className='inline-block name-2'>Inventory&nbsp;</span>
@@ -96,7 +96,7 @@ const LandingPage = () => {
                         </Button>
                     </Link>
                 </section>
-            </main>
+            </brand>
         </div>
     )
 }

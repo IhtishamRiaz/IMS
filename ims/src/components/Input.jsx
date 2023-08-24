@@ -1,7 +1,7 @@
 import React from 'react'
 import { cn } from '../lib/utils'
 
-const Input = ({ label, id, type, required, errors, register, disabled }) => {
+const Input = ({ label, id, type, required, errors, register, disabled, fullWidth }) => {
     return (
         <section className='relative'>
             <label
@@ -20,7 +20,7 @@ const Input = ({ label, id, type, required, errors, register, disabled }) => {
                     className={cn(`
                     form-input
                     block
-                    w-full
+                    w-56
                     rounded-md
                     border-0
                     py-1.5
@@ -32,11 +32,12 @@ const Input = ({ label, id, type, required, errors, register, disabled }) => {
                     placeholder:text-gray-400
                     focus:ring-2
                     focus:ring-inset
-                    focus:ring-main-600
+                    focus:ring-brand-600
                     sm:text-sm
                     sm:leading-6`,
                         errors[id] && "focus:ring-rose-500 ring-rose-500",
-                        disabled && "opacity-50 cursor-default"
+                        disabled && "opacity-50 cursor-default",
+                        fullWidth && 'w-full'
                     )}
                 />
             </div>

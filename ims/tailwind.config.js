@@ -17,7 +17,7 @@ export default {
     },
     extend: {
       colors: {
-        main: colors.purple,
+        brand: colors.purple,
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
