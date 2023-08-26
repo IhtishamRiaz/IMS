@@ -5,7 +5,6 @@ import { Link, useLocation } from 'react-router-dom';
 import useLogout from '../hooks/useLogout'
 import {
     DropdownMenu,
-    DropdownMenuCheckboxItem,
     DropdownMenuContent,
     DropdownMenuLabel,
     DropdownMenuSeparator,

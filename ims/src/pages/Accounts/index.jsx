@@ -5,8 +5,9 @@ import Input from '../../components/Input'
 import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as Yup from "yup";
-import Select from '../../components/Select';
 import Button from '../../components/Button';
+import Address from './components/Address'
+import AccountType from './components/AccountType';
 
 const Accounts = () => {
     useTitle('Accounts');
@@ -29,13 +30,6 @@ const Accounts = () => {
             city: ''
         }
     });
-
-    const accountTypeOptions = [
-        { value: "customer", label: "Customer" }, { value: "supplier", label: "Supplier", }, { value: "staff", label: "Staff", }
-    ];
-    const cityOptions = [
-        { value: "سرگودھا", label: "سرگودھا", }
-    ]
 
     // On Submit
     const onSubmit = (data) => {
@@ -68,27 +62,17 @@ const Accounts = () => {
                         disabled={isLoading}
                         required
                     />
-                    <Select
+                    <AccountType
                         Controller={Controller}
                         control={control}
                         errors={errors}
-                        options={accountTypeOptions}
                         isLoading={isLoading}
-                        name={'type'}
-                        label={'Account Type'}
-                        placeholder={'Select Account Type'}
-                        optionsMessage={'No Type Found...'}
                     />
-                    <Select
+                    <Address
                         Controller={Controller}
                         control={control}
                         errors={errors}
-                        options={cityOptions}
                         isLoading={isLoading}
-                        name={'city'}
-                        label={'City'}
-                        placeholder={'Select City'}
-                        optionsMessage={'No City Found...'}
                     />
                     <Button
                         type='submit'

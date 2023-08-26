@@ -6,6 +6,9 @@ import { BrowserRouter } from 'react-router-dom'
 import { Toaster } from 'react-hot-toast';
 import ContextProvider from './context/ContextProvider.jsx';
 import { disableReactDevTools } from '@fvilers/disable-react-devtools';
+import { QueryClient, QueryClientProvider } from 'react-query';
+
+const queryClient = new QueryClient()
 
 if (import.meta.env.VITE_APP_NODE_DEV === 'production') {
   disableReactDevTools();
@@ -14,10 +17,12 @@ if (import.meta.env.VITE_APP_NODE_DEV === 'production') {
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <BrowserRouter>
-      <ContextProvider>
-        <Toaster position="bottom-left" />
-        <App />
-      </ContextProvider>
+      <QueryClientProvider client={queryClient}>
+        <ContextProvider>
+          <Toaster position="bottom-left" />
+          <App />
+        </ContextProvider>
+      </QueryClientProvider>
     </BrowserRouter>
   </React.StrictMode>,
 )

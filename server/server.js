@@ -9,6 +9,7 @@ import errorHandler from "./middleware/errorHandler.js";
 import corsOptions from './config/corsOptions.js';
 import authRoutes from "./routes/authRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
+import addressRoutes from "./routes/addressRoutes.js";
 
 dotenv.config();
 const app = express();
@@ -24,6 +25,7 @@ app.use(express.urlencoded({ extended: false }));
 // Routes
 app.use('/auth', authRoutes);
 app.use('/user', userRoutes);
+app.use('/address', addressRoutes);
 
 app.use(errorHandler);
 
