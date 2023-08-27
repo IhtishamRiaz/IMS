@@ -15,6 +15,7 @@ const Button = ({ children, danger, isLoading, fullWidth, secondary, ghost, type
             px-3
             py-2
             text-sm
+            min-w-[80px]
             font-semibold
             focus-visible:outline
             focus-visible:outline-2
@@ -30,7 +31,7 @@ const Button = ({ children, danger, isLoading, fullWidth, secondary, ghost, type
                 secondary && 'text-gray-900 bg-transparent hover:bg-gray-200',
                 danger && 'bg-rose-600 hover:bg-rose-700 focus-visible:outline-rose-600',
                 isLoading && danger && 'hover:bg-rose-600',
-                ghost && 'hover:bg-gray-300 dark:hover:bg-gray-800 bg-gray-200 text-gray-900',
+                ghost && 'hover:bg-brand-200 dark:hover:bg-brand-800 bg-brand-100 text-brand-900 p-1 min-w-fit',
                 className
             )}
         >

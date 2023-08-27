@@ -1,31 +1,28 @@
 import React, { useState } from 'react'
 import Select from '../../../components/Select'
-import { Plus as PlusCircle } from 'lucide-react'
 import Input from '../../../components/Input'
-import { useForm } from "react-hook-form"
-import { yupResolver } from "@hookform/resolvers/yup"
-import * as Yup from "yup"
 import Button from '../../../components/Button'
-import { addAccountType } from '../../../api/accountTypeApi.js'
+import { Plus as PlusCircle } from 'lucide-react'
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as Yup from "yup";
 import {
     Dialog,
     DialogContent,
     DialogHeader,
     DialogTitle,
-    DialogTrigger,
-    DialogFooter
+    DialogTrigger
 } from "../../../components/ui/dialog"
 
-
-const AccountType = ({ Controller, control, errors: mainErrors, isLoading: mainIsLoading }) => {
+const Area = ({ Controller: CityController, control: cityControl, errors: cityErrors, isLoading: cityIsLoading }) => {
     const [isLoading, setIsLoading] = useState(false);
 
     // Yup Validation Schema
     const accountSchema = Yup.object({
-        name: Yup.string().required('Please enter a Account Type'),
+        name: Yup.string().required('Please enter an Area'),
     });
 
-    const { register, handleSubmit: accountTypeHandleSubmit, formState: { errors } } = useForm({
+    const { register, handleSubmit: areaHandleSubmit, formState: { errors } } = useForm({
         resolver: yupResolver(accountSchema),
         defaultValues: {
             name: '',
@@ -33,50 +30,46 @@ const AccountType = ({ Controller, control, errors: mainErrors, isLoading: mainI
     });
 
     // On Submit
-    const accountTypeOnSubmit = (data) => {
+    const areaOnSubmit = (data) => {
         console.log("🚀 ~ file: index.jsx:51 ~ onSubmit ~ data:", data)
         setIsLoading(true)
-        addAccountType(data);
     };
 
-    const accountTypeOptions = [
-        { value: "customer", label: "Customer" }, { value: "supplier", label: "Supplier", }, { value: "staff", label: "Staff", }
-    ];
-
+    const areaOptions = [{ value: 'fsfdrwefsdf', label: 'Punjab' }]
     return (
         <>
             <Dialog>
+
                 <div className='relative'>
                     <div className='absolute flex items-center p-1 bg-gray-100 rounded-lg cursor-pointer top-7 left-60 hover:bg-gray-200 text-brand-700'>
                         <DialogTrigger>
                             <PlusCircle size={20} />
                         </DialogTrigger>
                     </div>
-
                     <Select
-                        Controller={Controller}
-                        control={control}
-                        errors={mainErrors}
-                        options={accountTypeOptions}
-                        isLoading={mainIsLoading}
-                        name={'type'}
-                        label={'Account Type'}
-                        placeholder={'Select Account Type'}
-                        optionsMessage={'No Type Found...'}
+                        Controller={CityController}
+                        control={cityControl}
+                        errors={cityErrors}
+                        options={areaOptions}
+                        isLoading={isLoading}
+                        name={'areaId'}
+                        label={'Area'}
+                        placeholder={'Select Area'}
+                        optionsMessage={'No Area Found...'}
                     />
                 </div>
 
                 {/* Dialog Content */}
                 <DialogContent>
                     <DialogHeader>
-                        <DialogTitle>Add new Account Type</DialogTitle>
+                        <DialogTitle>Add new City</DialogTitle>
                     </DialogHeader>
 
-                    <form onSubmit={accountTypeHandleSubmit(accountTypeOnSubmit)}>
+                    <form onSubmit={areaHandleSubmit(areaOnSubmit)}>
                         <div className='mt-4 space-y-8'>
                             <Input
                                 id='name'
-                                label='Account Type'
+                                label='Area Name'
                                 type='text'
                                 register={register}
                                 errors={errors}
@@ -85,10 +78,9 @@ const AccountType = ({ Controller, control, errors: mainErrors, isLoading: mainI
                             />
 
                             <Button type={'submit'} isLoading={isLoading}>
-                                Add Type
+                                Add
                             </Button>
                         </div>
-
                     </form>
                 </DialogContent>
             </Dialog>
@@ -96,4 +88,4 @@ const AccountType = ({ Controller, control, errors: mainErrors, isLoading: mainI
     )
 }
 
-export default AccountType
+export default Area

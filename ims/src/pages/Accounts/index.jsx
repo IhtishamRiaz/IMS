@@ -6,7 +6,7 @@ import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as Yup from "yup";
 import Button from '../../components/Button';
-import Address from './components/Address'
+import City from './components/City'
 import AccountType from './components/AccountType';
 
 const Accounts = () => {
@@ -21,7 +21,7 @@ const Accounts = () => {
         city: Yup.string().required('Please enter city'),
     });
 
-    const { register, handleSubmit, control, formState: { errors } } = useForm({
+    const { register, handleSubmit: mainHandleSubmit, control, formState: { errors } } = useForm({
         resolver: yupResolver(accountSchema),
         defaultValues: {
             name: '',
@@ -32,7 +32,7 @@ const Accounts = () => {
     });
 
     // On Submit
-    const onSubmit = (data) => {
+    const mainOnSubmit = (data) => {
         console.log("🚀 ~ file: index.jsx:51 ~ onSubmit ~ data:", data)
         setIsLoading(true)
     };
@@ -43,44 +43,45 @@ const Accounts = () => {
             <div className='px-4 py-6 my-5 bg-white rounded-lg shadow-md'>
                 <h2 className='text-2xl font-bold'>Add new Account</h2>
                 {/* Accounts Form */}
-                <form onSubmit={handleSubmit(onSubmit)} className='mt-4 space-y-3'>
-                    <Input
-                        id='name'
-                        label='Name'
-                        type='text'
-                        register={register}
-                        errors={errors}
-                        disabled={isLoading}
-                        required
-                    />
-                    <Input
-                        id='mobile'
-                        label='Mobile'
-                        type='text'
-                        register={register}
-                        errors={errors}
-                        disabled={isLoading}
-                        required
-                    />
-                    <AccountType
-                        Controller={Controller}
-                        control={control}
-                        errors={errors}
-                        isLoading={isLoading}
-                    />
-                    <Address
-                        Controller={Controller}
-                        control={control}
-                        errors={errors}
-                        isLoading={isLoading}
-                    />
-                    <Button
-                        type='submit'
-                        isLoading={isLoading}
-                    >
-                        Add Account
-                    </Button>
-                </form>
+                <form onSubmit={mainHandleSubmit(mainOnSubmit)} id='main-form' className='mt-4 space-y-3'></form>
+                <Input
+                    id='name'
+                    label='Name'
+                    type='text'
+                    register={register}
+                    errors={errors}
+                    disabled={isLoading}
+                    required
+                />
+                <Input
+                    id='mobile'
+                    label='Mobile'
+                    type='text'
+                    register={register}
+                    errors={errors}
+                    disabled={isLoading}
+                    required
+                />
+                <AccountType
+                    Controller={Controller}
+                    control={control}
+                    errors={errors}
+                    isLoading={isLoading}
+                />
+                <City
+                    Controller={Controller}
+                    control={control}
+                    errors={errors}
+                    isLoading={isLoading}
+                />
+                <Button
+                    type='submit'
+                    isLoading={isLoading}
+                    form={'main-form'}
+                >
+                    Add Account
+                </Button>
+
             </div>
             {/* Accounts Table */}
             <DataTablePage />

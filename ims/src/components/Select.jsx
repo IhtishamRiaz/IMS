@@ -22,7 +22,6 @@ const Select = ({ Controller, control, options, name, placeholder, optionsMessag
                         ref={ref}
                         name={name}
                         isDisabled={isLoading}
-                        defaultValue={'nil'}
                         placeholder={placeholder}
                         noOptionsMessage={() => optionsMessage}
                         value={options.find(c => c.value === value)}
