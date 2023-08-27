@@ -7,6 +7,11 @@ const addArea = async (req, res) => {
     try {
         const { name } = req.body
 
+        const areaExists = await Area.findOne({ name })
+        if (areaExists) {
+            return res.status(409).json({ message: 'Area Already Exists!' })
+        }
+
         const areaObject = {
             name: name
         }
@@ -30,7 +35,7 @@ const addArea = async (req, res) => {
 const getAllAreas = async (req, res) => {
     try {
         const areas = await Area.find({}).lean()
-        if (!areas?.length) {
+        if (!areas || areas.length === 0) {
             return res.status(400).json({ message: 'No Area Found!' })
         }
         res.json(areas);
@@ -45,6 +50,11 @@ const getAllAreas = async (req, res) => {
 const addCity = async (req, res) => {
     try {
         const { name, areaId } = req.body
+
+        const cityExists = await City.findOne({ name })
+        if (cityExists) {
+            return res.status(409).json({ message: 'City Already Exists!' })
+        }
 
         const cityObject = {
             name: name,

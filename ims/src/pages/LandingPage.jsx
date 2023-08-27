@@ -20,31 +20,6 @@ const LandingPage = () => {
                 { y: [50, 5, 0], opacity: [0, 1] },
                 { duration: 0.4, delay: stagger(0.15, { startDelay: 1 }), type: "spring", stiffness: 200, damping: 15 },
             );
-            // animate(
-            //     '.name-1',
-            //     { y: [50, 5, 0], opacity: [0, 1] },
-            //     { duration: 0.4, delay: 1 },
-            // );
-            // animate(
-            //     '.name-2',
-            //     { y: [50, 5, 0], opacity: [0, 1] },
-            //     { duration: 0.4, delay: 1.2 },
-            // );
-            // animate(
-            //     '.name-3',
-            //     { y: [50, 5, 0], opacity: [0, 1] },
-            //     { duration: 0.4, delay: 1.4 },
-            // );
-            // animate(
-            //     '.name-4',
-            //     { y: [50, 5, 0], opacity: [0, 1] },
-            //     { duration: 0.4, delay: 1.3 },
-            // );
-            // animate(
-            //     '.name-5',
-            //     { y: [50, 5, 0], opacity: [0, 1] },
-            //     { duration: 0.4, delay: 1.5 },
-            // );
             animate(
                 '.para',
                 { opacity: [0, 1] },
@@ -77,11 +52,11 @@ const LandingPage = () => {
             </nav>
             <brand>
                 <h1 className='font-extrabold leading-[4.5rem] text-gray-900 text-6xl text-center'>
-                    <span className='inline-block name-1'>Professional&nbsp;</span>
-                    <span className='inline-block name-2'>Inventory&nbsp;</span>
-                    <span className='inline-block text-primary-600 name-3'>Management,&nbsp;</span><br />
-                    <span className='inline-block name-4'>Made&nbsp;</span>
-                    <span className='inline-block name-5'>Efficient.</span>
+                    <span className='inline-block'>Professional&nbsp;</span>
+                    <span className='inline-block'>Inventory&nbsp;</span>
+                    <span className='inline-block text-brand-600'>Management,&nbsp;</span><br />
+                    <span className='inline-block'>Made&nbsp;</span>
+                    <span className='inline-block'>Efficient.</span>
                 </h1>
                 {/* <p className='mt-5 text-xl leading-8 text-center'>
                     Experience the next level of inventory management with our advanced solution.<br />Elevate your resource and operational efficiency like never before.

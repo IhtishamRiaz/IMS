@@ -10,6 +10,7 @@ import corsOptions from './config/corsOptions.js';
 import authRoutes from "./routes/authRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
 import addressRoutes from "./routes/addressRoutes.js";
+import accountTypeRoutes from './routes/accountTypeRoutes.js'
 
 dotenv.config();
 const app = express();
@@ -26,6 +27,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use('/auth', authRoutes);
 app.use('/user', userRoutes);
 app.use('/address', addressRoutes);
+app.use('/accountType', accountTypeRoutes);
 
 app.use(errorHandler);
 

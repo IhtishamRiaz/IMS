@@ -1,7 +1,7 @@
 import React from 'react'
 import { cn } from '../lib/utils'
 
-const Button = ({ children, danger, isLoading, fullWidth, secondary, type, className, ...props }) => {
+const Button = ({ children, danger, isLoading, fullWidth, secondary, ghost, type, className, ...props }) => {
     return (
         <button
             type={type}
@@ -30,6 +30,7 @@ const Button = ({ children, danger, isLoading, fullWidth, secondary, type, class
                 secondary && 'text-gray-900 bg-transparent hover:bg-gray-200',
                 danger && 'bg-rose-600 hover:bg-rose-700 focus-visible:outline-rose-600',
                 isLoading && danger && 'hover:bg-rose-600',
+                ghost && 'hover:bg-gray-300 dark:hover:bg-gray-800 bg-gray-200 text-gray-900',
                 className
             )}
         >
