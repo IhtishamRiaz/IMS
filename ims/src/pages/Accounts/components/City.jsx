@@ -47,9 +47,11 @@ const City = ({ Controller: MainController, control: mainControl, errors: mainEr
         <>
             <Dialog>
                 <div className='relative'>
-                    <div className='absolute flex items-center p-1 bg-gray-100 rounded-lg cursor-pointer top-7 left-60 hover:bg-gray-200 text-brand-700'>
+                    <div className='absolute cursor-pointer read-only: top-7 left-60 text-brand-700'>
                         <DialogTrigger>
-                            <PlusCircle size={20} />
+                            <Button ghost>
+                                <PlusCircle size={20} />
+                            </Button>
                         </DialogTrigger>
                     </div>
 

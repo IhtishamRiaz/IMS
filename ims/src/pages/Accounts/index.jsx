@@ -8,9 +8,31 @@ import * as Yup from "yup";
 import Button from '../../components/Button';
 import City from './components/City'
 import AccountType from './components/AccountType';
+import { useQuery, useMutation, useQueryClient } from 'react-query'
 
 const Accounts = () => {
     useTitle('Accounts');
+    // React Queries
+    const queryClient = useQueryClient()
+
+    const { isError, error, isLoading: isAccountsLoading, data: accounts } = useQuery('accounts', () => { })
+
+    const addAccountMutation = useMutation('addAccountFunc', {
+        onSuccess: () => {
+            queryClient.invalidateQueries('accounts')
+        }
+    })
+    const updateAccountMutation = useMutation('addAccountFunc', {
+        onSuccess: () => {
+            queryClient.invalidateQueries('accounts')
+        }
+    })
+    const deleteAccountMutation = useMutation('addAccountFunc', {
+        onSuccess: () => {
+            queryClient.invalidateQueries('accounts')
+        }
+    })
+
     const [isLoading, setIsLoading] = useState(false);
 
     // Yup Validation Schema
@@ -34,8 +56,9 @@ const Accounts = () => {
     // On Submit
     const mainOnSubmit = (data) => {
         console.log("🚀 ~ file: index.jsx:51 ~ onSubmit ~ data:", data)
+        addAccountMutation.mutate(data)
         setIsLoading(true)
-    };
+    }
 
     return (
         <>

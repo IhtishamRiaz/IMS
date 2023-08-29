@@ -1,13 +1,26 @@
 import { axiosPrivate } from './axios.js'
 
-// Add City
-const addCity = async (cityObject) => {
-    axiosPrivate.post('/address/city', cityObject)
+
+// Add new Area
+const addArea = async (data) => {
+    return await axiosPrivate.post('/address/area', data)
 }
 
-// Add Area
-const addArea = async (areaObject) => {
-    axiosPrivate.post('/address/area', areaObject)
+// Get all Areas
+const getAllAreas = async () => {
+    const response = await axiosPrivate.get('/address/area')
+    return response.data
 }
 
-export { addCity, addArea }
+// Add new City
+const addCity = async (data) => {
+    return await axiosPrivate.post('/address/city', data)
+}
+
+// Get all Cities
+const getAllCities = async () => {
+    const response = await axiosPrivate.get('/address/city')
+    return response.data
+}
+
+export { addCity, getAllCities, addArea, getAllAreas }

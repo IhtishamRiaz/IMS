@@ -21,10 +21,11 @@ const Button = ({ children, danger, isLoading, fullWidth, secondary, ghost, type
             focus-visible:outline-2
             focus-visible:outline-offset-2
             text-white
-            bg-brand-600
-            hover:bg-brand-700
+            bg-brand-700
+            hover:bg-brand-600
             focus-visible:outline-brand-600
             transition-colors
+            active:scale-95
             `,
                 isLoading && 'hover:bg-brand-600',
                 fullWidth && 'w-full',

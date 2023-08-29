@@ -6,7 +6,8 @@ import { useForm } from "react-hook-form"
 import { yupResolver } from "@hookform/resolvers/yup"
 import * as Yup from "yup"
 import Button from '../../../components/Button'
-import { addAccountType } from '../../../api/accountTypeApi.js'
+import { addAccountType, getAllAccountTypes } from '../../../api/accountsApi.js'
+import { useMutation, useQuery, useQueryClient } from 'react-query'
 import {
     Dialog,
     DialogContent,
@@ -15,17 +16,37 @@ import {
     DialogTrigger,
     DialogFooter
 } from "../../../components/ui/dialog"
+import { capitalizeFirstWord } from '../../../lib/utils'
 
 
 const AccountType = ({ Controller, control, errors: mainErrors, isLoading: mainIsLoading }) => {
+
+    // React Queries
+    const queryClient = useQueryClient()
+    const { isError, error, isLoading: isAccountTypesLoading, data: accountTypes } = useQuery('accountTypes', getAllAccountTypes)
+
+    const addAccountTypeMutation = useMutation(addAccountType, {
+        onSuccess: () => {
+            queryClient.invalidateQueries('accountTypes')
+        }
+    })
+
     const [isLoading, setIsLoading] = useState(false);
+
+    const accountTypeOptions = accountTypes?.map(type => {
+        return {
+            value: type._id,
+            label: capitalizeFirstWord(type.name)
+        }
+    })
 
     // Yup Validation Schema
     const accountSchema = Yup.object({
         name: Yup.string().required('Please enter a Account Type'),
     });
 
-    const { register, handleSubmit: accountTypeHandleSubmit, formState: { errors } } = useForm({
+    // React Hook Form
+    const { register, handleSubmit: accountTypeHandleSubmit, formState: { errors }, reset } = useForm({
         resolver: yupResolver(accountSchema),
         defaultValues: {
             name: '',
@@ -34,22 +55,19 @@ const AccountType = ({ Controller, control, errors: mainErrors, isLoading: mainI
 
     // On Submit
     const accountTypeOnSubmit = (data) => {
-        console.log("🚀 ~ file: index.jsx:51 ~ onSubmit ~ data:", data)
-        setIsLoading(true)
-        addAccountType(data);
+        addAccountTypeMutation.mutate(data)
+        reset()
     };
-
-    const accountTypeOptions = [
-        { value: "customer", label: "Customer" }, { value: "supplier", label: "Supplier", }, { value: "staff", label: "Staff", }
-    ];
 
     return (
         <>
             <Dialog>
                 <div className='relative'>
-                    <div className='absolute flex items-center p-1 bg-gray-100 rounded-lg cursor-pointer top-7 left-60 hover:bg-gray-200 text-brand-700'>
+                    <div className='absolute cursor-pointer read-only: top-7 left-60 text-brand-700'>
                         <DialogTrigger>
-                            <PlusCircle size={20} />
+                            <Button ghost>
+                                <PlusCircle size={20} />
+                            </Button>
                         </DialogTrigger>
                     </div>
 
@@ -57,7 +75,7 @@ const AccountType = ({ Controller, control, errors: mainErrors, isLoading: mainI
                         Controller={Controller}
                         control={control}
                         errors={mainErrors}
-                        options={accountTypeOptions}
+                        options={accountTypeOptions || []}
                         isLoading={mainIsLoading}
                         name={'type'}
                         label={'Account Type'}
