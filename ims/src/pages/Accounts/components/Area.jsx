@@ -6,6 +6,8 @@ import { Plus as PlusCircle } from 'lucide-react'
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as Yup from "yup";
+import { useQuery, useMutation, useQueryClient } from 'react-query'
+import { getAllAreas, addArea } from '../../../api/addressApi'
 import {
     Dialog,
     DialogContent,
@@ -15,6 +17,17 @@ import {
 } from "../../../components/ui/dialog"
 
 const Area = ({ Controller: CityController, control: cityControl, errors: cityErrors, isLoading: cityIsLoading }) => {
+    // React Queries
+    const queryClient = useQueryClient()
+
+    const { isError, error, isLoading: isAreasLoading, data: areas } = useQuery('areas', getAllAreas)
+
+    const addAreaMutation = useMutation(addArea, {
+        onSuccess: () => {
+            queryClient.invalidateQueries('areas')
+        }
+    })
+
     const [isLoading, setIsLoading] = useState(false);
 
     // Yup Validation Schema
@@ -32,25 +45,32 @@ const Area = ({ Controller: CityController, control: cityControl, errors: cityEr
     // On Submit
     const areaOnSubmit = (data) => {
         console.log("🚀 ~ file: index.jsx:51 ~ onSubmit ~ data:", data)
-        setIsLoading(true)
+        addAreaMutation.mutate(data)
     };
 
-    const areaOptions = [{ value: 'fsfdrwefsdf', label: 'Punjab' }]
+    const areaOptions = areas?.map(area => {
+        return {
+            value: area._id,
+            label: area.name
+        }
+    })
     return (
         <>
             <Dialog>
 
                 <div className='relative'>
-                    <div className='absolute flex items-center p-1 bg-gray-100 rounded-lg cursor-pointer top-7 left-60 hover:bg-gray-200 text-brand-700'>
+                    <div className='absolute flex items-center cursor-pointer top-7 left-60  text-brand-700'>
                         <DialogTrigger>
-                            <PlusCircle size={20} />
+                            <Button ghost>
+                                <PlusCircle size={20} />
+                            </Button>
                         </DialogTrigger>
                     </div>
                     <Select
                         Controller={CityController}
                         control={cityControl}
                         errors={cityErrors}
-                        options={areaOptions}
+                        options={areaOptions || []}
                         isLoading={isLoading}
                         name={'areaId'}
                         label={'Area'}

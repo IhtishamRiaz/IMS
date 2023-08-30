@@ -14,8 +14,21 @@ import {
     DialogTrigger
 } from "../../../components/ui/dialog"
 import Area from './Area'
+import { useMutation, useQuery, useQueryClient } from 'react-query'
+import { addCity, getAllCities } from '../../../api/addressApi'
 
 const City = ({ Controller: MainController, control: mainControl, errors: mainErrors, isLoading: mainIsLoading }) => {
+
+    // React Queries
+    const queryClient = useQueryClient();
+
+    const { isError, error, isLoading: isCitiesLoading, data: cities } = useQuery('cities', getAllCities)
+
+    const addCityMutation = useMutation(addCity, {
+        onSuccess: () => {
+            queryClient.invalidateQueries('cities')
+        }
+    })
 
     const [isLoading, setIsLoading] = useState(false);
 
@@ -36,12 +49,15 @@ const City = ({ Controller: MainController, control: mainControl, errors: mainEr
     // On Submit
     const cityOnSubmit = (data) => {
         console.log("🚀 ~ file: Address.jsx:35 ~ cityOnSubmit ~ data:", data)
-        setIsLoading(true)
+        addCityMutation.mutate(data)
     };
 
-    const cityOptions = [
-        { value: "سرگودھا", label: "سرگودھا", }
-    ]
+    const cityOptions = cities?.map(city => {
+        return {
+            value: city._id,
+            label: city.name
+        }
+    })
 
     return (
         <>
@@ -59,7 +75,7 @@ const City = ({ Controller: MainController, control: mainControl, errors: mainEr
                         Controller={MainController}
                         control={mainControl}
                         errors={mainErrors}
-                        options={cityOptions}
+                        options={cityOptions || []}
                         isLoading={mainIsLoading}
                         name={'city'}
                         label={'City'}
@@ -74,30 +90,34 @@ const City = ({ Controller: MainController, control: mainControl, errors: mainEr
                         <DialogTitle>Add new City</DialogTitle>
                     </DialogHeader>
 
-                    <form onSubmit={cityHandleSubmit(cityOnSubmit)} className='mt-4 space-y-8'>
-                        <div className='space-y-4'>
-                            <Input
-                                id='name'
-                                label='City Name'
-                                type='text'
-                                register={register}
-                                errors={errors}
-                                disabled={isLoading}
-                                required
-                            />
+                    <form onSubmit={cityHandleSubmit(cityOnSubmit)} id="city-form"></form>
+                    <div className='space-y-4'>
+                        <Input
+                            id='name'
+                            label='City Name'
+                            type='text'
+                            register={register}
+                            errors={errors}
+                            disabled={isLoading}
+                            required
+                        />
 
-                            <Area
-                                Controller={Controller}
-                                control={control}
-                                errors={errors}
-                                isLoading={isLoading}
-                            />
-                        </div>
+                        <Area
+                            Controller={Controller}
+                            control={control}
+                            errors={errors}
+                            isLoading={isLoading}
+                        />
+                    </div>
 
-                        <Button type={'submit'} isLoading={isLoading}>
-                            Add
-                        </Button>
-                    </form>
+                    <Button
+                        type={'submit'}
+                        isLoading={isLoading}
+                        form="city-form"
+                    >
+                        Add
+                    </Button>
+
                 </DialogContent>
             </Dialog>
         </>

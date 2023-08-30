@@ -13,8 +13,7 @@ import {
     DialogContent,
     DialogHeader,
     DialogTitle,
-    DialogTrigger,
-    DialogFooter
+    DialogTrigger
 } from "../../../components/ui/dialog"
 import { capitalizeFirstWord } from '../../../lib/utils'
 

@@ -8,7 +8,7 @@ import * as Yup from "yup";
 import Button from '../../components/Button';
 import City from './components/City'
 import AccountType from './components/AccountType';
-import { useQuery, useMutation, useQueryClient } from 'react-query'
+import { useQuery, useMutation, useQueryClient } from 'react-query';
 
 const Accounts = () => {
     useTitle('Accounts');

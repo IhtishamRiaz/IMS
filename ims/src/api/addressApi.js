@@ -1,5 +1,5 @@
 import { axiosPrivate } from './axios.js'
-
+// import { toast } from 'react-hot-toast';
 
 // Add new Area
 const addArea = async (data) => {

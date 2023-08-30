@@ -11,6 +11,7 @@ import authRoutes from "./routes/authRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
 import addressRoutes from "./routes/addressRoutes.js";
 import accountTypeRoutes from './routes/accountTypeRoutes.js'
+import accountRoutes from './routes/accountRoutes.js'
 
 dotenv.config();
 const app = express();
@@ -24,20 +25,25 @@ app.use(cookieParser());
 app.use(express.urlencoded({ extended: false }));
 
 // Routes
+// Auth Routes
 app.use('/auth', authRoutes);
 app.use('/user', userRoutes);
+// Account Routes
 app.use('/address', addressRoutes);
 app.use('/accountType', accountTypeRoutes);
+app.use('/account', accountRoutes);
+
+
 
 app.use(errorHandler);
 
 mongoose.connection.once('open', () => {
-    console.log('Connected to MongoDB');
-    const PORT = process.env.PORT || 8080;
-    app.listen(PORT, () => console.log(`Server Running on port ${process.env.PORT}`));
+  console.log('Connected to MongoDB');
+  const PORT = process.env.PORT || 8080;
+  app.listen(PORT, () => console.log(`Server Running on port ${process.env.PORT}`));
 });
 
 mongoose.connection.on('error', (error) => {
-    console.log(error);
-    logEvents(`${error.no}: ${error.code}\t${error.syscall}\t${error.hostname}`, 'mongoErrLog.log');
+  console.log(error);
+  logEvents(`${error.no}: ${error.code}\t${error.syscall}\t${error.hostname}`, 'mongoErrLog.log');
 });
