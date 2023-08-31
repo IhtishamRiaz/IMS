@@ -12,7 +12,7 @@ const addAccount = async (req, res) => {
       return res.status(400).json({ message: error.details[0].message });
     }
 
-    const { name, mobile, accountType, city } = req.body
+    const { name, mobile, accountType, city, salesRep, isSalesman } = req.body
     const lowerCaseName = name.toLowerCase()
 
     const accountExists = await Account.findOne({ name: lowerCaseName }).lean().exec()
@@ -25,6 +25,10 @@ const addAccount = async (req, res) => {
       mobile,
       accountType,
       city
+    }
+
+    if (salesRep) {
+      accountObject.salesRep = salesRep
     }
 
     const account = await Account.create(accountObject)

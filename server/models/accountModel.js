@@ -10,18 +10,23 @@ const accountSchema = new mongoose.Schema({
     required: true
   },
   accountType: {
-    type: String,
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'AccountType',
     required: true
   },
   city: {
-    type: String,
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'City',
     required: true
+  },
+  salesRep: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Account',
+    required: false
   },
   isSalesman: {
     type: Boolean,
-  },
-  salesRep: {
-    type: String,
+    required: false
   }
 }, { timestamps: true })
 

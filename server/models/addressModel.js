@@ -17,7 +17,7 @@ const citySchema = new mongoose.Schema({
   area: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Area',
-    default: 'nil'
+    required: false
   }
 })
 

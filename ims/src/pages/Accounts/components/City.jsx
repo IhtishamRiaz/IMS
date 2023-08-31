@@ -7,121 +7,149 @@ import Input from '../../../components/Input'
 import * as Yup from "yup"
 import Button from '../../../components/Button'
 import {
-    Dialog,
-    DialogContent,
-    DialogHeader,
-    DialogTitle,
-    DialogTrigger
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger
 } from "../../../components/ui/dialog"
 import Area from './Area'
 import { useMutation, useQuery, useQueryClient } from 'react-query'
-import { addCity, getAllCities } from '../../../api/addressApi'
+import useAxiosPrivate from '../../../hooks/useAxiosPrivate'
+import toast from 'react-hot-toast'
+import { capitalizeFirstWord } from '../../../lib/utils'
 
 const City = ({ Controller: MainController, control: mainControl, errors: mainErrors, isLoading: mainIsLoading }) => {
 
-    // React Queries
-    const queryClient = useQueryClient();
+  // API Functions
+  const axiosPrivate = useAxiosPrivate()
 
-    const { isError, error, isLoading: isCitiesLoading, data: cities } = useQuery('cities', getAllCities)
+  // Add new City
+  const addCity = async (data) => {
+    return await axiosPrivate
+      .post('/address/city', data)
+      .then((res) => {
+        toast.success(res?.data?.message)
+      })
+      .catch((error) => {
+        toast.error(error?.response?.data?.message)
+      })
+      .finally(() => {
+        setIsLoading(false)
+        reset()
+      })
+  }
 
-    const addCityMutation = useMutation(addCity, {
-        onSuccess: () => {
-            queryClient.invalidateQueries('cities')
-        }
-    })
+  // Get all Cities
+  const getAllCities = async () => {
+    const response = await axiosPrivate.get('/address/city')
+    return response.data
+  }
 
-    const [isLoading, setIsLoading] = useState(false);
+  // React Queries
+  const queryClient = useQueryClient();
 
-    // Yup Validation Schema
-    const citySchema = Yup.object({
-        name: Yup.string().required('Please enter a City'),
-        areaId: Yup.string().required('Please select Area'),
-    });
+  const { isError, error, isLoading: isCitiesLoading, data: cities } = useQuery('cities', getAllCities)
 
-    const { register, handleSubmit: cityHandleSubmit, control, formState: { errors } } = useForm({
-        resolver: yupResolver(citySchema),
-        defaultValues: {
-            name: '',
-            areaId: ''
-        }
-    });
+  const addCityMutation = useMutation(addCity, {
+    onSuccess: () => {
+      queryClient.invalidateQueries('cities')
+    }
+  })
 
-    // On Submit
-    const cityOnSubmit = (data) => {
-        console.log("🚀 ~ file: Address.jsx:35 ~ cityOnSubmit ~ data:", data)
-        addCityMutation.mutate(data)
-    };
+  const [isLoading, setIsLoading] = useState(false);
 
-    const cityOptions = cities?.map(city => {
-        return {
-            value: city._id,
-            label: city.name
-        }
-    })
+  // Yup Validation Schema
+  const citySchema = Yup.object({
+    name: Yup.string().required('Please enter a City'),
+    areaId: Yup.string(),
+  });
 
-    return (
-        <>
-            <Dialog>
-                <div className='relative'>
-                    <div className='absolute cursor-pointer read-only: top-7 left-60 text-brand-700'>
-                        <DialogTrigger>
-                            <Button ghost>
-                                <PlusCircle size={20} />
-                            </Button>
-                        </DialogTrigger>
-                    </div>
+  const { register, handleSubmit: cityHandleSubmit, control, formState: { errors }, reset } = useForm({
+    resolver: yupResolver(citySchema),
+    defaultValues: {
+      name: '',
+      areaId: ''
+    }
+  });
 
-                    <Select
-                        Controller={MainController}
-                        control={mainControl}
-                        errors={mainErrors}
-                        options={cityOptions || []}
-                        isLoading={mainIsLoading}
-                        name={'city'}
-                        label={'City'}
-                        placeholder={'Select City'}
-                        optionsMessage={'No City Found...'}
-                    />
-                </div>
+  // On Submit
+  const cityOnSubmit = (data) => {
+    console.log("🚀 ~ file: Address.jsx:35 ~ cityOnSubmit ~ data:", data)
+    setIsLoading(true)
+    addCityMutation.mutate(data)
+  };
 
-                {/* Dialog Content */}
-                <DialogContent>
-                    <DialogHeader>
-                        <DialogTitle>Add new City</DialogTitle>
-                    </DialogHeader>
+  const cityOptions = cities?.map(city => {
+    return {
+      value: city._id,
+      label: capitalizeFirstWord(city.name)
+    }
+  })
 
-                    <form onSubmit={cityHandleSubmit(cityOnSubmit)} id="city-form"></form>
-                    <div className='space-y-4'>
-                        <Input
-                            id='name'
-                            label='City Name'
-                            type='text'
-                            register={register}
-                            errors={errors}
-                            disabled={isLoading}
-                            required
-                        />
+  return (
+    <>
+      <Dialog>
+        <div className='relative'>
+          <div className='absolute cursor-pointer read-only: top-7 left-60 text-brand-700'>
+            <DialogTrigger>
+              <Button ghost>
+                <PlusCircle size={20} />
+              </Button>
+            </DialogTrigger>
+          </div>
 
-                        <Area
-                            Controller={Controller}
-                            control={control}
-                            errors={errors}
-                            isLoading={isLoading}
-                        />
-                    </div>
+          <Select
+            Controller={MainController}
+            control={mainControl}
+            errors={mainErrors}
+            options={cityOptions || []}
+            isLoading={mainIsLoading}
+            name={'city'}
+            label={'City'}
+            placeholder={'Select City'}
+            optionsMessage={'No City Found...'}
+          />
+        </div>
 
-                    <Button
-                        type={'submit'}
-                        isLoading={isLoading}
-                        form="city-form"
-                    >
-                        Add
-                    </Button>
+        {/* Dialog Content */}
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Add new City</DialogTitle>
+          </DialogHeader>
 
-                </DialogContent>
-            </Dialog>
-        </>
-    )
+          <form onSubmit={cityHandleSubmit(cityOnSubmit)} id="city-form"></form>
+          <div className='space-y-4'>
+            <Input
+              id='name'
+              label='City Name'
+              type='text'
+              register={register}
+              errors={errors}
+              disabled={isLoading}
+              required
+            />
+
+            <Area
+              Controller={Controller}
+              control={control}
+              errors={errors}
+              isLoading={isLoading}
+            />
+          </div>
+
+          <Button
+            type={'submit'}
+            isLoading={isLoading}
+            form="city-form"
+          >
+            Add
+          </Button>
+
+        </DialogContent>
+      </Dialog>
+    </>
+  )
 }
 
 export default City

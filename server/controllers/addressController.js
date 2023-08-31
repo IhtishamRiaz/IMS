@@ -73,7 +73,10 @@ const addCity = async (req, res) => {
 
     const cityObject = {
       name: lowerCaseName,
-      area: areaId
+    }
+
+    if (areaId) {
+      cityObject.area = areaId
     }
 
     const city = await City.create(cityObject);

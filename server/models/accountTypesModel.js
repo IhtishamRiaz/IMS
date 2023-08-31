@@ -6,8 +6,8 @@ const accountTypeSchema = new mongoose.Schema({
     required: true,
     unique: true
   }
-})
+}, { timestamps: true });
 
-const AccountType = mongoose.model('AccountTypes', accountTypeSchema);
+const AccountType = mongoose.model('AccountType', accountTypeSchema);
 
 export default AccountType

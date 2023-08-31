@@ -6,111 +6,187 @@ import { useForm } from "react-hook-form"
 import { yupResolver } from "@hookform/resolvers/yup"
 import * as Yup from "yup"
 import Button from '../../../components/Button'
-import { addAccountType, getAllAccountTypes } from '../../../api/accountsApi.js'
 import { useMutation, useQuery, useQueryClient } from 'react-query'
 import {
-    Dialog,
-    DialogContent,
-    DialogHeader,
-    DialogTitle,
-    DialogTrigger
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger
 } from "../../../components/ui/dialog"
 import { capitalizeFirstWord } from '../../../lib/utils'
-
+import useAxiosPrivate from '../../../hooks/useAxiosPrivate'
+import toast from 'react-hot-toast'
 
 const AccountType = ({ Controller, control, errors: mainErrors, isLoading: mainIsLoading }) => {
+  const [isLoading, setIsLoading] = useState(false);
+  const [typeValue, setTypeValue] = useState('');
 
-    // React Queries
-    const queryClient = useQueryClient()
-    const { isError, error, isLoading: isAccountTypesLoading, data: accountTypes } = useQuery('accountTypes', getAllAccountTypes)
+  // API Functions
+  const axiosPrivate = useAxiosPrivate()
 
-    const addAccountTypeMutation = useMutation(addAccountType, {
-        onSuccess: () => {
-            queryClient.invalidateQueries('accountTypes')
-        }
-    })
+  // Get All Account Types
+  const getAllAccountTypes = async () => {
+    const response = await axiosPrivate.get('/accountType')
+    return response.data
+  }
 
-    const [isLoading, setIsLoading] = useState(false);
-
-    const accountTypeOptions = accountTypes?.map(type => {
-        return {
-            value: type._id,
-            label: capitalizeFirstWord(type.name)
-        }
-    })
-
-    // Yup Validation Schema
-    const accountSchema = Yup.object({
-        name: Yup.string().required('Please enter a Account Type'),
-    });
-
-    // React Hook Form
-    const { register, handleSubmit: accountTypeHandleSubmit, formState: { errors }, reset } = useForm({
-        resolver: yupResolver(accountSchema),
-        defaultValues: {
-            name: '',
-        }
-    });
-
-    // On Submit
-    const accountTypeOnSubmit = (data) => {
-        addAccountTypeMutation.mutate(data)
+  // Add Account Type
+  const addAccountType = async (data) => {
+    axiosPrivate
+      .post('/accountType', data)
+      .then(res => {
+        toast.success(res?.data?.message)
+      })
+      .catch((error) => {
+        toast.error(error?.response?.data?.message)
+      })
+      .finally(() => {
+        setIsLoading(false)
         reset()
-    };
+      })
+  }
 
-    return (
-        <>
-            <Dialog>
-                <div className='relative'>
-                    <div className='absolute cursor-pointer read-only: top-7 left-60 text-brand-700'>
-                        <DialogTrigger>
-                            <Button ghost>
-                                <PlusCircle size={20} />
-                            </Button>
-                        </DialogTrigger>
-                    </div>
+  // React Queries
+  const queryClient = useQueryClient()
+  const { isError, error, isLoading: isAccountTypesLoading, data: accountTypes } = useQuery('accountTypes', getAllAccountTypes)
 
-                    <Select
-                        Controller={Controller}
-                        control={control}
-                        errors={mainErrors}
-                        options={accountTypeOptions || []}
-                        isLoading={mainIsLoading}
-                        name={'type'}
-                        label={'Account Type'}
-                        placeholder={'Select Account Type'}
-                        optionsMessage={'No Type Found...'}
-                    />
-                </div>
+  const addAccountTypeMutation = useMutation(addAccountType, {
+    onSuccess: () => {
+      queryClient.invalidateQueries('accountTypes')
+    }
+  })
 
-                {/* Dialog Content */}
-                <DialogContent>
-                    <DialogHeader>
-                        <DialogTitle>Add new Account Type</DialogTitle>
-                    </DialogHeader>
+  // Select Options
+  const accountTypeOptions = accountTypes?.map(type => {
+    return {
+      value: type._id,
+      label: capitalizeFirstWord(type.name)
+    }
+  })
+  const salesRepOptions = accountTypes?.map(type => {
+    return {
+      value: type._id,
+      label: capitalizeFirstWord(type.name)
+    }
+  })
+  let booleanOptions = [
+    {
+      value: true,
+      label: 'Yes'
+    },
+    {
+      value: false,
+      label: 'No'
+    }
+  ]
 
-                    <form onSubmit={accountTypeHandleSubmit(accountTypeOnSubmit)}>
-                        <div className='mt-4 space-y-8'>
-                            <Input
-                                id='name'
-                                label='Account Type'
-                                type='text'
-                                register={register}
-                                errors={errors}
-                                disabled={isLoading}
-                                required
-                            />
+  // Yup Validation Schema
+  const accountSchema = Yup.object({
+    name: Yup.string().required('Please enter a Account Type'),
+  });
 
-                            <Button type={'submit'} isLoading={isLoading}>
-                                Add Type
-                            </Button>
-                        </div>
+  // React Hook Form
+  const { register, handleSubmit: accountTypeHandleSubmit, formState: { errors }, reset } = useForm({
+    resolver: yupResolver(accountSchema),
+    defaultValues: {
+      name: '',
+    }
+  });
 
-                    </form>
-                </DialogContent>
-            </Dialog>
-        </>
-    )
+  // On Submit
+  const accountTypeOnSubmit = (data) => {
+    addAccountTypeMutation.mutate(data)
+    setIsLoading(true)
+  };
+
+  const selectedType = accountTypes?.find(type => {
+    return type._id === typeValue
+  })
+  const salesmanVisible = selectedType?.name === 'staff'
+  const salesRepVisible = selectedType?.name === 'customer'
+
+  if (!salesmanVisible) {
+    booleanOptions = []
+  }
+
+  return (
+    <>
+      <Dialog>
+        <div className='relative'>
+          <div className='absolute cursor-pointer read-only: top-7 left-60 text-brand-700'>
+            <DialogTrigger>
+              <Button ghost>
+                <PlusCircle size={20} />
+              </Button>
+            </DialogTrigger>
+          </div>
+
+          <Select
+            Controller={Controller}
+            control={control}
+            errors={mainErrors}
+            options={accountTypeOptions || []}
+            isLoading={mainIsLoading}
+            name={'type'}
+            label={'Account Type'}
+            placeholder={'Select Account Type'}
+            optionsMessage={'No Type Found...'}
+            setTypeValue={setTypeValue}
+          />
+        </div>
+        <Select
+          Controller={Controller}
+          control={control}
+          errors={mainErrors}
+          options={salesRepOptions || []}
+          isLoading={mainIsLoading}
+          name={'salesRep'}
+          label={'Sales Representative'}
+          placeholder={'Select Sales Rep'}
+          optionsMessage={'No Sales Rep...'}
+          isDisabled={!salesRepVisible}
+        />
+        <Select
+          Controller={Controller}
+          control={control}
+          errors={mainErrors}
+          options={booleanOptions || []}
+          isLoading={mainIsLoading}
+          name={'isSalesman'}
+          label={'Is Salesman?'}
+          placeholder={'Select Sales Rep'}
+          optionsMessage={'No Options...'}
+          isDisabled={!salesmanVisible}
+        />
+
+        {/* Dialog Content */}
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Add new Account Type</DialogTitle>
+          </DialogHeader>
+
+          <form onSubmit={accountTypeHandleSubmit(accountTypeOnSubmit)}>
+            <div className='mt-4 space-y-8'>
+              <Input
+                id='name'
+                label='Account Type'
+                type='text'
+                register={register}
+                errors={errors}
+                disabled={isLoading}
+                required
+              />
+
+              <Button type={'submit'} isLoading={isLoading}>
+                Add Type
+              </Button>
+            </div>
+          </form>
+        </DialogContent>
+      </Dialog>
+    </>
+  )
 }
 
 export default AccountType
