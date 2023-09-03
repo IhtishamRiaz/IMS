@@ -30,7 +30,7 @@ const Accounts = () => {
         <AccountForm accounts={accounts} />
       </div>
 
-      <DataTablePage />
+      <DataTablePage accounts={accounts} />
     </>
   )
 }

@@ -1,4 +1,5 @@
 import Account from '../models/accountModel.js'
+import AccountType from '../models/accountTypesModel.js'
 import { validateNewAccount, validateUpdateAccount } from '../validations/accountValidator.js'
 
 // @desc Add new Account
@@ -20,15 +21,22 @@ const addAccount = async (req, res) => {
       return res.status(409).json({ message: 'Account Already Exists!' })
     }
 
+    const accountTypeRec = await AccountType.findById(accountType).lean().exec()
+
     const accountObject = {
       name: lowerCaseName,
       mobile,
       accountType,
-      city,
-      isSalesman
+      city
     }
 
-    if (salesRep) {
+    if (isSalesman && accountTypeRec.name === 'staff') {
+      accountObject.isSalesman = isSalesman
+    } else {
+      accountObject.isSalesman = false
+    }
+
+    if (accountTypeRec.name === 'customer' && salesRep) {
       accountObject.salesRep = salesRep
     }
 
@@ -41,7 +49,7 @@ const addAccount = async (req, res) => {
     }
 
   } catch (error) {
-    res.status(500).json({ message: 'Failed to Add Account!', error })
+    return res.status(500).json({ message: 'Failed to Add Account!', error })
   }
 }
 
@@ -50,7 +58,7 @@ const addAccount = async (req, res) => {
 // @access Private
 const getAllAccounts = async (req, res) => {
   try {
-    const accounts = await Account.find({}).populate('accountType').populate('city').populate('salesRep').lean().exec()
+    const accounts = await Account.find({}).populate('accountType').populate({ path: 'city', populate: { path: 'area' } }).populate('salesRep').lean().exec()
 
     if (!accounts || accounts.length === 0) {
       return res.status(400).json({ message: 'No Account Found!' })

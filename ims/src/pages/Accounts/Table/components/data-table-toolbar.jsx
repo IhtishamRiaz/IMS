@@ -17,9 +17,9 @@ export function DataTableToolbar({ table }) {
       <div className="flex items-center flex-1 space-x-2">
         <Input
           placeholder="Filter tasks..."
-          value={(table.getColumn("title")?.getFilterValue()) ?? ""}
+          value={(table.getColumn("name")?.getFilterValue()) ?? ""}
           onChange={(event) =>
-            table.getColumn("title")?.setFilterValue(event.target.value)
+            table.getColumn("name")?.setFilterValue(event.target.value)
           }
           className="h-8 w-[150px] lg:w-[250px]"
         />
@@ -31,17 +31,17 @@ export function DataTableToolbar({ table }) {
           }
           className="h-8 w-[150px] lg:w-[250px]"
         />
-        {table.getColumn("status") && (
+        {table.getColumn("type") && (
           <DataTableFacetedFilter
-            column={table.getColumn("status")}
-            title="Status"
+            column={table.getColumn("type")}
+            title="type"
             options={statuses}
           />
         )}
-        {table.getColumn("priority") && (
+        {table.getColumn("isSalesman") && (
           <DataTableFacetedFilter
-            column={table.getColumn("priority")}
-            title="Priority"
+            column={table.getColumn("isSalesman")}
+            title="isSalesman"
             options={priorities}
           />
         )}

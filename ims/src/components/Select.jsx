@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactSelect from "react-select";
 
-const Select = React.forwardRef(({ Controller, control, options, name, placeholder, optionsMessage, label, errors, isLoading, setTypeValue, ...props }) => {
+const Select = ({ Controller, control, options, name, placeholder, optionsMessage, label, errors, isLoading, setTypeValue, ...props }) => {
   return (
     <section className='w-56'>
       <label
@@ -44,6 +44,6 @@ const Select = React.forwardRef(({ Controller, control, options, name, placehold
       {errors[name] && <p className='absolute text-sm text-red-600'>{errors[name].message}</p>}
     </section>
   )
-})
+}
 
 export default Select

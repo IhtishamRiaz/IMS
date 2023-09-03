@@ -1,4 +1,3 @@
-import { Badge } from "../../../../components/ui/badge"
 import { Checkbox } from "../../../../components/ui/checkbox"
 
 import { labels, priorities, statuses } from "../data/data"
@@ -30,38 +29,36 @@ export const columns = [
   {
     accessorKey: "id",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Task" />
+      <DataTableColumnHeader column={column} title="ID" />
     ),
     cell: ({ row }) => <div className="w-[80px]">{row.getValue("id")}</div>,
     enableSorting: false,
     enableHiding: false,
   },
   {
-    accessorKey: "title",
+    accessorKey: "name",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Title" />
+      <DataTableColumnHeader column={column} title="Name" />
     ),
     cell: ({ row }) => {
-      const label = labels.find((label) => label.value === row.original.label)
 
       return (
         <div className="flex space-x-2">
-          {label && <Badge variant="outline">{label.label}</Badge>}
           <span className="max-w-[500px] truncate font-medium">
-            {row.getValue("title")}
+            {row.getValue("name")}
           </span>
         </div>
       )
     },
   },
   {
-    accessorKey: "status",
+    accessorKey: "type",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Status" />
+      <DataTableColumnHeader column={column} title="Type" />
     ),
     cell: ({ row }) => {
       const status = statuses.find(
-        (status) => status.value === row.getValue("status")
+        (status) => status.value === row.getValue("type")
       )
 
       if (!status) {
@@ -82,13 +79,13 @@ export const columns = [
     },
   },
   {
-    accessorKey: "priority",
+    accessorKey: "isSalesman",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Priority" />
+      <DataTableColumnHeader column={column} title="Is Salesman" />
     ),
     cell: ({ row }) => {
       const priority = priorities.find(
-        (priority) => priority.value === row.getValue("priority")
+        (priority) => priority.value === row.getValue("isSalesman")
       )
 
       if (!priority) {
@@ -107,6 +104,60 @@ export const columns = [
     filterFn: (row, id, value) => {
       return value.includes(row.getValue(id))
     },
+  },
+  // City
+  {
+    accessorKey: "city",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="City" />
+    ),
+    cell: ({ row }) => {
+
+      return (
+        <div>
+          <span className="truncate">
+            {row.getValue("city")}
+          </span>
+        </div>
+      )
+    },
+    enableSorting: false,
+  },
+  // Area
+  {
+    accessorKey: "area",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Area" />
+    ),
+    cell: ({ row }) => {
+
+      return (
+        <div>
+          <span className="truncate">
+            {row.getValue("area")}
+          </span>
+        </div>
+      )
+    },
+    enableSorting: false,
+  },
+  // Mobile
+  {
+    accessorKey: "mobile",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Mobile" />
+    ),
+    cell: ({ row }) => {
+
+      return (
+        <div>
+          <span className="truncate">
+            {row.getValue("mobile")}
+          </span>
+        </div>
+      )
+    },
+    enableSorting: false,
   },
   {
     id: "actions",
