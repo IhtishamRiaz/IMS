@@ -24,7 +24,8 @@ const addAccount = async (req, res) => {
       name: lowerCaseName,
       mobile,
       accountType,
-      city
+      city,
+      isSalesman
     }
 
     if (salesRep) {
@@ -49,7 +50,7 @@ const addAccount = async (req, res) => {
 // @access Private
 const getAllAccounts = async (req, res) => {
   try {
-    const accounts = await Account.find({}).lean().exec()
+    const accounts = await Account.find({}).populate('accountType').populate('city').populate('salesRep').lean().exec()
 
     if (!accounts || accounts.length === 0) {
       return res.status(400).json({ message: 'No Account Found!' })

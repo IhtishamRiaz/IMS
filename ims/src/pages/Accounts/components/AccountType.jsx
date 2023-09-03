@@ -18,7 +18,7 @@ import { capitalizeFirstWord } from '../../../lib/utils'
 import useAxiosPrivate from '../../../hooks/useAxiosPrivate'
 import toast from 'react-hot-toast'
 
-const AccountType = ({ Controller, control, errors: mainErrors, isLoading: mainIsLoading }) => {
+const AccountType = ({ Controller, control, errors: mainErrors, isLoading: mainIsLoading, accounts }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [typeValue, setTypeValue] = useState('');
 
@@ -64,13 +64,8 @@ const AccountType = ({ Controller, control, errors: mainErrors, isLoading: mainI
       label: capitalizeFirstWord(type.name)
     }
   })
-  const salesRepOptions = accountTypes?.map(type => {
-    return {
-      value: type._id,
-      label: capitalizeFirstWord(type.name)
-    }
-  })
-  let booleanOptions = [
+
+  const booleanOptions = [
     {
       value: true,
       label: 'Yes'
@@ -80,6 +75,17 @@ const AccountType = ({ Controller, control, errors: mainErrors, isLoading: mainI
       label: 'No'
     }
   ]
+
+  const staffAccounts = accounts?.filter(account => {
+    return account.accountType.name === 'staff'
+  })
+
+  const salesRepOptions = staffAccounts?.map(account => {
+    return {
+      value: account._id,
+      label: capitalizeFirstWord(account.name)
+    }
+  })
 
   // Yup Validation Schema
   const accountSchema = Yup.object({
@@ -106,10 +112,6 @@ const AccountType = ({ Controller, control, errors: mainErrors, isLoading: mainI
   const salesmanVisible = selectedType?.name === 'staff'
   const salesRepVisible = selectedType?.name === 'customer'
 
-  if (!salesmanVisible) {
-    booleanOptions = []
-  }
-
   return (
     <>
       <Dialog>
@@ -128,7 +130,7 @@ const AccountType = ({ Controller, control, errors: mainErrors, isLoading: mainI
             errors={mainErrors}
             options={accountTypeOptions || []}
             isLoading={mainIsLoading}
-            name={'type'}
+            name={'accountType'}
             label={'Account Type'}
             placeholder={'Select Account Type'}
             optionsMessage={'No Type Found...'}

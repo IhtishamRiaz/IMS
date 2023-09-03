@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import Input from '../../../components/Input'
 import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -7,12 +7,35 @@ import Button from '../../../components/Button';
 import City from './City'
 import AccountType from './AccountType';
 import { useMutation, useQueryClient } from 'react-query';
+import useAxiosPrivate from '../../../hooks/useAxiosPrivate';
+import toast from 'react-hot-toast'
 
-const AccountForm = () => {
+
+const AccountForm = ({ accounts }) => {
+
+  // API Functions
+  const axiosPrivate = useAxiosPrivate()
+
+  // Add Account
+  const addAccount = async (data) => {
+    axiosPrivate
+      .post('/account', data)
+      .then((res) => {
+        toast.success(res?.data?.message)
+      })
+      .catch((error) => {
+        toast.error(error?.response?.data?.message)
+      })
+      .finally(() => {
+        setIsLoading(false)
+        reset()
+      })
+  }
+
   // React Queries
   const queryClient = useQueryClient()
 
-  const addAccountMutation = useMutation('addAccountFunc', {
+  const addAccountMutation = useMutation(addAccount, {
     onSuccess: () => {
       queryClient.invalidateQueries('accounts')
     }
@@ -33,18 +56,18 @@ const AccountForm = () => {
   // Yup Validation Schema
   const accountSchema = Yup.object({
     name: Yup.string().required('Please enter a name'),
-    type: Yup.string().required('Please select Account Type'),
+    accountType: Yup.string().required('Please select Account Type'),
     mobile: Yup.string().required('Please enter mobile'),
     city: Yup.string().required('Please enter city'),
     salesRep: Yup.string(),
     isSalesman: Yup.boolean(),
   });
 
-  const { register, handleSubmit: mainHandleSubmit, control, formState: { errors } } = useForm({
+  const { register, handleSubmit: mainHandleSubmit, control, formState: { errors }, reset } = useForm({
     resolver: yupResolver(accountSchema),
     defaultValues: {
       name: '',
-      type: '',
+      accountType: '',
       mobile: '',
       city: '',
       salesRep: '',
@@ -54,9 +77,8 @@ const AccountForm = () => {
 
   // On Submit
   const mainOnSubmit = (data) => {
-    console.log("🚀 ~ file: AccountForm.jsx:57 ~ mainOnSubmit ~ data:", data)
-    addAccountMutation.mutate(data)
     setIsLoading(true)
+    addAccountMutation.mutate(data)
   }
 
   return (
@@ -85,6 +107,7 @@ const AccountForm = () => {
         control={control}
         errors={errors}
         isLoading={isLoading}
+        accounts={accounts}
       />
       <City
         Controller={Controller}

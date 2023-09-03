@@ -3,20 +3,31 @@ import useTitle from '../../hooks/useTitle';
 import DataTablePage from "./Table/page"
 import { useQuery, useQueryClient } from 'react-query';
 import AccountForm from './components/AccountForm';
+import useAxiosPrivate from '../../hooks/useAxiosPrivate';
 
 const Accounts = () => {
   useTitle('Accounts');
+
+  // API Functions
+  const axiosPrivate = useAxiosPrivate()
+
+  // Get All Account Types
+  const getAllAccounts = async () => {
+    const response = await axiosPrivate.get('/account')
+    return response.data
+  }
+
   // React Queries
   const queryClient = useQueryClient()
 
-  const { isError, error, isLoading: isAccountsLoading, data: accounts } = useQuery('accounts', () => { })
+  const { isError, error, isLoading: isAccountsLoading, data: accounts } = useQuery('accounts', getAllAccounts)
 
   return (
     <>
       <h1 className='text-3xl font-bold'>Accounts</h1>
       <div className='px-4 py-6 my-5 bg-white rounded-lg shadow-md'>
         <h2 className='text-2xl font-bold'>Add new Account</h2>
-        <AccountForm />
+        <AccountForm accounts={accounts} />
       </div>
 
       <DataTablePage />

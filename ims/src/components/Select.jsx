@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactSelect from "react-select";
 
-const Select = ({ Controller, control, options, name, placeholder, optionsMessage, label, errors, isLoading, setTypeValue, ...props }) => {
+const Select = React.forwardRef(({ Controller, control, options, name, placeholder, optionsMessage, label, errors, isLoading, setTypeValue, ...props }) => {
   return (
     <section className='w-56'>
       <label
@@ -23,7 +23,7 @@ const Select = ({ Controller, control, options, name, placeholder, optionsMessag
             isDisabled={isLoading}
             placeholder={placeholder}
             noOptionsMessage={() => optionsMessage}
-            value={options.find(c => c.value === value)}
+            value={options.find(c => c.value === value) || null}
             onChange={e => {
               onChange(e.value);
               setTypeValue && setTypeValue(e.value);
@@ -44,6 +44,6 @@ const Select = ({ Controller, control, options, name, placeholder, optionsMessag
       {errors[name] && <p className='absolute text-sm text-red-600'>{errors[name].message}</p>}
     </section>
   )
-}
+})
 
 export default Select
