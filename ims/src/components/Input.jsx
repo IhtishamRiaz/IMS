@@ -1,23 +1,24 @@
 import React from 'react'
 import { cn } from '../lib/utils'
 
-const Input = ({ label, id, type, required, errors, register, disabled, fullWidth }) => {
-    return (
-        <section className='relative'>
-            <label
-                htmlFor={id}
-                className="block text-sm font-medium leading-3 text-gray-600"
-            >
-                {label}
-            </label>
-            <div className="mt-2">
-                <input
-                    id={id}
-                    type={type}
-                    autoCapitalize={id}
-                    disabled={disabled}
-                    {...register(id, { required })}
-                    className={cn(`
+const Input = ({ label, id, type, required, errors, register, disabled, fullWidth, ...props }) => {
+  return (
+    <section className='relative'>
+      <label
+        htmlFor={id}
+        className="block text-sm font-medium leading-3 text-gray-600"
+      >
+        {label}
+      </label>
+      <div className="mt-2">
+        <input
+          id={id}
+          type={type}
+          autoCapitalize={id}
+          disabled={disabled}
+          {...register(id, { required })}
+          {...props}
+          className={cn(`
                     form-input
                     block
                     w-56
@@ -35,15 +36,15 @@ const Input = ({ label, id, type, required, errors, register, disabled, fullWidt
                     focus:ring-brand-600
                     sm:text-sm
                     sm:leading-6`,
-                        errors[id] && "focus:ring-rose-500 ring-rose-500",
-                        disabled && "opacity-50 cursor-default",
-                        fullWidth && 'w-full'
-                    )}
-                />
-            </div>
-            {errors[id] && <p className='absolute text-sm text-red-600'>{errors[id].message}</p>}
-        </section >
-    )
+            errors[id] && "focus:ring-rose-500 ring-rose-500",
+            disabled && "opacity-50 cursor-default",
+            fullWidth && 'w-full'
+          )}
+        />
+      </div>
+      {errors[id] && <p className='absolute text-sm text-red-600'>{errors[id].message}</p>}
+    </section >
+  )
 }
 
 export default Input;

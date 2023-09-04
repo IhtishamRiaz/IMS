@@ -4,11 +4,11 @@ import { Button } from "../../../../components/ui/button"
 import { Input } from "../../../../components/ui/input"
 import { DataTableViewOptions } from "./data-table-view-options"
 
-import { priorities, statuses } from "../data/data"
+// import { priorities, statuses } from "../data/data"
 import { DataTableFacetedFilter } from "./data-table-faceted-filter"
 
 
-export function DataTableToolbar({ table }) {
+export function DataTableToolbar({ table, areas, cities, accountTypes, isSalesman }) {
 
   const isFiltered = table.getState().columnFilters.length > 0
 
@@ -35,14 +35,28 @@ export function DataTableToolbar({ table }) {
           <DataTableFacetedFilter
             column={table.getColumn("type")}
             title="type"
-            options={statuses}
+            options={accountTypes}
           />
         )}
         {table.getColumn("isSalesman") && (
           <DataTableFacetedFilter
             column={table.getColumn("isSalesman")}
             title="isSalesman"
-            options={priorities}
+            options={isSalesman}
+          />
+        )}
+        {table.getColumn("city") && (
+          <DataTableFacetedFilter
+            column={table.getColumn("city")}
+            title="city"
+            options={cities}
+          />
+        )}
+        {table.getColumn("area") && (
+          <DataTableFacetedFilter
+            column={table.getColumn("area")}
+            title="area"
+            options={cities}
           />
         )}
         {isFiltered && (

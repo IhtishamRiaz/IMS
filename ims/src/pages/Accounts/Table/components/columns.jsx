@@ -26,6 +26,7 @@ export const columns = [
     enableSorting: false,
     enableHiding: false,
   },
+  // ID
   {
     accessorKey: "id",
     header: ({ column }) => (
@@ -35,6 +36,7 @@ export const columns = [
     enableSorting: false,
     enableHiding: false,
   },
+  // Name
   {
     accessorKey: "name",
     header: ({ column }) => (
@@ -51,6 +53,7 @@ export const columns = [
       )
     },
   },
+  // Account Type
   {
     accessorKey: "type",
     header: ({ column }) => (
@@ -78,6 +81,7 @@ export const columns = [
       return value.includes(row.getValue(id))
     },
   },
+  // IsSalesman
   {
     accessorKey: "isSalesman",
     header: ({ column }) => (

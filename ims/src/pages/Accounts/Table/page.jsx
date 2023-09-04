@@ -1,6 +1,7 @@
 import { capitalizeEachFirstWord } from "../../../lib/utils"
-import { columns } from "./components/columns"
 import { DataTable } from "./components/data-table"
+
+// import DataTableColumns from "./components/columns"
 
 export default function DataTablePage({ accounts }) {
 
@@ -10,8 +11,8 @@ export default function DataTablePage({ accounts }) {
       name: capitalizeEachFirstWord(account.name),
       type: account.accountType.name,
       isSalesman: account.isSalesman,
-      city: capitalizeEachFirstWord(account.city.name),
-      area: capitalizeEachFirstWord(account.city.area.name),
+      city: account.city.name,
+      area: account.city.area.name,
       mobile: account.mobile,
     }
   })
@@ -50,7 +51,7 @@ export default function DataTablePage({ accounts }) {
   return (
     <>
       <div className="px-4 py-6 bg-white rounded-lg shadow-md">
-        <DataTable data={tasks || []} columns={columns} />
+        <DataTable data={tasks || []} areas={areas} cities={cities} accountTypes={accountTypes} isSalesman={isSalesman} />
       </div>
     </>
   );
