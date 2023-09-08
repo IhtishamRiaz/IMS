@@ -6,7 +6,7 @@ import { Plus as PlusCircle } from 'lucide-react'
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as Yup from "yup";
-import { useQuery, useMutation, useQueryClient } from 'react-query'
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import {
   Dialog,
   DialogContent,
@@ -49,11 +49,11 @@ const Area = ({ Controller: CityController, control: cityControl, errors: cityEr
   // React Queries
   const queryClient = useQueryClient()
 
-  const { isError, error, isLoading: isAreasLoading, data: areas } = useQuery('areas', getAllAreas)
+  const { isError, error, isLoading: isAreasLoading, data: areas } = useQuery(['areas'], getAllAreas)
 
   const addAreaMutation = useMutation(addArea, {
     onSuccess: () => {
-      queryClient.invalidateQueries('areas')
+      queryClient.invalidateQueries(['areas'])
     }
   })
 

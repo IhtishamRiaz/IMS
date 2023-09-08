@@ -15,7 +15,7 @@ import {
   DropdownMenuTrigger,
 } from "../../../../components/ui/dropdown-menu"
 
-import { labels } from "../data/data"
+// import { labels } from "../data/data"
 
 
 export function DataTableRowActions({ row }) {
@@ -38,7 +38,7 @@ export function DataTableRowActions({ row }) {
         <DropdownMenuItem>Make a copy</DropdownMenuItem>
         <DropdownMenuItem>Favorite</DropdownMenuItem>
         <DropdownMenuSeparator />
-        <DropdownMenuSub>
+        {/* <DropdownMenuSub>
           <DropdownMenuSubTrigger>Labels</DropdownMenuSubTrigger>
           <DropdownMenuSubContent>
             <DropdownMenuRadioGroup value={task.label}>
@@ -49,7 +49,7 @@ export function DataTableRowActions({ row }) {
               ))}
             </DropdownMenuRadioGroup>
           </DropdownMenuSubContent>
-        </DropdownMenuSub>
+        </DropdownMenuSub> */}
         <DropdownMenuSeparator />
         <DropdownMenuItem>
           Delete

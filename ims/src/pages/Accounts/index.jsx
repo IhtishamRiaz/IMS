@@ -1,7 +1,7 @@
 import React from 'react'
 import useTitle from '../../hooks/useTitle';
 import DataTablePage from "./Table/page"
-import { useQuery, useQueryClient } from 'react-query';
+import { useQuery } from '@tanstack/react-query';
 import AccountForm from './components/AccountForm';
 import useAxiosPrivate from '../../hooks/useAxiosPrivate';
 
@@ -14,13 +14,16 @@ const Accounts = () => {
   // Get All Account Types
   const getAllAccounts = async () => {
     const response = await axiosPrivate.get('/account')
+    console.log(response.data);
     return response.data
   }
 
   // React Queries
-  const queryClient = useQueryClient()
-
-  const { isError, error, isLoading: isAccountsLoading, data: accounts } = useQuery('accounts', getAllAccounts)
+  // const { isError, error, isLoading: isAccountsLoading, data: accounts } = useQuery(['accounts'], getAllAccounts)
+  const { data: accounts } = useQuery({
+    queryFn: getAllAccounts,
+    queryKey: ['accounts'],
+  })
 
   return (
     <>

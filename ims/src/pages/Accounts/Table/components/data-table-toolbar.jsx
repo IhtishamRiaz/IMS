@@ -56,7 +56,7 @@ export function DataTableToolbar({ table, areas, cities, accountTypes, isSalesma
           <DataTableFacetedFilter
             column={table.getColumn("area")}
             title="area"
-            options={cities}
+            options={areas}
           />
         )}
         {isFiltered && (

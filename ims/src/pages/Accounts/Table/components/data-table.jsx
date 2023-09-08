@@ -20,7 +20,6 @@ import {
 } from "../../../../components/ui/table"
 
 import { Checkbox } from "../../../../components/ui/checkbox"
-import { labels, priorities, statuses } from "../data/data"
 
 import { DataTableColumnHeader } from "./data-table-column-header"
 import { DataTableRowActions } from "./data-table-row-actions"
@@ -59,7 +58,7 @@ export function DataTable({ data, areas, cities, accountTypes, isSalesman }) {
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title="ID" />
       ),
-      cell: ({ row }) => <div className="w-[80px]">{row.getValue("id")}</div>,
+      cell: ({ row }) => <div>{row.getValue("id")}</div>,
       enableSorting: false,
       enableHiding: false,
     },

@@ -7,12 +7,12 @@ export default function DataTablePage({ accounts }) {
 
   const tasks = accounts?.map(account => {
     return {
-      id: account._id,
+      id: account.accountId,
       name: capitalizeEachFirstWord(account.name),
       type: account.accountType.name,
       isSalesman: account.isSalesman,
       city: account.city.name,
-      area: account.city.area.name,
+      area: account.city.area?.name || 'nil',
       mobile: account.mobile,
     }
   })
@@ -39,8 +39,8 @@ export default function DataTablePage({ accounts }) {
   // Extracting Areas
   const duplicateAreas = accounts?.map(account => {
     return {
-      value: account.city.area.name,
-      label: capitalizeEachFirstWord(account.city.area.name),
+      value: account.city.area?.name || 'nil',
+      label: capitalizeEachFirstWord(account.city.area?.name || 'nil'),
     }
   })
   const areas = [...new Map(duplicateAreas?.map(item => [item.value, item])).values()]

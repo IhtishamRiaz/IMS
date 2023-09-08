@@ -3,10 +3,11 @@ import ReactDOM from 'react-dom/client'
 import App from './App.jsx'
 import './assets/css/index.css'
 import { BrowserRouter } from 'react-router-dom'
-import { Toaster } from 'react-hot-toast';
-import ContextProvider from './context/ContextProvider.jsx';
-import { disableReactDevTools } from '@fvilers/disable-react-devtools';
-import { QueryClient, QueryClientProvider } from 'react-query';
+import { Toaster } from 'react-hot-toast'
+import ContextProvider from './context/ContextProvider.jsx'
+import { disableReactDevTools } from '@fvilers/disable-react-devtools'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 
 const queryClient = new QueryClient()
 
@@ -22,6 +23,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
           <Toaster position="bottom-left" />
           <App />
         </ContextProvider>
+        <ReactQueryDevtools initialIsOpen={false} />
       </QueryClientProvider>
     </BrowserRouter>
   </React.StrictMode>,

@@ -6,7 +6,7 @@ import * as Yup from "yup";
 import Button from '../../../components/Button';
 import City from './City'
 import AccountType from './AccountType';
-import { useMutation, useQueryClient } from 'react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import useAxiosPrivate from '../../../hooks/useAxiosPrivate';
 import toast from 'react-hot-toast'
 
@@ -35,19 +35,21 @@ const AccountForm = ({ accounts }) => {
   // React Queries
   const queryClient = useQueryClient()
 
-  const addAccountMutation = useMutation(addAccount, {
+  const { mutateAsync: addAccountMutation } = useMutation({
+    mutationFn: addAccount,
     onSuccess: () => {
-      queryClient.invalidateQueries('accounts')
+      queryClient.invalidateQueries(['accounts'])
     }
   })
+
   const updateAccountMutation = useMutation('addAccountFunc', {
     onSuccess: () => {
-      queryClient.invalidateQueries('accounts')
+      queryClient.invalidateQueries(['accounts'])
     }
   })
   const deleteAccountMutation = useMutation('addAccountFunc', {
     onSuccess: () => {
-      queryClient.invalidateQueries('accounts')
+      queryClient.invalidateQueries(['accounts'])
     }
   })
 
@@ -76,9 +78,9 @@ const AccountForm = ({ accounts }) => {
   });
 
   // On Submit
-  const mainOnSubmit = (data) => {
+  const mainOnSubmit = async (data) => {
     setIsLoading(true)
-    addAccountMutation.mutate(data)
+    await addAccountMutation(data)
   }
 
   return (

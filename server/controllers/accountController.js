@@ -2,6 +2,15 @@ import Account from '../models/accountModel.js'
 import AccountType from '../models/accountTypesModel.js'
 import { validateNewAccount, validateUpdateAccount } from '../validations/accountValidator.js'
 
+
+async function getNextAccountId() {
+  const maxAccount = await Account.findOne({}, {}, { sort: { accountId: -1 } });
+  if (maxAccount) {
+    return maxAccount.accountId + 1;
+  }
+  return 1;
+}
+
 // @desc Add new Account
 // @route POST /account
 // @access Private
@@ -12,6 +21,8 @@ const addAccount = async (req, res) => {
     if (error) {
       return res.status(400).json({ message: error.details[0].message });
     }
+
+    const nextAccountId = await getNextAccountId();
 
     const { name, mobile, accountType, city, salesRep, isSalesman } = req.body
     const lowerCaseName = name.toLowerCase()
@@ -24,6 +35,7 @@ const addAccount = async (req, res) => {
     const accountTypeRec = await AccountType.findById(accountType).lean().exec()
 
     const accountObject = {
+      accountId: nextAccountId,
       name: lowerCaseName,
       mobile,
       accountType,

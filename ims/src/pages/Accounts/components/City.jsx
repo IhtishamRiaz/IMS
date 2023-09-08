@@ -14,7 +14,7 @@ import {
   DialogTrigger
 } from "../../../components/ui/dialog"
 import Area from './Area'
-import { useMutation, useQuery, useQueryClient } from 'react-query'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import useAxiosPrivate from '../../../hooks/useAxiosPrivate'
 import toast from 'react-hot-toast'
 import { capitalizeFirstWord } from '../../../lib/utils'
@@ -49,11 +49,11 @@ const City = ({ Controller: MainController, control: mainControl, errors: mainEr
   // React Queries
   const queryClient = useQueryClient();
 
-  const { isError, error, isLoading: isCitiesLoading, data: cities } = useQuery('cities', getAllCities)
+  const { isError, error, isLoading: isCitiesLoading, data: cities } = useQuery(['cities'], getAllCities)
 
   const addCityMutation = useMutation(addCity, {
     onSuccess: () => {
-      queryClient.invalidateQueries('cities')
+      queryClient.invalidateQueries(['cities'])
     }
   })
 

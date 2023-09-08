@@ -6,7 +6,7 @@ import { useForm } from "react-hook-form"
 import { yupResolver } from "@hookform/resolvers/yup"
 import * as Yup from "yup"
 import Button from '../../../components/Button'
-import { useMutation, useQuery, useQueryClient } from 'react-query'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import {
   Dialog,
   DialogContent,
@@ -49,11 +49,11 @@ const AccountType = ({ Controller, control, errors: mainErrors, isLoading: mainI
 
   // React Queries
   const queryClient = useQueryClient()
-  const { isError, error, isLoading: isAccountTypesLoading, data: accountTypes } = useQuery('accountTypes', getAllAccountTypes)
+  const { isError, error, isLoading: isAccountTypesLoading, data: accountTypes } = useQuery(['accountTypes'], getAllAccountTypes)
 
   const addAccountTypeMutation = useMutation(addAccountType, {
     onSuccess: () => {
-      queryClient.invalidateQueries('accountTypes')
+      queryClient.invalidateQueries(['accountTypes'])
     }
   })
 
