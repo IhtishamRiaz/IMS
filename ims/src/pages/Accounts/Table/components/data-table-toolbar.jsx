@@ -8,7 +8,7 @@ import { DataTableViewOptions } from "./data-table-view-options"
 import { DataTableFacetedFilter } from "./data-table-faceted-filter"
 
 
-export function DataTableToolbar({ table, areas, cities, accountTypes, isSalesman }) {
+export function DataTableToolbar({ table, areas, cities, accountTypes, isSalesman, salesReps }) {
 
   const isFiltered = table.getState().columnFilters.length > 0
 
@@ -16,18 +16,18 @@ export function DataTableToolbar({ table, areas, cities, accountTypes, isSalesma
     <div className="flex items-center justify-between">
       <div className="flex items-center flex-1 space-x-2">
         <Input
-          placeholder="Filter tasks..."
-          value={(table.getColumn("name")?.getFilterValue()) ?? ""}
+          placeholder="Search by ID"
+          value={(table.getColumn("id")?.getFilterValue()) ?? ""}
           onChange={(event) =>
-            table.getColumn("name")?.setFilterValue(event.target.value)
+            table.getColumn("id")?.setFilterValue(event.target.value)
           }
           className="h-8 w-[150px] lg:w-[250px]"
         />
         <Input
-          placeholder="Filter tasks no..."
-          value={(table.getColumn("id")?.getFilterValue()) ?? ""}
+          placeholder="Search by Name"
+          value={(table.getColumn("name")?.getFilterValue()) ?? ""}
           onChange={(event) =>
-            table.getColumn("id")?.setFilterValue(event.target.value)
+            table.getColumn("name")?.setFilterValue(event.target.value)
           }
           className="h-8 w-[150px] lg:w-[250px]"
         />
@@ -43,6 +43,13 @@ export function DataTableToolbar({ table, areas, cities, accountTypes, isSalesma
             column={table.getColumn("isSalesman")}
             title="isSalesman"
             options={isSalesman}
+          />
+        )}
+        {table.getColumn("salesRep") && (
+          <DataTableFacetedFilter
+            column={table.getColumn("salesRep")}
+            title="salesRep"
+            options={salesReps}
           />
         )}
         {table.getColumn("city") && (

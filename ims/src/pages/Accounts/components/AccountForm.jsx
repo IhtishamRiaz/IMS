@@ -9,6 +9,7 @@ import AccountType from './AccountType';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import useAxiosPrivate from '../../../hooks/useAxiosPrivate';
 import toast from 'react-hot-toast'
+import useMyContext from '../../../hooks/useMyContext';
 
 
 const AccountForm = ({ accounts }) => {
@@ -35,23 +36,30 @@ const AccountForm = ({ accounts }) => {
   // React Queries
   const queryClient = useQueryClient()
 
-  const { mutateAsync: addAccountMutation } = useMutation({
+  const { mutate: addAccountMutation } = useMutation({
     mutationFn: addAccount,
     onSuccess: () => {
       queryClient.invalidateQueries(['accounts'])
+      queryClient.refetchQueries(['accounts'])
     }
   })
 
-  const updateAccountMutation = useMutation('addAccountFunc', {
+  const { mutate: updateAccountMutation } = useMutation('addAccountFunc', {
     onSuccess: () => {
       queryClient.invalidateQueries(['accounts'])
+      queryClient.refetchQueries(['accounts'])
     }
   })
+
   const deleteAccountMutation = useMutation('addAccountFunc', {
     onSuccess: () => {
       queryClient.invalidateQueries(['accounts'])
+      queryClient.refetchQueries(['accounts'])
     }
   })
+
+  const { selectedAccountsRow } = useMyContext()
+
 
   const [isLoading, setIsLoading] = useState(false);
 
@@ -78,9 +86,9 @@ const AccountForm = ({ accounts }) => {
   });
 
   // On Submit
-  const mainOnSubmit = async (data) => {
+  const mainOnSubmit = (data) => {
     setIsLoading(true)
-    await addAccountMutation(data)
+    addAccountMutation(data)
   }
 
   return (

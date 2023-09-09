@@ -49,11 +49,17 @@ const AccountType = ({ Controller, control, errors: mainErrors, isLoading: mainI
 
   // React Queries
   const queryClient = useQueryClient()
-  const { isError, error, isLoading: isAccountTypesLoading, data: accountTypes } = useQuery(['accountTypes'], getAllAccountTypes)
 
-  const addAccountTypeMutation = useMutation(addAccountType, {
+  const { data: accountTypes } = useQuery({
+    queryFn: getAllAccountTypes,
+    queryKey: ['accountTypes'],
+  })
+
+  const { mutate: addAccountTypeMutation } = useMutation({
+    mutationFn: addAccountType,
     onSuccess: () => {
       queryClient.invalidateQueries(['accountTypes'])
+      queryClient.refetchQueries(['accountTypes'])
     }
   })
 
@@ -102,7 +108,7 @@ const AccountType = ({ Controller, control, errors: mainErrors, isLoading: mainI
 
   // On Submit
   const accountTypeOnSubmit = (data) => {
-    addAccountTypeMutation.mutate(data)
+    addAccountTypeMutation(data)
     setIsLoading(true)
   };
 

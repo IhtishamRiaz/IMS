@@ -49,11 +49,16 @@ const Area = ({ Controller: CityController, control: cityControl, errors: cityEr
   // React Queries
   const queryClient = useQueryClient()
 
-  const { isError, error, isLoading: isAreasLoading, data: areas } = useQuery(['areas'], getAllAreas)
+  const { data: areas } = useQuery({
+    queryFn: getAllAreas,
+    queryKey: ['areas']
+  })
 
-  const addAreaMutation = useMutation(addArea, {
+  const { mutate: addAreaMutation } = useMutation({
+    mutationFn: addArea,
     onSuccess: () => {
       queryClient.invalidateQueries(['areas'])
+      queryClient.refetchQueries(['areas'])
     }
   })
 
@@ -72,7 +77,7 @@ const Area = ({ Controller: CityController, control: cityControl, errors: cityEr
   // On Submit
   const areaOnSubmit = (data) => {
     setIsLoading(true)
-    addAreaMutation.mutate(data)
+    addAreaMutation(data)
   };
 
   const areaOptions = areas?.map(area => {

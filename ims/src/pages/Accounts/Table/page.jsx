@@ -11,6 +11,7 @@ export default function DataTablePage({ accounts }) {
       name: capitalizeEachFirstWord(account.name),
       type: account.accountType.name,
       isSalesman: account.isSalesman,
+      salesRep: account.salesRep?.name || 'nil',
       city: account.city.name,
       area: account.city.area?.name || 'nil',
       mobile: account.mobile,
@@ -45,13 +46,22 @@ export default function DataTablePage({ accounts }) {
   })
   const areas = [...new Map(duplicateAreas?.map(item => [item.value, item])).values()]
 
+  // Extracting SalesReps
+  const duplicateSalesReps = accounts?.map(account => {
+    return {
+      value: account.salesRep?.name || 'nil',
+      label: capitalizeEachFirstWord(account.salesRep?.name || 'nil'),
+    }
+  })
+  const salesReps = [...new Map(duplicateSalesReps?.map(item => [item.value, item])).values()]
+
   // isSalesman Boolean Filters
   const isSalesman = [{ label: "Yes", value: true }, { label: "No", value: false }]
 
   return (
     <>
       <div className="px-4 py-6 bg-white rounded-lg shadow-md">
-        <DataTable data={tasks || []} areas={areas} cities={cities} accountTypes={accountTypes} isSalesman={isSalesman} />
+        <DataTable data={tasks || []} areas={areas} cities={cities} accountTypes={accountTypes} isSalesman={isSalesman} salesReps={salesReps} />
       </div>
     </>
   );

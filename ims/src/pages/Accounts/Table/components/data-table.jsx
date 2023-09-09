@@ -25,9 +25,10 @@ import { DataTableColumnHeader } from "./data-table-column-header"
 import { DataTableRowActions } from "./data-table-row-actions"
 import { DataTablePagination } from "./data-table-pagination"
 import { DataTableToolbar } from "./data-table-toolbar"
+import useMyContext from "../../../../hooks/useMyContext"
 
 
-export function DataTable({ data, areas, cities, accountTypes, isSalesman }) {
+export function DataTable({ data, areas, cities, accountTypes, isSalesman, salesReps }) {
 
   // ========================== Columns ==========================
   const columns = [
@@ -132,6 +133,31 @@ export function DataTable({ data, areas, cities, accountTypes, isSalesman }) {
         return value.includes(row.getValue(id))
       },
     },
+    // Sales Rep
+    {
+      accessorKey: "salesRep",
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title="Sales Rep" />
+      ),
+      cell: ({ row }) => {
+        const salesRep = salesReps.find(
+          (salesRep) => salesRep.value === row.getValue("salesRep")
+        )
+
+        if (!salesRep) {
+          return null
+        }
+
+        return (
+          <div>
+            <span>{salesRep.label}</span>
+          </div>
+        )
+      },
+      filterFn: (row, id, value) => {
+        return value.includes(row.getValue(id))
+      },
+    },
     // City
     {
       accessorKey: "city",
@@ -209,10 +235,14 @@ export function DataTable({ data, areas, cities, accountTypes, isSalesman }) {
 
 
   // ========================== Data Table ==========================
+
+  const { setSelectedAccountsRow } = useMyContext();
+
   const [rowSelection, setRowSelection] = React.useState({})
   const [columnVisibility, setColumnVisibility] = React.useState({})
   const [columnFilters, setColumnFilters] = React.useState([])
   const [sorting, setSorting] = React.useState([])
+  setSelectedAccountsRow(rowSelection)
 
   const table = useReactTable({
     data,
@@ -238,7 +268,7 @@ export function DataTable({ data, areas, cities, accountTypes, isSalesman }) {
 
   return (
     <div className="space-y-4">
-      <DataTableToolbar table={table} areas={areas} cities={cities} accountTypes={accountTypes} isSalesman={isSalesman} />
+      <DataTableToolbar table={table} areas={areas} cities={cities} accountTypes={accountTypes} isSalesman={isSalesman} salesReps={salesReps} />
       <div className="border rounded-md">
         <Table>
           <TableHeader>

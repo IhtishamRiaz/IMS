@@ -49,11 +49,16 @@ const City = ({ Controller: MainController, control: mainControl, errors: mainEr
   // React Queries
   const queryClient = useQueryClient();
 
-  const { isError, error, isLoading: isCitiesLoading, data: cities } = useQuery(['cities'], getAllCities)
+  const { data: cities } = useQuery({
+    queryFn: getAllCities,
+    queryKey: ['cities'],
+  })
 
-  const addCityMutation = useMutation(addCity, {
+  const { mutate: addCityMutation } = useMutation({
+    mutationFn: addCity,
     onSuccess: () => {
       queryClient.invalidateQueries(['cities'])
+      queryClient.refetchQueries(['cities'])
     }
   })
 
@@ -77,7 +82,7 @@ const City = ({ Controller: MainController, control: mainControl, errors: mainEr
   const cityOnSubmit = (data) => {
     console.log("🚀 ~ file: Address.jsx:35 ~ cityOnSubmit ~ data:", data)
     setIsLoading(true)
-    addCityMutation.mutate(data)
+    addCityMutation(data)
   };
 
   const cityOptions = cities?.map(city => {
