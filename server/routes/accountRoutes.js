@@ -9,6 +9,8 @@ router.route('/')
   .post(addAccount)
   .get(getAllAccounts)
   .patch(updateAccount)
+
+router.route('/:id')
   .delete(deleteAccount)
 
 export default router

@@ -72,9 +72,9 @@ const getAllAccounts = async (req, res) => {
   try {
     const accounts = await Account.find({}).populate('accountType').populate({ path: 'city', populate: { path: 'area' } }).populate('salesRep').lean().exec()
 
-    if (!accounts || accounts.length === 0) {
-      return res.status(400).json({ message: 'No Account Found!' })
-    }
+    // if (!accounts || accounts.length === 0) {
+    //   return res.status(400).json({ message: 'No Account Found!' })
+    // }
 
     res.json(accounts);
   } catch (error) {
@@ -127,7 +127,7 @@ const updateAccount = async (req, res) => {
 // @access Private
 const deleteAccount = async (req, res) => {
   try {
-    const { id } = req.body
+    const id = req.params.id
 
     const account = await Account.findById(id)
 

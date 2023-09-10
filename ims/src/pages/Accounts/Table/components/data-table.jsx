@@ -25,7 +25,7 @@ import { DataTableColumnHeader } from "./data-table-column-header"
 import { DataTableRowActions } from "./data-table-row-actions"
 import { DataTablePagination } from "./data-table-pagination"
 import { DataTableToolbar } from "./data-table-toolbar"
-import useMyContext from "../../../../hooks/useMyContext"
+import { useAccountStore } from "../../store/accountStore"
 
 
 export function DataTable({ data, areas, cities, accountTypes, isSalesman, salesReps }) {
@@ -236,13 +236,13 @@ export function DataTable({ data, areas, cities, accountTypes, isSalesman, sales
 
   // ========================== Data Table ==========================
 
-  const { setSelectedAccountsRow } = useMyContext();
-
   const [rowSelection, setRowSelection] = React.useState({})
   const [columnVisibility, setColumnVisibility] = React.useState({})
   const [columnFilters, setColumnFilters] = React.useState([])
   const [sorting, setSorting] = React.useState([])
-  setSelectedAccountsRow(rowSelection)
+
+  const setSelectedRow = useAccountStore((state) => state.setSelectedRow)
+  setSelectedRow(Object.keys(rowSelection)[0])
 
   const table = useReactTable({
     data,

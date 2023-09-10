@@ -4,6 +4,7 @@ import DataTablePage from "./Table/page"
 import { useQuery } from '@tanstack/react-query';
 import AccountForm from './components/AccountForm';
 import useAxiosPrivate from '../../hooks/useAxiosPrivate';
+import { useAccountStore } from './store/accountStore';
 
 const Accounts = () => {
   useTitle('Accounts');
@@ -14,6 +15,7 @@ const Accounts = () => {
   // Get All Account Types
   const getAllAccounts = async () => {
     const response = await axiosPrivate.get('/account')
+    console.log(response.data);
     return response.data
   }
 
@@ -22,6 +24,8 @@ const Accounts = () => {
     queryFn: getAllAccounts,
     queryKey: ['accounts'],
   })
+  const setAccounts = useAccountStore((state) => state.setAccounts);
+  setAccounts(accounts)
 
   return (
     <>

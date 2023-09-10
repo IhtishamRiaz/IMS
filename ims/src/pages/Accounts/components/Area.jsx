@@ -87,27 +87,6 @@ const Area = ({ Controller: CityController, control: cityControl, errors: cityEr
     }
   })
 
-  const sampleData = [
-    {
-      name: 'Area 1',
-      city: 'City 1'
-    },
-    {
-      name: 'Area 2'
-    },
-    {
-      name: 'Area 3',
-      city: 'City 3'
-    },
-  ]
-  const resultData = sampleData?.map(data => {
-    return {
-      names: data.name,
-      cities: data.city || 'nil'
-    }
-  })
-  console.log("🚀 ~ file: Area.jsx:104 ~ resultData ~ resultData:", resultData)
-
   return (
     <>
       <Dialog>

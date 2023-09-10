@@ -9,7 +9,6 @@ import AccountType from './AccountType';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import useAxiosPrivate from '../../../hooks/useAxiosPrivate';
 import toast from 'react-hot-toast'
-import useMyContext from '../../../hooks/useMyContext';
 
 
 const AccountForm = ({ accounts }) => {
@@ -57,8 +56,6 @@ const AccountForm = ({ accounts }) => {
       queryClient.refetchQueries(['accounts'])
     }
   })
-
-  const { selectedAccountsRow } = useMyContext()
 
 
   const [isLoading, setIsLoading] = useState(false);
