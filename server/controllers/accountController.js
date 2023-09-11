@@ -70,7 +70,14 @@ const addAccount = async (req, res) => {
 // @access Private
 const getAllAccounts = async (req, res) => {
   try {
-    const accounts = await Account.find({}).populate('accountType').populate({ path: 'city', populate: { path: 'area' } }).populate('salesRep').lean().exec()
+    const accounts = await
+      Account
+        .find({})
+        .populate('accountType')
+        .populate({ path: 'city', populate: { path: 'area' } })
+        .populate('salesRep')
+        .lean()
+        .exec()
 
     // if (!accounts || accounts.length === 0) {
     //   return res.status(400).json({ message: 'No Account Found!' })
@@ -93,20 +100,32 @@ const updateAccount = async (req, res) => {
       return res.status(400).json({ message: error.details[0].message });
     }
 
-    const { id, name, mobile, accountType, city } = req.body
-    const lowerCaseName = name?.toLowerCase()
+    const { id, name, mobile, accountType, city, salesRep, isSalesman } = req.body
+    const lowerCaseName = name.toLowerCase()
 
-    const accountExists = await Account.findOne({ name: lowerCaseName }).lean().exec()
+    const accountExists = await Account.findById(id).lean().exec()
 
-    if (accountExists) {
-      return res.status(409).json({ message: 'Account Already Exists!' })
+    if (!accountExists) {
+      return res.status(409).json({ message: 'Invalid Id' })
     }
+
+    const accountTypeRec = await AccountType.findById(accountType).lean().exec()
 
     const accountObject = {
       name: lowerCaseName,
       mobile,
       accountType,
       city
+    }
+
+    if (isSalesman && accountTypeRec.name === 'staff') {
+      accountObject.isSalesman = isSalesman
+    } else {
+      accountObject.isSalesman = false
+    }
+
+    if (accountTypeRec.name === 'customer' && salesRep) {
+      accountObject.salesRep = salesRep
     }
 
     const account = await Account.findByIdAndUpdate(id, accountObject, { new: true })

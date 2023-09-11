@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect } from 'react'
 import useTitle from '../../hooks/useTitle';
 import DataTablePage from "./Table/page"
 import { useQuery } from '@tanstack/react-query';
@@ -8,6 +8,7 @@ import { useAccountStore } from './store/accountStore';
 
 const Accounts = () => {
   useTitle('Accounts');
+  const setAccounts = useAccountStore((state) => state.setAccounts);
 
   // API Functions
   const axiosPrivate = useAxiosPrivate()
@@ -15,7 +16,6 @@ const Accounts = () => {
   // Get All Account Types
   const getAllAccounts = async () => {
     const response = await axiosPrivate.get('/account')
-    console.log(response.data);
     return response.data
   }
 
@@ -24,14 +24,17 @@ const Accounts = () => {
     queryFn: getAllAccounts,
     queryKey: ['accounts'],
   })
-  const setAccounts = useAccountStore((state) => state.setAccounts);
-  setAccounts(accounts)
+
+
+
+  useEffect(() => {
+    setAccounts(accounts)
+  }, [accounts])
 
   return (
     <>
       <h1 className='text-3xl font-bold'>Accounts</h1>
       <div className='px-4 py-6 my-5 bg-white rounded-lg shadow-md'>
-        <h2 className='text-2xl font-bold'>Add new Account</h2>
         <AccountForm accounts={accounts} />
       </div>
 

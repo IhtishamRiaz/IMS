@@ -14,6 +14,7 @@ const validateNewAccount = (data) => {
 
 const validateUpdateAccount = (data) => {
   const JoiSchema = Joi.object({
+    id: Joi.string().required().label('id'),
     name: Joi.string().label('Name'),
     mobile: Joi.string().label('Mobile'),
     accountType: Joi.string().label('Account Type'),

@@ -18,9 +18,8 @@ import { capitalizeFirstWord } from '../../../lib/utils'
 import useAxiosPrivate from '../../../hooks/useAxiosPrivate'
 import toast from 'react-hot-toast'
 
-const AccountType = ({ Controller, control, errors: mainErrors, isLoading: mainIsLoading, accounts }) => {
+const AccountType = ({ Controller, control, errors: mainErrors, isLoading: mainIsLoading, accounts, typeValue, setTypeValue }) => {
   const [isLoading, setIsLoading] = useState(false);
-  const [typeValue, setTypeValue] = useState('');
 
   // API Functions
   const axiosPrivate = useAxiosPrivate()
@@ -64,7 +63,7 @@ const AccountType = ({ Controller, control, errors: mainErrors, isLoading: mainI
   })
 
   // Select Options
-  const accountTypeOptions = accountTypes?.map(type => {
+  const accountTypeOptions = (accountTypes || [])?.map(type => {
     return {
       value: type._id,
       label: capitalizeFirstWord(type.name)

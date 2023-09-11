@@ -8,7 +8,7 @@ import { addAccount, getAllAccounts, deleteAccount, updateAccount } from '../con
 router.route('/')
   .post(addAccount)
   .get(getAllAccounts)
-  .patch(updateAccount)
+  .put(updateAccount)
 
 router.route('/:id')
   .delete(deleteAccount)

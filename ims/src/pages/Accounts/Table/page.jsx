@@ -7,6 +7,7 @@ export default function DataTablePage({ accounts }) {
 
   const tasks = accounts?.map(account => {
     return {
+      mainId: account._id,
       id: account.accountId,
       name: capitalizeEachFirstWord(account.name),
       type: account.accountType.name,

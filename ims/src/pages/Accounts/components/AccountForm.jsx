@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Input from '../../../components/Input'
 import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -9,9 +9,36 @@ import AccountType from './AccountType';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import useAxiosPrivate from '../../../hooks/useAxiosPrivate';
 import toast from 'react-hot-toast'
+import { useAccountStore } from '../store/accountStore';
 
 
 const AccountForm = ({ accounts }) => {
+  const [isLoading, setIsLoading] = useState(false)
+  const [typeValue, setTypeValue] = useState('')
+
+  const isEdit = useAccountStore((state) => state.isEdit)
+  const setIsEdit = useAccountStore((state) => state.setIsEdit)
+  const accountToEdit = useAccountStore((state) => state.accountToEdit)
+  const setAccountToEdit = useAccountStore((state) => state.setAccountToEdit)
+
+  let formDefaultValues = {
+    name: '',
+    accountType: '',
+    mobile: '',
+    city: '',
+    salesRep: '',
+    isSalesman: false,
+  }
+  if (isEdit) {
+    formDefaultValues = {
+      name: accountToEdit?.name,
+      accountType: accountToEdit?.accountType?._id,
+      mobile: accountToEdit?.mobile,
+      city: accountToEdit?.city?._id,
+      salesRep: accountToEdit?.salesRep?._id,
+      isSalesman: accountToEdit?.isSalesman,
+    }
+  }
 
   // API Functions
   const axiosPrivate = useAxiosPrivate()
@@ -31,6 +58,24 @@ const AccountForm = ({ accounts }) => {
         reset()
       })
   }
+  // Edit Account
+  const editAccount = async (data) => {
+    axiosPrivate
+      .put('/account/', data)
+      .then((res) => {
+        toast.success(res?.data?.message)
+      })
+      .catch((error) => {
+        toast.error(error?.response?.data?.message)
+      })
+      .finally(() => {
+        setIsLoading(false)
+        setIsEdit(false)
+        setAccountToEdit(null)
+        setTypeValue('')
+        reset(formDefaultValues)
+      })
+  }
 
   // React Queries
   const queryClient = useQueryClient()
@@ -43,22 +88,13 @@ const AccountForm = ({ accounts }) => {
     }
   })
 
-  const { mutate: updateAccountMutation } = useMutation('addAccountFunc', {
+  const { mutate: updateAccountMutation } = useMutation({
+    mutationFn: editAccount,
     onSuccess: () => {
       queryClient.invalidateQueries(['accounts'])
       queryClient.refetchQueries(['accounts'])
     }
   })
-
-  const deleteAccountMutation = useMutation('addAccountFunc', {
-    onSuccess: () => {
-      queryClient.invalidateQueries(['accounts'])
-      queryClient.refetchQueries(['accounts'])
-    }
-  })
-
-
-  const [isLoading, setIsLoading] = useState(false);
 
   // Yup Validation Schema
   const accountSchema = Yup.object({
@@ -72,24 +108,33 @@ const AccountForm = ({ accounts }) => {
 
   const { register, handleSubmit: mainHandleSubmit, control, formState: { errors }, reset } = useForm({
     resolver: yupResolver(accountSchema),
-    defaultValues: {
-      name: '',
-      accountType: '',
-      mobile: '',
-      city: '',
-      salesRep: '',
-      isSalesman: false,
-    }
+    defaultValues: formDefaultValues
   });
 
   // On Submit
   const mainOnSubmit = (data) => {
     setIsLoading(true)
-    addAccountMutation(data)
+
+    if (!isEdit) {
+      addAccountMutation(data)
+    } else {
+      data.id = accountToEdit?._id
+      updateAccountMutation(data)
+    }
   }
+
+  useEffect(() => {
+    if (!isEdit || !accountToEdit) return
+    setTypeValue(accountToEdit?.accountType?._id)
+    reset(formDefaultValues)
+  }, [isEdit, accountToEdit])
 
   return (
     <>
+      <h2 className='text-2xl font-bold'>
+        {isEdit ? 'Edit Account' : 'Add new Account'}
+      </h2>
+
       <form onSubmit={mainHandleSubmit(mainOnSubmit)} id='main-form' className='mt-4 space-y-3'></form>
       <Input
         id='name'
@@ -115,6 +160,8 @@ const AccountForm = ({ accounts }) => {
         errors={errors}
         isLoading={isLoading}
         accounts={accounts}
+        typeValue={typeValue}
+        setTypeValue={setTypeValue}
       />
       <City
         Controller={Controller}
@@ -127,7 +174,9 @@ const AccountForm = ({ accounts }) => {
         isLoading={isLoading}
         form={'main-form'}
       >
-        Add Account
+        {
+          isEdit ? 'Edit Account' : 'Add Account'
+        }
       </Button>
     </>
   )

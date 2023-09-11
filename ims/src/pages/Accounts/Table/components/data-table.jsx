@@ -241,9 +241,6 @@ export function DataTable({ data, areas, cities, accountTypes, isSalesman, sales
   const [columnFilters, setColumnFilters] = React.useState([])
   const [sorting, setSorting] = React.useState([])
 
-  const setSelectedRow = useAccountStore((state) => state.setSelectedRow)
-  setSelectedRow(Object.keys(rowSelection)[0])
-
   const table = useReactTable({
     data,
     columns,
