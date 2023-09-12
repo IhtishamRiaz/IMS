@@ -21,11 +21,10 @@ import {
 
 import { Checkbox } from "../../../../components/ui/checkbox"
 
-import { DataTableColumnHeader } from "./data-table-column-header"
+import { DataTableColumnHeader } from "../../../../components/table/data-table-column-header"
 import { DataTableRowActions } from "./data-table-row-actions"
-import { DataTablePagination } from "./data-table-pagination"
+import { DataTablePagination } from "../../../../components/table/data-table-pagination"
 import { DataTableToolbar } from "./data-table-toolbar"
-import { useAccountStore } from "../../store/accountStore"
 
 
 export function DataTable({ data, areas, cities, accountTypes, isSalesman, salesReps }) {

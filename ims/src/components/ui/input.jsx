@@ -10,26 +10,27 @@ const Input = React.forwardRef(
         type={type}
         className={cn(
           `
-           flex
-           h-10
-           w-full
-           rounded-md
-           border
-           border-gray-200
-           bg-white 
-           px-3 
-           py-2 
-           text-sm
-           ring-offset-white 
            file:border-0 
            file:bg-transparent 
            file:text-sm 
            file:font-medium
-           placeholder:text-gray-500 
-           focus-visible:outline-none 
-           focus-visible:ring-2
-           focus-visible:ring-gray-950 
-           focus-visible:ring-offset-2 
+           form-input
+           block
+           w-56
+           rounded-md
+           border-0
+           py-1.5
+           text-gray-900
+           shadow-sm
+           ring-1
+           ring-inset
+           ring-gray-300
+           placeholder:text-gray-400
+           focus:ring-2
+           focus:ring-inset
+           focus:ring-brand-600
+           sm:text-sm
+           sm:leading-6
            disabled:cursor-not-allowed 
            disabled:opacity-50 
            dark:border-gray-800 

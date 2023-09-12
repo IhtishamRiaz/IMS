@@ -79,9 +79,9 @@ const getAllAccounts = async (req, res) => {
         .lean()
         .exec()
 
-    // if (!accounts || accounts.length === 0) {
-    //   return res.status(400).json({ message: 'No Account Found!' })
-    // }
+    if (!accounts || accounts.length === 0) {
+      return res.status(400).json({ message: 'No Account Found!' })
+    }
 
     res.json(accounts);
   } catch (error) {
@@ -126,6 +126,8 @@ const updateAccount = async (req, res) => {
 
     if (accountTypeRec.name === 'customer' && salesRep) {
       accountObject.salesRep = salesRep
+    } else {
+      accountObject.$unset = { salesRep: 1 };
     }
 
     const account = await Account.findByIdAndUpdate(id, accountObject, { new: true })

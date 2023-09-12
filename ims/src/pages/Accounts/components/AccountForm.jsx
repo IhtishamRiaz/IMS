@@ -21,6 +21,15 @@ const AccountForm = ({ accounts }) => {
   const accountToEdit = useAccountStore((state) => state.accountToEdit)
   const setAccountToEdit = useAccountStore((state) => state.setAccountToEdit)
 
+  const completeResetValues = {
+    name: '',
+    accountType: '',
+    mobile: '',
+    city: '',
+    salesRep: '',
+    isSalesman: false,
+  }
+
   let formDefaultValues = {
     name: '',
     accountType: '',
@@ -55,9 +64,10 @@ const AccountForm = ({ accounts }) => {
       })
       .finally(() => {
         setIsLoading(false)
-        reset()
+        reset(completeResetValues)
       })
   }
+
   // Edit Account
   const editAccount = async (data) => {
     axiosPrivate
@@ -73,7 +83,7 @@ const AccountForm = ({ accounts }) => {
         setIsEdit(false)
         setAccountToEdit(null)
         setTypeValue('')
-        reset(formDefaultValues)
+        reset(completeResetValues)
       })
   }
 
@@ -129,6 +139,13 @@ const AccountForm = ({ accounts }) => {
     reset(formDefaultValues)
   }, [isEdit, accountToEdit])
 
+  const resetForm = () => {
+    setIsEdit(false)
+    setAccountToEdit(null)
+    setTypeValue('')
+    reset(completeResetValues)
+  }
+
   return (
     <>
       <h2 className='text-2xl font-bold'>
@@ -169,15 +186,20 @@ const AccountForm = ({ accounts }) => {
         errors={errors}
         isLoading={isLoading}
       />
-      <Button
-        type='submit'
-        isLoading={isLoading}
-        form={'main-form'}
-      >
+      <div>
+        <Button
+          type='submit'
+          isLoading={isLoading}
+          form={'main-form'}
+        >
+          {
+            isEdit ? 'Edit Account' : 'Add Account'
+          }
+        </Button>
         {
-          isEdit ? 'Edit Account' : 'Add Account'
+          isEdit && <Button danger onClick={resetForm} >Exit Edit</Button>
         }
-      </Button>
+      </div>
     </>
   )
 }

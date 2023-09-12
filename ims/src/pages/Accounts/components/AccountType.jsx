@@ -122,10 +122,8 @@ const AccountType = ({ Controller, control, errors: mainErrors, isLoading: mainI
       <Dialog>
         <div className='relative'>
           <div className='absolute cursor-pointer read-only: top-7 left-60 text-brand-700'>
-            <DialogTrigger>
-              <Button ghost>
-                <PlusCircle size={20} />
-              </Button>
+            <DialogTrigger className='p-1 transition-colors rounded-md hover:bg-brand-200 bg-brand-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-600'>
+              <PlusCircle size={20} />
             </DialogTrigger>
           </div>
 

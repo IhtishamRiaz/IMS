@@ -2,10 +2,10 @@ import { Cross2Icon } from "@radix-ui/react-icons"
 
 import { Button } from "../../../../components/ui/button"
 import { Input } from "../../../../components/ui/input"
-import { DataTableViewOptions } from "./data-table-view-options"
+import { DataTableViewOptions } from "../../../../components/table/data-table-view-options"
 
 // import { priorities, statuses } from "../data/data"
-import { DataTableFacetedFilter } from "./data-table-faceted-filter"
+import { DataTableFacetedFilter } from "../../../../components/table/data-table-faceted-filter"
 
 
 export function DataTableToolbar({ table, areas, cities, accountTypes, isSalesman, salesReps }) {

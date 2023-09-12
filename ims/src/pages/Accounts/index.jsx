@@ -16,6 +16,7 @@ const Accounts = () => {
   // Get All Account Types
   const getAllAccounts = async () => {
     const response = await axiosPrivate.get('/account')
+    console.log(response.data);
     return response.data
   }
 
@@ -24,8 +25,6 @@ const Accounts = () => {
     queryFn: getAllAccounts,
     queryKey: ['accounts'],
   })
-
-
 
   useEffect(() => {
     setAccounts(accounts)
