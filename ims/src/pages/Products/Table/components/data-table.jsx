@@ -27,7 +27,7 @@ import { DataTablePagination } from "../../../../components/table/data-table-pag
 import { DataTableToolbar } from "./data-table-toolbar"
 
 
-export function DataTable({ data, areas, cities, accountTypes, isSalesman, salesReps }) {
+export function DataTable({ data, categories }) {
 
   // ========================== Columns ==========================
   const columns = [
@@ -79,77 +79,24 @@ export function DataTable({ data, areas, cities, accountTypes, isSalesman, sales
         )
       },
     },
-    // Account Type
+    // Category
     {
-      accessorKey: "type",
+      accessorKey: "category",
       header: ({ column }) => (
-        <DataTableColumnHeader column={column} title="Type" />
+        <DataTableColumnHeader column={column} title="Category" />
       ),
       cell: ({ row }) => {
-        const type = accountTypes.find(
-          (type) => type.value === row.getValue("type")
+        const category = categories.find(
+          (category) => category.value === row.getValue("category")
         )
 
-        if (!type) {
-          return null
-        }
-
-        return (
-          <div className="flex w-[100px] items-center">
-            {type.icon && (
-              <type.icon className="w-4 h-4 mr-2 text-muted-foreground" />
-            )}
-            <span>{type.label}</span>
-          </div>
-        )
-      },
-      filterFn: (row, id, value) => {
-        return value.includes(row.getValue(id))
-      },
-    },
-    // IsSalesman
-    {
-      accessorKey: "isSalesman",
-      header: ({ column }) => (
-        <DataTableColumnHeader column={column} title="Is Salesman" />
-      ),
-      cell: ({ row }) => {
-        const salesman = isSalesman.find(
-          (salesman) => salesman.value === row.getValue("isSalesman")
-        )
-
-        if (!salesman) {
-          return null
-        }
-
-        return (
-          <div className="truncate">
-            <span>{salesman.label}</span>
-          </div>
-        )
-      },
-      filterFn: (row, id, value) => {
-        return value.includes(row.getValue(id))
-      },
-    },
-    // Sales Rep
-    {
-      accessorKey: "salesRep",
-      header: ({ column }) => (
-        <DataTableColumnHeader column={column} title="Sales Rep" />
-      ),
-      cell: ({ row }) => {
-        const salesRep = salesReps.find(
-          (salesRep) => salesRep.value === row.getValue("salesRep")
-        )
-
-        if (!salesRep) {
+        if (!category) {
           return null
         }
 
         return (
           <div>
-            <span>{salesRep.label}</span>
+            <span>{category.label}</span>
           </div>
         )
       },
@@ -157,24 +104,17 @@ export function DataTable({ data, areas, cities, accountTypes, isSalesman, sales
         return value.includes(row.getValue(id))
       },
     },
-    // City
+    // Min
     {
-      accessorKey: "city",
+      accessorKey: "min",
       header: ({ column }) => (
-        <DataTableColumnHeader column={column} title="City" />
+        <DataTableColumnHeader column={column} title="Min" />
       ),
       cell: ({ row }) => {
-        const city = cities.find(
-          (city) => city.value === row.getValue("city")
-        )
-
-        if (!city) {
-          return null
-        }
 
         return (
           <div className="truncate">
-            <span>{city.label}</span>
+            <span>{row.getValue("min")}</span>
           </div>
         )
       },
@@ -182,24 +122,17 @@ export function DataTable({ data, areas, cities, accountTypes, isSalesman, sales
         return value.includes(row.getValue(id))
       },
     },
-    // Area
+    // Maz
     {
-      accessorKey: "area",
+      accessorKey: "max",
       header: ({ column }) => (
-        <DataTableColumnHeader column={column} title="Area" />
+        <DataTableColumnHeader column={column} title="Max" />
       ),
       cell: ({ row }) => {
-        const area = areas.find(
-          (area) => area.value === row.getValue("area")
-        )
-
-        if (!area) {
-          return null
-        }
 
         return (
           <div className="truncate">
-            <span>{area.label}</span>
+            <span>{row.getValue("max")}</span>
           </div>
         )
       },
@@ -207,18 +140,18 @@ export function DataTable({ data, areas, cities, accountTypes, isSalesman, sales
         return value.includes(row.getValue(id))
       },
     },
-    // Mobile
+    // Price
     {
-      accessorKey: "mobile",
+      accessorKey: "price",
       header: ({ column }) => (
-        <DataTableColumnHeader column={column} title="Mobile" />
+        <DataTableColumnHeader column={column} title="Price" />
       ),
       cell: ({ row }) => {
 
         return (
           <div>
             <span className="truncate">
-              {row.getValue("mobile")}
+              {row.getValue("price")}
             </span>
           </div>
         )
@@ -230,7 +163,6 @@ export function DataTable({ data, areas, cities, accountTypes, isSalesman, sales
       cell: ({ row }) => <DataTableRowActions row={row} />,
     },
   ]
-
 
 
   // ========================== Data Table ==========================
@@ -264,7 +196,7 @@ export function DataTable({ data, areas, cities, accountTypes, isSalesman, sales
 
   return (
     <div className="space-y-4">
-      <DataTableToolbar table={table} areas={areas} cities={cities} accountTypes={accountTypes} isSalesman={isSalesman} salesReps={salesReps} />
+      <DataTableToolbar table={table} categories={categories} />
       <div className="border rounded-md">
         <Table>
           <TableHeader>

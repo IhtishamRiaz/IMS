@@ -8,7 +8,7 @@ import { DataTableViewOptions } from "../../../../components/table/data-table-vi
 import { DataTableFacetedFilter } from "../../../../components/table/data-table-faceted-filter"
 
 
-export function DataTableToolbar({ table, areas, cities, accountTypes, isSalesman, salesReps }) {
+export function DataTableToolbar({ table, categories }) {
 
   const isFiltered = table.getState().columnFilters.length > 0
 
@@ -31,39 +31,11 @@ export function DataTableToolbar({ table, areas, cities, accountTypes, isSalesma
           }
           className="h-8 w-[150px] lg:w-[250px]"
         />
-        {table.getColumn("type") && (
+        {table.getColumn("category") && (
           <DataTableFacetedFilter
-            column={table.getColumn("type")}
-            title="type"
-            options={accountTypes}
-          />
-        )}
-        {table.getColumn("isSalesman") && (
-          <DataTableFacetedFilter
-            column={table.getColumn("isSalesman")}
-            title="isSalesman"
-            options={isSalesman}
-          />
-        )}
-        {table.getColumn("salesRep") && (
-          <DataTableFacetedFilter
-            column={table.getColumn("salesRep")}
-            title="salesRep"
-            options={salesReps}
-          />
-        )}
-        {table.getColumn("city") && (
-          <DataTableFacetedFilter
-            column={table.getColumn("city")}
-            title="city"
-            options={cities}
-          />
-        )}
-        {table.getColumn("area") && (
-          <DataTableFacetedFilter
-            column={table.getColumn("area")}
-            title="area"
-            options={areas}
+            column={table.getColumn("category")}
+            title="category"
+            options={categories}
           />
         )}
         {isFiltered && (

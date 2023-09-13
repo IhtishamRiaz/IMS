@@ -12,30 +12,28 @@ const Accounts = () => {
   // API Functions
   const axiosPrivate = useAxiosPrivate()
 
-  // Get All Account Types
-  // const getAllAccounts = async () => {
-  //   const response = await axiosPrivate.get('/account')
-  //   return response.data
-  // }
+  // Get All Products
+  const getAllProducts = async () => {
+    const response = await axiosPrivate.get('/product')
+    return response.data
+  }
 
-  // // React Queries
-  // const { data: accounts } = useQuery({
-  //   queryFn: getAllAccounts,
-  //   queryKey: ['accounts'],
-  // })
+  // React Queries
+  const { data: products } = useQuery({
+    queryFn: getAllProducts,
+    queryKey: ['product'],
+  })
 
   // useEffect(() => {
   //   setAccounts(accounts)
   // }, [accounts])
-
-  const accounts = []
 
   return (
     <>
       <h1 className='text-3xl font-bold'>Products</h1>
       <ProductForm />
 
-      <DataTablePage accounts={accounts} />
+      <DataTablePage products={products} />
     </>
   )
 }

@@ -36,44 +36,44 @@ import { capitalizeEachFirstWord } from "../../../../lib/utils"
 
 export function DataTableRowActions({ row }) {
 
-  const accounts = useAccountStore((state) => state.accounts)
-  const setAccountToEdit = useAccountStore((state) => state.setAccountToEdit)
-  const setIsEdit = useAccountStore((state) => state.setIsEdit)
+  // const accounts = useAccountStore((state) => state.accounts)
+  // const setAccountToEdit = useAccountStore((state) => state.setAccountToEdit)
+  // const setIsEdit = useAccountStore((state) => state.setIsEdit)
 
-  const currentAccount = accounts?.find(acc => acc._id === row.original.mainId)
-  const name = capitalizeEachFirstWord(currentAccount?.name || 'nil')
+  // const currentAccount = accounts?.find(acc => acc._id === row.original.mainId)
+  // const name = capitalizeEachFirstWord(currentAccount?.name || 'nil')
 
-  const handleEdit = () => {
-    setIsEdit(false)
-    setAccountToEdit(currentAccount)
-    setIsEdit(true)
-  }
+  // const handleEdit = () => {
+  //   setIsEdit(false)
+  //   setAccountToEdit(currentAccount)
+  //   setIsEdit(true)
+  // }
 
-  // API Functions
-  const axiosPrivate = useAxiosPrivate()
+  // // API Functions
+  // const axiosPrivate = useAxiosPrivate()
 
-  // Api Functions
-  const deleteAccount = async () => {
-    axiosPrivate
-      .delete(`/account/${currentAccount._id}`)
-      .then((res) => {
-        toast.success(res?.data?.message)
-      })
-      .catch((error) => {
-        toast.error(error?.response?.data?.message)
-      })
-  }
+  // // Api Functions
+  // const deleteAccount = async () => {
+  //   axiosPrivate
+  //     .delete(`/account/${currentAccount._id}`)
+  //     .then((res) => {
+  //       toast.success(res?.data?.message)
+  //     })
+  //     .catch((error) => {
+  //       toast.error(error?.response?.data?.message)
+  //     })
+  // }
 
-  // React Query
-  const queryClient = useQueryClient()
+  // // React Query
+  // const queryClient = useQueryClient()
 
-  const { mutate: deleteAccountMutation } = useMutation({
-    mutationFn: deleteAccount,
-    onSuccess: () => {
-      queryClient.invalidateQueries(['accounts'])
-      queryClient.refetchQueries(['accounts'])
-    }
-  })
+  // const { mutate: deleteAccountMutation } = useMutation({
+  //   mutationFn: deleteAccount,
+  //   onSuccess: () => {
+  //     queryClient.invalidateQueries(['accounts'])
+  //     queryClient.refetchQueries(['accounts'])
+  //   }
+  // })
 
   const task = row
 
@@ -91,7 +91,7 @@ export function DataTableRowActions({ row }) {
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-[160px]">
-            <DropdownMenuItem onClick={handleEdit}>Edit</DropdownMenuItem>
+            {/* <DropdownMenuItem onClick={handleEdit}>Edit</DropdownMenuItem> */}
             <DropdownMenuItem>Make a copy</DropdownMenuItem>
             <DropdownMenuItem>Favorite</DropdownMenuItem>
             {/* <DropdownMenuSub>
@@ -124,13 +124,13 @@ export function DataTableRowActions({ row }) {
             <AlertDialogDescription>
               Are you sure you want to delete this account?
               <span className="text-lg font-bold">
-                {name}
+                {/* {name} */}
               </span>
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction onClick={deleteAccountMutation}>Delete</AlertDialogAction>
+            {/* <AlertDialogAction onClick={deleteAccountMutation}>Delete</AlertDialogAction> */}
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
