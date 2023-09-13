@@ -1,18 +1,19 @@
-import './assets/css/App.css';
-import { Outlet, Route, Routes, useLocation, Navigate } from 'react-router-dom';
+import './assets/css/App.css'
+import { Outlet, Route, Routes, useLocation, Navigate } from 'react-router-dom'
 // Pages
-import Login from './pages/Login.jsx';
-import Register from './pages/Register.jsx';
-import LandingPage from './pages/LandingPage.jsx';
-import Dashboard from './pages/Dashboard';
-import Accounts from './pages/Accounts';
-import Unauthorised from './pages/Unauthorised.jsx';
+import Login from './pages/Login.jsx'
+import Register from './pages/Register.jsx'
+import LandingPage from './pages/LandingPage.jsx'
+import Unauthorised from './pages/Unauthorised.jsx'
+import Dashboard from './pages/Dashboard'
+import Accounts from './pages/Accounts'
+import Products from './pages/Products'
 
 // Components
-import SideNav from './components/SideNav.jsx';
-import useMyContext from './hooks/useMyContext.js';
-import PersistLogin from './components/PersistLogin.jsx';
-import Error404 from './pages/Error404';
+import SideNav from './components/SideNav.jsx'
+import useMyContext from './hooks/useMyContext.js'
+import PersistLogin from './components/PersistLogin.jsx'
+import Error404 from './pages/Error404'
 
 const PageLayout = () => {
   return (
@@ -53,6 +54,7 @@ function App() {
             {/* Protected Routes */}
             <Route element={<RequireAuth allowedRoles={['admin', 'user']} />}>
               <Route path='accounts' element={<Accounts />} />
+              <Route path='products' element={<Products />} />
               <Route path='unauthorised' element={<Unauthorised />} />
             </Route>
           </Route>

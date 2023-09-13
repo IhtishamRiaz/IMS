@@ -1,17 +1,18 @@
-import express from "express";
-import cors from "cors";
-import dotenv from "dotenv";
-import ConnectDB from './config/dbConn.js';
-import mongoose from "mongoose";
-import { logger, logEvents } from "./middleware/logger.js";
-import cookieParser from "cookie-parser";
-import errorHandler from "./middleware/errorHandler.js";
-import corsOptions from './config/corsOptions.js';
-import authRoutes from "./routes/authRoutes.js";
-import userRoutes from "./routes/userRoutes.js";
-import addressRoutes from "./routes/addressRoutes.js";
+import express from "express"
+import cors from "cors"
+import dotenv from "dotenv"
+import ConnectDB from './config/dbConn.js'
+import mongoose from "mongoose"
+import { logger, logEvents } from "./middleware/logger.js"
+import cookieParser from "cookie-parser"
+import errorHandler from "./middleware/errorHandler.js"
+import corsOptions from './config/corsOptions.js'
+import authRoutes from "./routes/authRoutes.js"
+import userRoutes from "./routes/userRoutes.js"
+import addressRoutes from "./routes/addressRoutes.js"
 import accountTypeRoutes from './routes/accountTypeRoutes.js'
 import accountRoutes from './routes/accountRoutes.js'
+import productRoutes from './routes/productRoutes.js'
 
 dotenv.config();
 const app = express();
@@ -32,6 +33,8 @@ app.use('/user', userRoutes);
 app.use('/address', addressRoutes);
 app.use('/accountType', accountTypeRoutes);
 app.use('/account', accountRoutes);
+// Product Routes
+app.use('/product')
 
 
 
