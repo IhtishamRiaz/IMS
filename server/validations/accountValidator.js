@@ -15,11 +15,11 @@ const validateNewAccount = (data) => {
 const validateUpdateAccount = (data) => {
   const JoiSchema = Joi.object({
     id: Joi.string().required().label('id'),
-    name: Joi.string().label('Name'),
-    mobile: Joi.string().label('Mobile'),
-    accountType: Joi.string().label('Account Type'),
-    city: Joi.string().label('City'),
-    isSalesman: Joi.boolean().label('Is Salesman'),
+    name: Joi.string().required().label('Name'),
+    mobile: Joi.string().required().label('Mobile'),
+    accountType: Joi.string().required().label('Account Type'),
+    city: Joi.string().required().label('City'),
+    isSalesman: Joi.boolean().optional().label('Is Salesman'),
     salesRep: Joi.any().optional().label('Sales Rep')
   })
   return JoiSchema.validate(data);

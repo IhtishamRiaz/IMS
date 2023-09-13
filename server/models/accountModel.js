@@ -35,6 +35,16 @@ const accountSchema = new mongoose.Schema({
   }
 }, { timestamps: true })
 
-const Account = mongoose.model('Account', accountSchema)
 
-export default Account
+const accountTypeSchema = new mongoose.Schema({
+  name: {
+    type: String,
+    required: true,
+    unique: true
+  }
+}, { timestamps: true });
+
+const Account = mongoose.model('Account', accountSchema)
+const AccountType = mongoose.model('AccountType', accountTypeSchema)
+
+export { Account, AccountType }

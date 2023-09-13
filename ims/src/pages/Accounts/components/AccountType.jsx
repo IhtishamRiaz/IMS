@@ -26,14 +26,14 @@ const AccountType = ({ Controller, control, errors: mainErrors, isLoading: mainI
 
   // Get All Account Types
   const getAllAccountTypes = async () => {
-    const response = await axiosPrivate.get('/accountType')
+    const response = await axiosPrivate.get('/account/type')
     return response.data
   }
 
   // Add Account Type
   const addAccountType = async (data) => {
     axiosPrivate
-      .post('/accountType', data)
+      .post('/account/type', data)
       .then(res => {
         toast.success(res?.data?.message)
       })

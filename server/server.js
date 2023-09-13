@@ -10,7 +10,6 @@ import corsOptions from './config/corsOptions.js'
 import authRoutes from "./routes/authRoutes.js"
 import userRoutes from "./routes/userRoutes.js"
 import addressRoutes from "./routes/addressRoutes.js"
-import accountTypeRoutes from './routes/accountTypeRoutes.js'
 import accountRoutes from './routes/accountRoutes.js'
 import productRoutes from './routes/productRoutes.js'
 
@@ -31,10 +30,9 @@ app.use('/auth', authRoutes);
 app.use('/user', userRoutes);
 // Account Routes
 app.use('/address', addressRoutes);
-app.use('/accountType', accountTypeRoutes);
 app.use('/account', accountRoutes);
 // Product Routes
-app.use('/product')
+app.use('/product', productRoutes)
 
 
 
