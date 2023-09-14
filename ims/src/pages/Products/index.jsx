@@ -4,13 +4,26 @@ import DataTablePage from "./Table/page"
 import { useQuery } from '@tanstack/react-query';
 import ProductForm from './components/ProductForm';
 import useAxiosPrivate from '../../hooks/useAxiosPrivate';
-import { useAccountStore } from './store/productStore';
+import { useProductStore } from './store/productStore';
 
 const Accounts = () => {
   useTitle('Products');
 
+  const setProducts = useProductStore((state) => state.setProducts);
+
   // API Functions
   const axiosPrivate = useAxiosPrivate()
+
+  // Get All Accounts
+  const getAllAccounts = async () => {
+    const response = await axiosPrivate.get('/account')
+    return response.data
+  }
+
+  const { data: accounts } = useQuery({
+    queryFn: getAllAccounts,
+    queryKey: ['accounts'],
+  })
 
   // Get All Products
   const getAllProducts = async () => {
@@ -24,14 +37,16 @@ const Accounts = () => {
     queryKey: ['product'],
   })
 
-  // useEffect(() => {
-  //   setAccounts(accounts)
-  // }, [accounts])
+
+
+  useEffect(() => {
+    setProducts(products)
+  }, [products])
 
   return (
     <>
       <h1 className='text-3xl font-bold'>Products</h1>
-      <ProductForm />
+      <ProductForm products={products} accounts={accounts} />
 
       <DataTablePage products={products} />
     </>

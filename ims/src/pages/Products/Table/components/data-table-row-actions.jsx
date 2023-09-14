@@ -28,7 +28,7 @@ import {
 import { Trash2 } from 'lucide-react';
 
 // import { labels } from "../data/data"
-import { useAccountStore } from "../../store/productStore"
+import { useProductStore } from "../../store/productStore"
 import useAxiosPrivate from "../../../../hooks/useAxiosPrivate"
 import toast from "react-hot-toast"
 import { capitalizeEachFirstWord } from "../../../../lib/utils"

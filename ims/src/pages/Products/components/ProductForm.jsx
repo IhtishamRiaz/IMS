@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import Input from '../../../components/Input'
+import Select from '../../../components/Select'
 import { useForm, Controller } from "react-hook-form"
 import { yupResolver } from "@hookform/resolvers/yup"
 import * as Yup from "yup"
@@ -8,10 +9,11 @@ import Category from './Category.jsx'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import useAxiosPrivate from '../../../hooks/useAxiosPrivate'
 import toast from 'react-hot-toast'
-import { useAccountStore } from '../store/productStore'
+import { useProductStore } from '../store/productStore'
+import { capitalizeEachFirstWord } from '../../../lib/utils'
 
 
-const ProductForm = ({ accounts }) => {
+const ProductForm = ({ accounts, products }) => {
   const [isLoading, setIsLoading] = useState(false)
 
   const completeResetValues = {
@@ -49,6 +51,18 @@ const ProductForm = ({ accounts }) => {
     // setIsLoading(true)
     console.log(data);
   }
+
+  // Filter Sellers
+  const suppliers = accounts?.filter((acc) => {
+    return acc.accountType.name === 'supplier'
+  })
+
+  const supplierOptions = suppliers?.map((supplier) => {
+    return {
+      value: supplier._id,
+      label: capitalizeEachFirstWord(supplier.name)
+    }
+  })
 
   return (
     <div className='px-4 py-6 my-5 bg-white rounded-lg shadow-md'>
@@ -99,6 +113,17 @@ const ProductForm = ({ accounts }) => {
           control={control}
           errors={errors}
           isLoading={isLoading}
+        />
+        <Select
+          Controller={Controller}
+          control={control}
+          errors={errors}
+          options={supplierOptions || []}
+          isLoading={isLoading}
+          name={'supplier'}
+          label={'Supplier'}
+          placeholder={'Select Supplier'}
+          optionsMessage={'No Supplier Found...'}
         />
         <Button
           type='submit'

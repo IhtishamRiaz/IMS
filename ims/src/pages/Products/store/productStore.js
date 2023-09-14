@@ -1,6 +1,6 @@
 import { create } from 'zustand'
 
-export const useAccountStore = create((set) => ({
+export const useProductStore = create((set) => ({
   products: [],
   setProducts: (product) => set({ product }),
 

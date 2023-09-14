@@ -13,7 +13,7 @@ const Accounts = () => {
   // API Functions
   const axiosPrivate = useAxiosPrivate()
 
-  // Get All Account Types
+  // Get All Accounts
   const getAllAccounts = async () => {
     const response = await axiosPrivate.get('/account')
     console.log(response.data);
