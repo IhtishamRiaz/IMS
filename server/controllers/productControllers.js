@@ -22,7 +22,7 @@ const addProduct = async (req, res) => {
 
     const nextProductId = await getNextProductId();
 
-    const { name, price, min, max, category } = req.body
+    const { name, price, min, max, category, supplier } = req.body
     const lowerCaseName = name.toLowerCase()
 
     const productObject = {
@@ -31,7 +31,9 @@ const addProduct = async (req, res) => {
       price,
       min,
       max,
-      category
+      category,
+      supplier,
+      stock: 0
     }
 
     const product = await Product.create(productObject)
@@ -56,6 +58,7 @@ const getAllProducts = async (req, res) => {
       Product
         .find({})
         .populate('category')
+        .populate('supplier')
         .lean()
         .exec()
 
@@ -80,7 +83,7 @@ const updateProduct = async (req, res) => {
       return res.status(400).json({ message: error.details[0].message });
     }
 
-    const { id, name, price, min, max, category } = req.body
+    const { id, name, price, min, max, category, supplier } = req.body
     const lowerCaseName = name.toLowerCase()
 
     const productExists = await Product.findById(id).lean().exec()
@@ -94,7 +97,8 @@ const updateProduct = async (req, res) => {
       price,
       min,
       max,
-      category
+      category,
+      supplier
     }
     const product = await Product.findByIdAndUpdate(id, productObject, { new: true })
 

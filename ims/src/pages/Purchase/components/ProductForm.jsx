@@ -99,7 +99,7 @@ const ProductForm = ({ accounts, products }) => {
   return (
     <div className='px-4 py-6 my-5 bg-white rounded-lg shadow-md'>
       <h2 className='text-2xl font-bold'>
-        Add new Product
+        Create Purchase Invoice
       </h2>
 
       <form onSubmit={mainHandleSubmit(mainOnSubmit)} id='main-form' className='mt-4 space-y-3'></form>

@@ -6,7 +6,8 @@ const validateNewProduct = (data) => {
     price: Joi.number().required().label('Price'),
     min: Joi.number().required().label('Min'),
     max: Joi.number().required().label('Max'),
-    category: Joi.string().required().label('Category')
+    category: Joi.string().required().label('Category'),
+    supplier: Joi.string().required().label('Supplier')
   })
   return JoiSchema.validate(data);
 }
@@ -17,7 +18,8 @@ const validateUpdateProduct = (data) => {
     price: Joi.number().required().label('Price'),
     min: Joi.number().required().label('Min'),
     max: Joi.number().required().label('Max'),
-    category: Joi.string().required().label('Category')
+    category: Joi.string().required().label('Category'),
+    supplier: Joi.string().required().label('Supplier')
   })
   return JoiSchema.validate(data);
 }

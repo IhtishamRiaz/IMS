@@ -6,8 +6,8 @@ import ProductForm from './components/ProductForm';
 import useAxiosPrivate from '../../hooks/useAxiosPrivate';
 import { useProductStore } from './store/productStore';
 
-const Accounts = () => {
-  useTitle('Products');
+const Purchase = () => {
+  useTitle('Purchase Invoice');
 
   const setProducts = useProductStore((state) => state.setProducts);
 
@@ -43,7 +43,7 @@ const Accounts = () => {
 
   return (
     <>
-      <h1 className='text-3xl font-bold'>Products</h1>
+      <h1 className='text-3xl font-bold'>Purchase Invoice</h1>
       <ProductForm products={products} accounts={accounts} />
 
       <DataTablePage products={products} />
@@ -51,4 +51,4 @@ const Accounts = () => {
   )
 }
 
-export default Accounts;
+export default Purchase;

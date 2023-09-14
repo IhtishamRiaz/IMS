@@ -18,22 +18,22 @@ import { capitalizeFirstWord } from '../../../lib/utils'
 import useAxiosPrivate from '../../../hooks/useAxiosPrivate'
 import toast from 'react-hot-toast'
 
-const AccountType = ({ Controller, control, errors: mainErrors, isLoading: mainIsLoading, accounts, typeValue, setTypeValue }) => {
+const Category = ({ Controller, control, errors: mainErrors, isLoading: mainIsLoading }) => {
   const [isLoading, setIsLoading] = useState(false);
 
   // API Functions
   const axiosPrivate = useAxiosPrivate()
 
   // Get All Account Types
-  const getAllAccountTypes = async () => {
-    const response = await axiosPrivate.get('/accountType')
+  const getAllProductCategories = async () => {
+    const response = await axiosPrivate.get('/product/category')
     return response.data
   }
 
   // Add Account Type
-  const addAccountType = async (data) => {
+  const addProductCategory = async (data) => {
     axiosPrivate
-      .post('/accountType', data)
+      .post('/product/category', data)
       .then(res => {
         toast.success(res?.data?.message)
       })
@@ -49,46 +49,24 @@ const AccountType = ({ Controller, control, errors: mainErrors, isLoading: mainI
   // React Queries
   const queryClient = useQueryClient()
 
-  const { data: accountTypes } = useQuery({
-    queryFn: getAllAccountTypes,
-    queryKey: ['accountTypes'],
+  const { data: categories } = useQuery({
+    queryFn: getAllProductCategories,
+    queryKey: ['productCategory'],
   })
 
-  const { mutate: addAccountTypeMutation } = useMutation({
-    mutationFn: addAccountType,
+  const { mutate: addProductCategoryMutation } = useMutation({
+    mutationFn: addProductCategory,
     onSuccess: () => {
-      queryClient.invalidateQueries(['accountTypes'])
-      queryClient.refetchQueries(['accountTypes'])
+      queryClient.invalidateQueries(['productCategory'])
+      queryClient.refetchQueries(['productCategory'])
     }
   })
 
   // Select Options
-  const accountTypeOptions = (accountTypes || [])?.map(type => {
+  const categoryOptions = (categories || [])?.map(type => {
     return {
       value: type._id,
       label: capitalizeFirstWord(type.name)
-    }
-  })
-
-  const booleanOptions = [
-    {
-      value: true,
-      label: 'Yes'
-    },
-    {
-      value: false,
-      label: 'No'
-    }
-  ]
-
-  const staffAccounts = accounts?.filter(account => {
-    return account.accountType.name === 'staff'
-  })
-
-  const salesRepOptions = staffAccounts?.map(account => {
-    return {
-      value: account._id,
-      label: capitalizeFirstWord(account.name)
     }
   })
 
@@ -107,15 +85,9 @@ const AccountType = ({ Controller, control, errors: mainErrors, isLoading: mainI
 
   // On Submit
   const accountTypeOnSubmit = (data) => {
-    addAccountTypeMutation(data)
     setIsLoading(true)
+    addProductCategoryMutation(data)
   };
-
-  const selectedType = accountTypes?.find(type => {
-    return type._id === typeValue
-  })
-  const salesmanVisible = selectedType?.name === 'staff'
-  const salesRepVisible = selectedType?.name === 'customer'
 
   return (
     <>
@@ -131,39 +103,14 @@ const AccountType = ({ Controller, control, errors: mainErrors, isLoading: mainI
             Controller={Controller}
             control={control}
             errors={mainErrors}
-            options={accountTypeOptions || []}
+            options={categoryOptions || []}
             isLoading={mainIsLoading}
-            name={'accountType'}
-            label={'Account Type'}
-            placeholder={'Select Account Type'}
-            optionsMessage={'No Type Found...'}
-            setTypeValue={setTypeValue}
+            name={'category'}
+            label={'Product Category'}
+            placeholder={'Select Category'}
+            optionsMessage={'No Category Found...'}
           />
         </div>
-        <Select
-          Controller={Controller}
-          control={control}
-          errors={mainErrors}
-          options={salesRepOptions || []}
-          isLoading={mainIsLoading}
-          name={'salesRep'}
-          label={'Sales Representative'}
-          placeholder={'Select Sales Rep'}
-          optionsMessage={'No Sales Rep...'}
-          isDisabled={!salesRepVisible}
-        />
-        <Select
-          Controller={Controller}
-          control={control}
-          errors={mainErrors}
-          options={booleanOptions || []}
-          isLoading={mainIsLoading}
-          name={'isSalesman'}
-          label={'Is Salesman?'}
-          placeholder={'Select Sales Rep'}
-          optionsMessage={'No Options...'}
-          isDisabled={!salesmanVisible}
-        />
 
         {/* Dialog Content */}
         <DialogContent>
@@ -175,7 +122,7 @@ const AccountType = ({ Controller, control, errors: mainErrors, isLoading: mainI
             <div className='mt-4 space-y-8'>
               <Input
                 id='name'
-                label='Account Type'
+                label='Product Category'
                 type='text'
                 register={register}
                 errors={errors}
@@ -194,4 +141,4 @@ const AccountType = ({ Controller, control, errors: mainErrors, isLoading: mainI
   )
 }
 
-export default AccountType
+export default Category

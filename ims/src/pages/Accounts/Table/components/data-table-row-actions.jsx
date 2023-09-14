@@ -44,7 +44,6 @@ export function DataTableRowActions({ row }) {
   const name = capitalizeEachFirstWord(currentAccount?.name || 'nil')
 
   const handleEdit = () => {
-    setIsEdit(false)
     setAccountToEdit(currentAccount)
     setIsEdit(true)
   }

@@ -22,7 +22,7 @@ const SideNav = () => {
     { text: 'Statistics', icon: BarChart3 },
     { text: 'Accounts', icon: UserCircle, href: '/app/accounts' },
     { text: 'Products', icon: Boxes, href: '/app/products' },
-    { text: 'Orders', icon: Package },
+    { text: 'Purchase', icon: Package, href: '/app/purchase' },
     { text: 'Billings', icon: Receipt },
     { text: 'Settings', icon: Settings },
     { text: 'Help', icon: LifeBuoy },
@@ -50,8 +50,8 @@ const SideNav = () => {
           {items.map(({ text, icon, href }, index) => {
             return (
               <React.Fragment key={text}>
+                {(index === 6) ? <hr className='my-3' /> : null}
                 <SidebarItem text={text} icon={icon} expanded={expanded} href={href} />
-                {(index === 5) ? <hr className='my-3' /> : null}
               </React.Fragment>
             );
           })}
@@ -110,9 +110,10 @@ export const SidebarItem = ({ icon: Icon, text, expanded, href }) => {
         <span className={cn(`overflow-hidden transition-all`, expanded ? 'w-52 ml-3' : 'w-0')}>
           {text}
         </span>
+        {/* Tooltip */}
         {!expanded &&
           <div
-            className='absolute z-50 invisible px-2 py-1 ml-6 text-sm transition-all -translate-x-3 rounded-md left-full bg-brand-100 text-brand-800 opacity-20 group-hover:visible group-hover:opacity-100 group-hover:translate-x-0'
+            className='absolute z-50 invisible px-2 py-1 ml-6 text-sm transition-all -translate-x-3 rounded-md w-max left-full bg-brand-100 text-brand-800 opacity-20 group-hover:visible group-hover:opacity-100 group-hover:translate-x-0'
           >
             {text}
           </div>

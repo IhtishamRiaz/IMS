@@ -8,6 +8,7 @@ import Unauthorised from './pages/Unauthorised.jsx'
 import Dashboard from './pages/Dashboard'
 import Accounts from './pages/Accounts'
 import Products from './pages/Products'
+import Purchase from './pages/Purchase'
 
 // Components
 import SideNav from './components/SideNav.jsx'
@@ -55,6 +56,7 @@ function App() {
             <Route element={<RequireAuth allowedRoles={['admin', 'user']} />}>
               <Route path='accounts' element={<Accounts />} />
               <Route path='products' element={<Products />} />
+              <Route path='purchase' element={<Purchase />} />
               <Route path='unauthorised' element={<Unauthorised />} />
             </Route>
           </Route>
