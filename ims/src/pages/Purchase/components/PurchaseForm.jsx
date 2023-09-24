@@ -9,35 +9,27 @@ import Category from './Category.jsx'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import useAxiosPrivate from '../../../hooks/useAxiosPrivate'
 import toast from 'react-hot-toast'
-import { useProductStore } from '../store/productStore'
+import { usePurchaseStore } from '../store/purchaseStore'
 import { capitalizeEachFirstWord } from '../../../lib/utils'
 
 
-const ProductForm = ({ accounts, products }) => {
+const PurchaseForm = ({ accounts, products }) => {
   const [isLoading, setIsLoading] = useState(false)
 
   const completeResetValues = {
     name: '',
-    price: '',
-    min: '',
-    max: '',
-    category: '',
-    supplier: ''
+    seller: '',
   }
 
   let formDefaultValues = {
     name: '',
-    price: '',
-    min: '',
-    max: '',
-    category: '',
-    supplier: ''
+    seller: '',
   }
 
   // API Functions
   const axiosPrivate = useAxiosPrivate()
-  const addProduct = async (data) => {
-    axiosPrivate.post('/product', data)
+  const addPurchase = async (data) => {
+    axiosPrivate.post('/purchase', data)
       .then((res) => {
         toast.success(res?.data?.message)
       })
@@ -54,23 +46,19 @@ const ProductForm = ({ accounts, products }) => {
 
   const queryClient = useQueryClient()
 
-  const { mutate: addProductMutation } = useMutation({
-    mutationFn: addProduct,
-    onSuccess: () => {
-      queryClient.invalidateQueries(['products'])
-      queryClient.refetchQueries(['products'])
-    }
-  })
+  // const { mutate: addProductMutation } = useMutation({
+  //   mutationFn: addProduct,
+  //   onSuccess: () => {
+  //     queryClient.invalidateQueries(['products'])
+  //     queryClient.refetchQueries(['products'])
+  //   }
+  // })
 
 
   // Yup Validation Schema
   const productSchema = Yup.object({
     name: Yup.string().required('Please enter a name'),
-    price: Yup.number().typeError("Must be a number").required('Please enter a price'),
-    min: Yup.number().typeError("Must be a number").required('Please enter a min value'),
-    max: Yup.number().typeError("Must be a number").required('Please enter a max value'),
-    category: Yup.string().required('Please select a category'),
-    supplier: Yup.string().required('Please select a supplier'),
+    seller: Yup.string().required('Please select a seller'),
   });
 
   const { register, handleSubmit: mainHandleSubmit, control, formState: { errors }, reset } = useForm({
@@ -80,21 +68,37 @@ const ProductForm = ({ accounts, products }) => {
 
   // On Submit
   const mainOnSubmit = (data) => {
-    setIsLoading(true)
-    addProductMutation(data)
+    // setIsLoading(true)
+    console.log(data);
   }
 
-  // Filter Sellers
-  const suppliers = accounts?.filter((acc) => {
-    return acc.accountType.name === 'supplier'
+  // Get all Suppliers and Products
+  const allSupplierAccounts = accounts?.filter((acc) => {
+    return acc.accountType?.name === 'supplier'
   })
 
-  const supplierOptions = suppliers?.map((supplier) => {
+  const productOptions = products?.map((prod) => {
     return {
-      value: supplier._id,
-      label: capitalizeEachFirstWord(supplier.name)
+      value: prod._id,
+      label: prod.name,
+      key: prod.productId
     }
   })
+
+  const supplierOptions = allSupplierAccounts?.map(sup => {
+    return {
+      value: sup._id,
+      label: sup.name
+    }
+  })
+
+  const productFilterOption = (option, inputValue) => {
+    const { label, data: { key } } = option;
+    const searchValue = inputValue.toLowerCase();
+    return (
+      label?.toLowerCase().includes(searchValue) || key == searchValue
+    );
+  };
 
   return (
     <div className='px-4 py-6 my-5 bg-white rounded-lg shadow-md'>
@@ -104,48 +108,19 @@ const ProductForm = ({ accounts, products }) => {
 
       <form onSubmit={mainHandleSubmit(mainOnSubmit)} id='main-form' className='mt-4 space-y-3'></form>
       <div>
-        <Input
-          id='name'
-          label='Name'
-          type='text'
-          register={register}
-          errors={errors}
-          disabled={isLoading}
-          required
-        />
-        <Input
-          id='price'
-          label='Price'
-          type='text'
-          register={register}
-          errors={errors}
-          disabled={isLoading}
-          required
-        />
-        <Input
-          id='min'
-          label='Min'
-          type='text'
-          register={register}
-          errors={errors}
-          disabled={isLoading}
-          required
-        />
-        <Input
-          id='max'
-          label='Max'
-          type='text'
-          register={register}
-          errors={errors}
-          disabled={isLoading}
-          required
-        />
-        <Category
+        <Select
           Controller={Controller}
           control={control}
           errors={errors}
+          options={productOptions || []}
           isLoading={isLoading}
+          name={'product'}
+          label={'Product'}
+          placeholder={'Select Product'}
+          optionsMessage={'No Product Found...'}
+          filterOption={productFilterOption}
         />
+
         <Select
           Controller={Controller}
           control={control}
@@ -157,6 +132,7 @@ const ProductForm = ({ accounts, products }) => {
           placeholder={'Select Supplier'}
           optionsMessage={'No Supplier Found...'}
         />
+
         <Button
           type='submit'
           isLoading={isLoading}
@@ -169,4 +145,4 @@ const ProductForm = ({ accounts, products }) => {
   )
 }
 
-export default ProductForm
+export default PurchaseForm

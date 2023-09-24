@@ -28,7 +28,7 @@ import {
 import { Trash2 } from 'lucide-react';
 
 // import { labels } from "../data/data"
-import { useProductStore } from "../../store/productStore"
+import { usePurchaseStore } from "../../store/purchaseStore"
 import useAxiosPrivate from "../../../../hooks/useAxiosPrivate"
 import toast from "react-hot-toast"
 import { capitalizeEachFirstWord } from "../../../../lib/utils"
@@ -36,43 +36,43 @@ import { capitalizeEachFirstWord } from "../../../../lib/utils"
 
 export function DataTableRowActions({ row }) {
 
-  const products = useProductStore((state) => state.products)
-  const setProductToEdit = useProductStore((state) => state.setProductToEdit)
-  const setIsEdit = useProductStore((state) => state.setIsEdit)
+  // const products = useProductStore((state) => state.products)
+  // const setProductToEdit = useProductStore((state) => state.setProductToEdit)
+  // const setIsEdit = useProductStore((state) => state.setIsEdit)
 
-  const currentProduct = products?.find(prod => prod._id === row.original.mainId)
-  const name = capitalizeEachFirstWord(currentProduct?.name || 'nil')
+  // const currentProduct = products?.find(prod => prod._id === row.original.mainId)
+  // const name = capitalizeEachFirstWord(currentProduct?.name || 'nil')
 
-  const handleEdit = () => {
-    setProductToEdit(currentProduct)
-    setIsEdit(true)
-  }
+  // const handleEdit = () => {
+  //   setProductToEdit(currentProduct)
+  //   setIsEdit(true)
+  // }
 
-  // API Functions
-  const axiosPrivate = useAxiosPrivate()
+  // // API Functions
+  // const axiosPrivate = useAxiosPrivate()
 
-  // Api Functions
-  const deleteProduct = async () => {
-    axiosPrivate
-      .delete(`/product/${currentProduct._id}`)
-      .then((res) => {
-        toast.success(res?.data?.message)
-      })
-      .catch((error) => {
-        toast.error(error?.response?.data?.message)
-      })
-  }
+  // // Api Functions
+  // const deleteProduct = async () => {
+  //   axiosPrivate
+  //     .delete(`/product/${currentProduct._id}`)
+  //     .then((res) => {
+  //       toast.success(res?.data?.message)
+  //     })
+  //     .catch((error) => {
+  //       toast.error(error?.response?.data?.message)
+  //     })
+  // }
 
-  // React Query
-  const queryClient = useQueryClient()
+  // // React Query
+  // const queryClient = useQueryClient()
 
-  const { mutate: deleteProductMutation } = useMutation({
-    mutationFn: deleteProduct,
-    onSuccess: () => {
-      queryClient.invalidateQueries(['products'])
-      queryClient.refetchQueries(['products'])
-    }
-  })
+  // const { mutate: deleteProductMutation } = useMutation({
+  //   mutationFn: deleteProduct,
+  //   onSuccess: () => {
+  //     queryClient.invalidateQueries(['products'])
+  //     queryClient.refetchQueries(['products'])
+  //   }
+  // })
 
   const task = row
 
@@ -90,7 +90,7 @@ export function DataTableRowActions({ row }) {
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-[160px]">
-            <DropdownMenuItem onClick={handleEdit}>Edit</DropdownMenuItem>
+            {/* <DropdownMenuItem onClick={handleEdit}>Edit</DropdownMenuItem> */}
             <DropdownMenuItem>Make a copy</DropdownMenuItem>
             <DropdownMenuItem>Favorite</DropdownMenuItem>
             {/* <DropdownMenuSub>
@@ -129,7 +129,7 @@ export function DataTableRowActions({ row }) {
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction onClick={deleteProductMutation}>Delete</AlertDialogAction>
+            {/* <AlertDialogAction onClick={deleteProductMutation}>Delete</AlertDialogAction> */}
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>

@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { ChevronFirst, MoreVertical, LifeBuoy, Receipt, Boxes, Package, UserCircle, BarChart3, LayoutDashboard, Settings, ChevronLast } from 'lucide-react'
+import { ChevronFirst, MoreVertical, LifeBuoy, Receipt, Boxes, ShoppingCart, UserCircle, BarChart3, LayoutDashboard, Settings, ChevronLast } from 'lucide-react'
 import { cn } from '../lib/utils'
 import { Link, useLocation } from 'react-router-dom';
 import useLogout from '../hooks/useLogout'
@@ -22,7 +22,7 @@ const SideNav = () => {
     { text: 'Statistics', icon: BarChart3 },
     { text: 'Accounts', icon: UserCircle, href: '/app/accounts' },
     { text: 'Products', icon: Boxes, href: '/app/products' },
-    { text: 'Purchase', icon: Package, href: '/app/purchase' },
+    { text: 'Purchase', icon: ShoppingCart, href: '/app/purchase' },
     { text: 'Billings', icon: Receipt },
     { text: 'Settings', icon: Settings },
     { text: 'Help', icon: LifeBuoy },
