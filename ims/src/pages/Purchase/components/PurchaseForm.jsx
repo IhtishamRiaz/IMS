@@ -96,7 +96,7 @@ const PurchaseForm = ({ accounts, products }) => {
     const { label, data: { key } } = option;
     const searchValue = inputValue.toLowerCase();
     return (
-      label?.toLowerCase().includes(searchValue) || key == searchValue
+      label?.toLowerCase().includes(searchValue) || key.toString().includes(searchValue)
     );
   };
 
