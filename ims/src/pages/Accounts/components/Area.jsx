@@ -16,7 +16,7 @@ import {
 } from "../../../components/ui/dialog"
 import useAxiosPrivate from '../../../hooks/useAxiosPrivate'
 import { capitalizeFirstWord } from '../../../lib/utils'
-import toast from 'react-hot-toast'
+import { toast } from 'sonner'
 
 const Area = ({ Controller: CityController, control: cityControl, errors: cityErrors, isLoading: cityIsLoading }) => {
   const [isLoading, setIsLoading] = useState(false)

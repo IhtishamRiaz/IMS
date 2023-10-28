@@ -8,7 +8,7 @@ import Button from '../../../components/Button'
 import Category from './Category.jsx'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import useAxiosPrivate from '../../../hooks/useAxiosPrivate'
-import toast from 'react-hot-toast'
+import { toast } from 'sonner'
 import { usePurchaseStore } from '../store/purchaseStore'
 import { capitalizeEachFirstWord } from '../../../lib/utils'
 

@@ -3,7 +3,10 @@ import Joi from "joi";
 const validateNewProduct = (data) => {
   const JoiSchema = Joi.object({
     name: Joi.string().required().label('Name'),
-    price: Joi.number().required().label('Price'),
+    PPrice: Joi.number().required().label('Purchase Price'),
+    SPrice: Joi.number().required().label('Sale Price'),
+    packingType: Joi.string().required().label('Packing Type'),
+    packingSize: Joi.number().required().label('Packing Size'),
     min: Joi.number().required().label('Min'),
     max: Joi.number().required().label('Max'),
     category: Joi.string().required().label('Category'),
@@ -15,7 +18,10 @@ const validateUpdateProduct = (data) => {
   const JoiSchema = Joi.object({
     id: Joi.string().required().label('ID'),
     name: Joi.string().required().label('Name'),
-    price: Joi.number().required().label('Price'),
+    PPrice: Joi.number().required().label('Purchase Price'),
+    SPrice: Joi.number().required().label('Sale Price'),
+    packingType: Joi.string().required().label('Packing Type'),
+    packingSize: Joi.number().required().label('Packing Size'),
     min: Joi.number().required().label('Min'),
     max: Joi.number().required().label('Max'),
     category: Joi.string().required().label('Category'),

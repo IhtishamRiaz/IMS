@@ -16,7 +16,7 @@ import {
 } from "../../../components/ui/dialog"
 import { capitalizeFirstWord } from '../../../lib/utils'
 import useAxiosPrivate from '../../../hooks/useAxiosPrivate'
-import toast from 'react-hot-toast'
+import { toast } from 'sonner'
 
 const Category = ({ Controller, control, errors: mainErrors, isLoading: mainIsLoading }) => {
   const [isLoading, setIsLoading] = useState(false);

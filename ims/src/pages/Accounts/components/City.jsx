@@ -16,7 +16,7 @@ import {
 import Area from './Area'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import useAxiosPrivate from '../../../hooks/useAxiosPrivate'
-import toast from 'react-hot-toast'
+import { toast } from 'sonner'
 import { capitalizeFirstWord } from '../../../lib/utils'
 
 const City = ({ Controller: MainController, control: mainControl, errors: mainErrors, isLoading: mainIsLoading }) => {

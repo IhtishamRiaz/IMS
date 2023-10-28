@@ -16,7 +16,7 @@ import {
 } from "../../../components/ui/dialog"
 import { capitalizeFirstWord } from '../../../lib/utils'
 import useAxiosPrivate from '../../../hooks/useAxiosPrivate'
-import toast from 'react-hot-toast'
+import { toast } from 'sonner'
 
 const AccountType = ({ Controller, control, errors: mainErrors, isLoading: mainIsLoading, accounts, typeValue, setTypeValue }) => {
   const [isLoading, setIsLoading] = useState(false);

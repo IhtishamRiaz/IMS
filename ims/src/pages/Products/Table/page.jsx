@@ -12,7 +12,10 @@ export default function DataTablePage({ products }) {
       name: capitalizeEachFirstWord(product.name),
       min: product.min,
       max: product.max,
-      price: product.price,
+      PPrice: product.PPrice,
+      SPrice: product.SPrice,
+      packingType: product.packingType?.name,
+      packingSize: product.packingSize,
       stock: product.stock,
       category: product.category?.name,
       supplier: product.supplier?.name

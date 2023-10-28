@@ -11,7 +11,11 @@ const productSchema = new mongoose.Schema({
     required: true,
     unique: true
   },
-  price: {
+  SPrice: {
+    type: Number,
+    required: true
+  },
+  PPrice: {
     type: Number,
     required: true
   },
@@ -35,10 +39,26 @@ const productSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Account',
     required: false
+  },
+  packingType: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'PackingType',
+    required: true
+  },
+  packingSize: {
+    type: Number
   }
 }, { timestamps: true })
 
+// Product Category Schema
 const ProductCategorySchema = new mongoose.Schema({
+  name: {
+    type: String,
+    required: true
+  }
+})
+// Packing Type Schema
+const PackingTypeSchema = new mongoose.Schema({
   name: {
     type: String,
     required: true
@@ -47,5 +67,6 @@ const ProductCategorySchema = new mongoose.Schema({
 
 const Product = mongoose.model("Product", productSchema)
 const ProductCategory = mongoose.model("ProductCategory", ProductCategorySchema)
+const PackingType = mongoose.model("PackingType", PackingTypeSchema)
 
-export { Product, ProductCategory }
+export { Product, ProductCategory, PackingType }

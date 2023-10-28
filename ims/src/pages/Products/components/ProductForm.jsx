@@ -8,30 +8,37 @@ import Button from '../../../components/Button'
 import Category from './Category.jsx'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import useAxiosPrivate from '../../../hooks/useAxiosPrivate'
-import toast from 'react-hot-toast'
+import { toast } from 'sonner'
 import { useProductStore } from '../store/productStore'
 import { capitalizeEachFirstWord } from '../../../lib/utils'
+import PackingType from './PackingType'
 
 
-const ProductForm = ({ accounts, products }) => {
+const ProductForm = ({ accounts }) => {
   const [isLoading, setIsLoading] = useState(false)
 
   const completeResetValues = {
     name: '',
-    price: '',
+    SPrice: 0,
+    PPrice: 0,
     min: '',
     max: '',
     category: '',
-    supplier: ''
+    supplier: '',
+    packingType: '',
+    packingSize: ''
   }
 
   let formDefaultValues = {
     name: '',
-    price: '',
+    SPrice: 0,
+    PPrice: 0,
     min: '',
     max: '',
     category: '',
-    supplier: ''
+    supplier: '',
+    packingType: '',
+    packingSize: ''
   }
 
   // API Functions
@@ -66,11 +73,14 @@ const ProductForm = ({ accounts, products }) => {
   // Yup Validation Schema
   const productSchema = Yup.object({
     name: Yup.string().required('Please enter a name'),
-    price: Yup.number().typeError("Must be a number").required('Please enter a price'),
+    PPrice: Yup.number().typeError("Must be a number").required('Please enter a price'),
+    SPrice: Yup.number().typeError("Must be a number").required('Please enter a price'),
     min: Yup.number().typeError("Must be a number").required('Please enter a min value'),
     max: Yup.number().typeError("Must be a number").required('Please enter a max value'),
     category: Yup.string().required('Please select a category'),
     supplier: Yup.string().required('Please select a supplier'),
+    packingType: Yup.string().required('Please select a packing type'),
+    packingSize: Yup.number().typeError("Must be a number").required('Please enter paking size'),
   });
 
   const { register, handleSubmit: mainHandleSubmit, control, formState: { errors }, reset } = useForm({
@@ -82,6 +92,7 @@ const ProductForm = ({ accounts, products }) => {
   const mainOnSubmit = (data) => {
     setIsLoading(true)
     addProductMutation(data)
+    // console.log(data);
   }
 
   // Filter Sellers
@@ -107,15 +118,6 @@ const ProductForm = ({ accounts, products }) => {
         <Input
           id='name'
           label='Name'
-          type='text'
-          register={register}
-          errors={errors}
-          disabled={isLoading}
-          required
-        />
-        <Input
-          id='price'
-          label='Price'
           type='text'
           register={register}
           errors={errors}
@@ -156,6 +158,39 @@ const ProductForm = ({ accounts, products }) => {
           label={'Supplier'}
           placeholder={'Select Supplier'}
           optionsMessage={'No Supplier Found...'}
+        />
+        <PackingType
+          Controller={Controller}
+          control={control}
+          errors={errors}
+          isLoading={isLoading}
+        />
+        <Input
+          id='packingSize'
+          label='Packing Size'
+          type='text'
+          register={register}
+          errors={errors}
+          disabled={isLoading}
+          required
+        />
+        <Input
+          id='PPrice'
+          label='Purchase Price'
+          type='text'
+          register={register}
+          errors={errors}
+          disabled={isLoading}
+          required
+        />
+        <Input
+          id='SPrice'
+          label='Sale Price'
+          type='text'
+          register={register}
+          errors={errors}
+          disabled={isLoading}
+          required
         />
         <Button
           type='submit'

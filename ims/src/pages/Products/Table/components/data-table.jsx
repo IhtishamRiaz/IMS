@@ -133,54 +133,64 @@ export function DataTable({ data, categories, suppliers }) {
         return value.includes(row.getValue(id))
       },
     },
-    // Min
+    // Packing Type
     {
-      accessorKey: "min",
+      accessorKey: "packingType",
       header: ({ column }) => (
-        <DataTableColumnHeader column={column} title="Min" />
+        <DataTableColumnHeader column={column} title="Packing Type" />
       ),
       cell: ({ row }) => {
-
         return (
-          <div className="truncate">
-            <span>{row.getValue("min")}</span>
-          </div>
+          <span className="truncate">
+            {row.getValue("packingType")}
+          </span>
         )
       },
-      filterFn: (row, id, value) => {
-        return value.includes(row.getValue(id))
-      },
     },
-    // Maz
+    // Packing Size
     {
-      accessorKey: "max",
+      accessorKey: "packingSize",
       header: ({ column }) => (
-        <DataTableColumnHeader column={column} title="Max" />
+        <DataTableColumnHeader column={column} title="Packing Size" />
       ),
       cell: ({ row }) => {
-
         return (
-          <div className="truncate">
-            <span>{row.getValue("max")}</span>
-          </div>
+          <span className="truncate">
+            {row.getValue("packingSize")}
+          </span>
         )
       },
-      filterFn: (row, id, value) => {
-        return value.includes(row.getValue(id))
-      },
     },
-    // Price
+    // Purchase Price
     {
-      accessorKey: "price",
+      accessorKey: "PPrice",
       header: ({ column }) => (
-        <DataTableColumnHeader column={column} title="Price" />
+        <DataTableColumnHeader column={column} title="P/Price" />
       ),
       cell: ({ row }) => {
 
         return (
           <div>
             <span className="truncate">
-              {row.getValue("price")}
+              {row.getValue("PPrice")}
+            </span>
+          </div>
+        )
+      },
+      enableSorting: false,
+    },
+    // Sale Price
+    {
+      accessorKey: "SPrice",
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title="S/Price" />
+      ),
+      cell: ({ row }) => {
+
+        return (
+          <div>
+            <span className="truncate">
+              {row.getValue("SPrice")}
             </span>
           </div>
         )

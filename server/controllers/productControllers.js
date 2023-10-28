@@ -1,4 +1,4 @@
-import { Product, ProductCategory } from '../models/productModel.js'
+import { Product, ProductCategory, PackingType } from '../models/productModel.js'
 import { validateNewProduct, validateUpdateProduct, validateProductCategory } from '../validations/productValidator.js'
 
 async function getNextProductId() {
@@ -22,13 +22,16 @@ const addProduct = async (req, res) => {
 
     const nextProductId = await getNextProductId();
 
-    const { name, price, min, max, category, supplier } = req.body
+    const { name, PPrice, SPrice, packingType, packingSize, min, max, category, supplier } = req.body
     const lowerCaseName = name.toLowerCase()
 
     const productObject = {
       productId: nextProductId,
       name: lowerCaseName,
-      price,
+      PPrice,
+      SPrice,
+      packingType,
+      packingSize,
       min,
       max,
       category,
@@ -59,6 +62,7 @@ const getAllProducts = async (req, res) => {
         .find({})
         .populate('category')
         .populate('supplier')
+        .populate('packingType')
         .lean()
         .exec()
 
@@ -217,4 +221,82 @@ const deleteProductCategory = async (req, res) => {
   }
 }
 
-export { addProduct, getAllProducts, updateProduct, deleteProduct, addProductCategory, getAllProductCategories, deleteProductCategory }
+// @desc Add new Packing Type
+// @route POST /product/packingType
+// @access Private
+const addPackingType = async (req, res) => {
+  try {
+    // Validating incoming data
+    const { error } = validateProductCategory(req.body);
+    if (error) {
+      return res.status(400).json({ message: error.details[0].message });
+    }
+
+    const { name } = req.body
+    const lowerCaseName = name.toLowerCase();
+
+    const packingTypeExists = await PackingType.findOne({ name: lowerCaseName })
+    if (packingTypeExists) {
+      return res.status(409).json({ message: 'Packing Type Already Exists!' })
+    }
+
+    const packingTypeObject = {
+      name: lowerCaseName
+    }
+
+    const packingType = await PackingType.create(packingTypeObject);
+
+    if (packingType) {
+      return res.status(201).json({ message: `New Packing Type ${packingType?.name} Added!` })
+    } else {
+      return res.status(400).json({ message: 'Failed to Add Packing Type!' })
+    }
+
+  } catch (error) {
+    res.status(500).json({ message: 'Failed to Add Packing Type!', error })
+  }
+}
+
+// @desc Get All Packig Types
+// @route GET /product/packingType
+// @access Private
+const getAllPackingTypes = async (req, res) => {
+  try {
+    const packingTypes = await PackingType.find({}).lean()
+
+    if (!packingTypes || packingTypes.length === 0) {
+      return res.status(400).json({ message: 'No Packing Type Found!' })
+    }
+
+    res.json(packingTypes);
+  } catch (error) {
+    res.status(500).json({ message: 'Could not get Packing Types', error })
+  }
+}
+
+// @desc Delete Packing Type
+// @route DELETE /product/packingType/id
+// @access Private
+const deletePackingType = async (req, res) => {
+  try {
+    const id = req.params.id
+    const packingType = await PackingType.findById(id)
+
+    if (!packingType) {
+      return res.status(400).json({ message: 'Packing Type Not Found!' })
+    }
+
+    const deletedPackingType = await PackingType.findByIdAndDelete(id)
+
+    if (deletedPackingType) {
+      return res.status(201).json({ message: `Packing Type ${packingType?.name} Deleted!` })
+    } else {
+      return res.status(400).json({ message: 'Failed to Delete Packing Type!' })
+    }
+
+  } catch (error) {
+    res.status(500).json({ message: 'Could not delete Packing Type', error })
+  }
+}
+
+export { addProduct, getAllProducts, updateProduct, deleteProduct, addProductCategory, getAllProductCategories, deleteProductCategory, addPackingType, getAllPackingTypes, deletePackingType }

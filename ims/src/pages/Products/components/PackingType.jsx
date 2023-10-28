@@ -18,22 +18,22 @@ import { capitalizeFirstWord } from '../../../lib/utils'
 import useAxiosPrivate from '../../../hooks/useAxiosPrivate'
 import { toast } from 'sonner'
 
-const Category = ({ Controller, control, errors: mainErrors, isLoading: mainIsLoading }) => {
+const PackingType = ({ Controller, control, errors: mainErrors, isLoading: mainIsLoading }) => {
   const [isLoading, setIsLoading] = useState(false);
 
   // API Functions
   const axiosPrivate = useAxiosPrivate()
 
-  // Get All Account Types
-  const getAllProductCategories = async () => {
-    const response = await axiosPrivate.get('/product/category')
+  // Get All Packing Types Types
+  const getAllPackingTypes = async () => {
+    const response = await axiosPrivate.get('/product/packingType')
     return response.data
   }
 
-  // Add Account Type
-  const addProductCategory = async (data) => {
+  // Add Packing Type
+  const addPackingType = async (data) => {
     axiosPrivate
-      .post('/product/category', data)
+      .post('/product/packingType', data)
       .then(res => {
         toast.success(res?.data?.message)
       })
@@ -49,21 +49,21 @@ const Category = ({ Controller, control, errors: mainErrors, isLoading: mainIsLo
   // React Queries
   const queryClient = useQueryClient()
 
-  const { data: categories } = useQuery({
-    queryFn: getAllProductCategories,
-    queryKey: ['productCategory'],
+  const { data: packingTypes } = useQuery({
+    queryFn: getAllPackingTypes,
+    queryKey: ['packingType'],
   })
 
-  const { mutate: addProductCategoryMutation } = useMutation({
-    mutationFn: addProductCategory,
+  const { mutate: addPackingTypeMutation } = useMutation({
+    mutationFn: addPackingType,
     onSuccess: () => {
-      queryClient.invalidateQueries(['productCategory'])
-      queryClient.refetchQueries(['productCategory'])
+      queryClient.invalidateQueries(['packingType'])
+      queryClient.refetchQueries(['packingType'])
     }
   })
 
   // Select Options
-  const categoryOptions = (categories || [])?.map(type => {
+  const packingTypeOptions = (packingTypes || [])?.map(type => {
     return {
       value: type._id,
       label: capitalizeFirstWord(type.name)
@@ -71,22 +71,22 @@ const Category = ({ Controller, control, errors: mainErrors, isLoading: mainIsLo
   })
 
   // Yup Validation Schema
-  const accountSchema = Yup.object({
-    name: Yup.string().required('Please enter a Account Type'),
+  const PackingTypeSchema = Yup.object({
+    name: Yup.string().required('Please enter a Packing Type'),
   });
 
   // React Hook Form
-  const { register, handleSubmit: accountTypeHandleSubmit, formState: { errors }, reset } = useForm({
-    resolver: yupResolver(accountSchema),
+  const { register, handleSubmit: packingTypeHandleSubmit, formState: { errors }, reset } = useForm({
+    resolver: yupResolver(PackingTypeSchema),
     defaultValues: {
       name: '',
     }
   });
 
   // On Submit
-  const accountTypeOnSubmit = (data) => {
+  const packingTypeOnSubmit = (data) => {
     setIsLoading(true)
-    addProductCategoryMutation(data)
+    addPackingTypeMutation(data)
   };
 
   return (
@@ -103,26 +103,26 @@ const Category = ({ Controller, control, errors: mainErrors, isLoading: mainIsLo
             Controller={Controller}
             control={control}
             errors={mainErrors}
-            options={categoryOptions || []}
+            options={packingTypeOptions || []}
             isLoading={mainIsLoading}
-            name={'category'}
-            label={'Product Category'}
-            placeholder={'Select Category'}
-            optionsMessage={'No Category Found...'}
+            name={'packingType'}
+            label={'Packing Type'}
+            placeholder={'Select Packing Type'}
+            optionsMessage={'No Packing Type Found...'}
           />
         </div>
 
         {/* Dialog Content */}
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Add new Account Type</DialogTitle>
+            <DialogTitle>Add new Packing Type</DialogTitle>
           </DialogHeader>
 
-          <form onSubmit={accountTypeHandleSubmit(accountTypeOnSubmit)}>
+          <form onSubmit={packingTypeHandleSubmit(packingTypeOnSubmit)}>
             <div className='mt-4 space-y-8'>
               <Input
                 id='name'
-                label='Product Category'
+                label='Packing Type'
                 type='text'
                 register={register}
                 errors={errors}
@@ -141,4 +141,4 @@ const Category = ({ Controller, control, errors: mainErrors, isLoading: mainIsLo
   )
 }
 
-export default Category
+export default PackingType

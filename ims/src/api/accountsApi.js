@@ -1,5 +1,5 @@
 import { axiosPrivate } from './axios.js'
-import { toast } from 'react-hot-toast';
+import { toast } from 'sonner';
 
 // Add Account
 const addAccount = async (data) => {
