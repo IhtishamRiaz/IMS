@@ -1,15 +1,18 @@
 import React from 'react';
 import ReactSelect from "react-select";
+import { cn } from '../lib/utils';
 
-const Select = ({ Controller, control, options, name, placeholder, optionsMessage, label, errors, isLoading, setTypeValue, ...props }) => {
+const Select = ({ Controller, control, options, name, placeholder, optionsMessage, label, errors, isLoading, setTypeValue, className, ...props }) => {
   return (
-    <section className='w-56'>
-      <label
-        htmlFor={name}
-        className="block text-sm font-medium leading-6 text-gray-600"
-      >
-        {label}
-      </label>
+    <section className={cn('w-56', className)}>
+      {label &&
+        <label
+          htmlFor={name}
+          className="block text-sm font-medium leading-6 text-gray-600"
+        >
+          {label}
+        </label>
+      }
       <Controller
         control={control}
         name={name}

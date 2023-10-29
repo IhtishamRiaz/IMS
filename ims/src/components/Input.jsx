@@ -1,16 +1,13 @@
 import React from 'react'
 import { cn } from '../lib/utils'
 
-const Input = ({ label, id, type, required, errors, register, disabled, fullWidth, ...props }) => {
+const Input = ({ label, id, type, required, errors, register, disabled, fullWidth, className, ...props }) => {
   return (
     <section className='relative'>
-      <label
-        htmlFor={id}
-        className="block text-sm font-medium leading-3 text-gray-600"
-      >
-        {label}
-      </label>
-      <div className="mt-2">
+      {label &&
+        <label htmlFor={id} className="block text-sm font-medium leading-6 text-gray-600">{label}</label>
+      }
+      <div>
         <input
           id={id}
           type={type}
@@ -38,7 +35,8 @@ const Input = ({ label, id, type, required, errors, register, disabled, fullWidt
                     sm:leading-6`,
             errors[id] && "focus:ring-rose-500 ring-rose-500",
             disabled && "opacity-50 cursor-default",
-            fullWidth && 'w-full'
+            fullWidth && 'w-full',
+            className
           )}
         />
       </div>

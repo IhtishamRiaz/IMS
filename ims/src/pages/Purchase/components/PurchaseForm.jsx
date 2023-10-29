@@ -26,6 +26,29 @@ const PurchaseForm = ({ accounts, products }) => {
     seller: '',
   }
 
+  const invoiceData = [
+    {
+      id: 1,
+      product: 'Bisconi',
+      qty1: '5',
+      qty2: '2',
+      rate: '650',
+      discount: '10%',
+      scheme: '0',
+      total: '6500',
+    },
+    {
+      id: 2,
+      product: 'Bisconi',
+      qty1: '5',
+      qty2: '2',
+      rate: '650',
+      discount: '10%',
+      scheme: '0',
+      total: '6500',
+    },
+  ]
+
   // API Functions
   const axiosPrivate = useAxiosPrivate()
   const addPurchase = async (data) => {
@@ -112,19 +135,6 @@ const PurchaseForm = ({ accounts, products }) => {
           Controller={Controller}
           control={control}
           errors={errors}
-          options={productOptions || []}
-          isLoading={isLoading}
-          name={'product'}
-          label={'Product'}
-          placeholder={'Select Product'}
-          optionsMessage={'No Product Found...'}
-          filterOption={productFilterOption}
-        />
-
-        <Select
-          Controller={Controller}
-          control={control}
-          errors={errors}
           options={supplierOptions || []}
           isLoading={isLoading}
           name={'supplier'}
@@ -132,6 +142,113 @@ const PurchaseForm = ({ accounts, products }) => {
           placeholder={'Select Supplier'}
           optionsMessage={'No Supplier Found...'}
         />
+        <table className='w-full my-7'>
+          <thead>
+            <tr>
+              <th>Product</th>
+              <th>Qty/Carton</th>
+              <th>Qty/Box</th>
+              <th>Rate</th>
+              <th>Discount</th>
+              <th>Scheme</th>
+              <th>Total</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>
+                <Select
+                  Controller={Controller}
+                  control={control}
+                  errors={errors}
+                  options={productOptions || []}
+                  isLoading={isLoading}
+                  name={'product'}
+                  placeholder={'Select Product'}
+                  optionsMessage={'No Product Found...'}
+                  filterOption={productFilterOption}
+                />
+              </td>
+              <td>
+                <Input
+                  id='qty1'
+                  type='text'
+                  register={register}
+                  errors={errors}
+                  disabled={isLoading}
+                  required
+                  className={'w-full'}
+                />
+              </td>
+              <td>
+                <Input
+                  id='qty2'
+                  type='text'
+                  register={register}
+                  errors={errors}
+                  disabled={isLoading}
+                  required
+                  className={'w-full'}
+                />
+              </td>
+              <td>
+                <Input
+                  id='rate'
+                  type='text'
+                  register={register}
+                  errors={errors}
+                  disabled={isLoading}
+                  required
+                  className={'w-full'}
+                />
+              </td>
+              <td>
+                <Input
+                  id='discount'
+                  type='text'
+                  register={register}
+                  errors={errors}
+                  disabled={isLoading}
+                  required
+                  className={'w-full'}
+                />
+              </td>
+              <td>
+                <Input
+                  id='scheme'
+                  type='text'
+                  register={register}
+                  errors={errors}
+                  disabled={isLoading}
+                  required
+                  className={'w-full'}
+                />
+              </td>
+              <td>
+                <Input
+                  id='total'
+                  type='text'
+                  register={register}
+                  errors={errors}
+                  disabled={isLoading}
+                  required
+                  className={'w-full'}
+                />
+              </td>
+            </tr>
+            {invoiceData?.map(item => (
+              <tr key={item._id}>
+                <td>{item.product}</td>
+                <td>{item.qty1}</td>
+                <td>{item.qty2}</td>
+                <td>{item.rate}</td>
+                <td>{item.discount}</td>
+                <td>{item.scheme}</td>
+                <td>{item.total}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
 
         <Button
           type='submit'
