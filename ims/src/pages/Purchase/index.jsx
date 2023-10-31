@@ -9,7 +9,7 @@ import { usePurchaseStore } from './store/purchaseStore';
 const Purchase = () => {
   useTitle('Purchase Invoice');
 
-  // const setProducts = useProductStore((state) => state.setProducts);
+  const setProducts = usePurchaseStore((state) => state.setProducts);
 
   // API Functions
   const axiosPrivate = useAxiosPrivate()

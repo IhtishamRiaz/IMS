@@ -1,16 +1,31 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import Input from '../../../components/Input'
 import Select from '../../../components/Select'
 import { useForm, Controller } from "react-hook-form"
 import { yupResolver } from "@hookform/resolvers/yup"
 import * as Yup from "yup"
 import Button from '../../../components/Button'
-import Category from './Category.jsx'
-import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { Button as Button1 } from '../../../components/ui/button'
+import { useQueryClient } from '@tanstack/react-query'
 import useAxiosPrivate from '../../../hooks/useAxiosPrivate'
 import { toast } from 'sonner'
-import { usePurchaseStore } from '../store/purchaseStore'
-import { capitalizeEachFirstWord } from '../../../lib/utils'
+import { cn } from '../../../lib/utils'
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "../../../components/ui/table"
+import { Plus as PlusCircle } from 'lucide-react'
+import { DotsHorizontalIcon } from "@radix-ui/react-icons"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "../../../components/ui/dropdown-menu"
 
 
 const PurchaseForm = ({ accounts, products }) => {
@@ -19,11 +34,29 @@ const PurchaseForm = ({ accounts, products }) => {
   const completeResetValues = {
     name: '',
     seller: '',
+    product: '',
+    qty1: '',
+    qty2: '',
+    rate: '',
+    discount: '',
+    discountType: 'percent',
+    scheme: '',
+    schemeUnit: 'box',
+    total: '',
   }
 
   let formDefaultValues = {
     name: '',
     seller: '',
+    product: '',
+    qty1: '',
+    qty2: '',
+    rate: '',
+    discount: '',
+    discountType: 'percent',
+    scheme: '',
+    schemeUnit: 'box',
+    total: '',
   }
 
   const invoiceData = [
@@ -35,6 +68,7 @@ const PurchaseForm = ({ accounts, products }) => {
       rate: '650',
       discount: '10%',
       scheme: '0',
+      schemeUnit: 'box',
       total: '6500',
     },
     {
@@ -45,6 +79,7 @@ const PurchaseForm = ({ accounts, products }) => {
       rate: '650',
       discount: '10%',
       scheme: '0',
+      schemeUnit: 'box',
       total: '6500',
     },
   ]
@@ -79,13 +114,20 @@ const PurchaseForm = ({ accounts, products }) => {
 
 
   // Yup Validation Schema
-  const productSchema = Yup.object({
+  const PurchaseInvoiceSchema = Yup.object({
     name: Yup.string().required('Please enter a name'),
     seller: Yup.string().required('Please select a seller'),
+    product: Yup.string().required('Please select a seller'),
+    qty1: Yup.number().typeError("Must be a number").required('Please enter a qty1'),
+    qty2: Yup.number().typeError("Must be a number").required('Please enter a qty2'),
+    rate: Yup.number().typeError("Must be a number").required('Please enter a rate'),
+    discount: Yup.number().typeError("Must be a number").required('Please enter a discount'),
+    scheme: Yup.number().typeError("Must be a number").required('Please enter a scheme'),
+    total: Yup.number().typeError("Must be a number").required('Please enter total'),
   });
 
   const { register, handleSubmit: mainHandleSubmit, control, formState: { errors }, reset } = useForm({
-    resolver: yupResolver(productSchema),
+    resolver: yupResolver(PurchaseInvoiceSchema),
     defaultValues: formDefaultValues
   });
 
@@ -100,6 +142,14 @@ const PurchaseForm = ({ accounts, products }) => {
     return acc.accountType?.name === 'supplier'
   })
 
+  // React Select Options
+  const supplierOptions = allSupplierAccounts?.map(sup => {
+    return {
+      value: sup._id,
+      label: sup.name
+    }
+  })
+
   const productOptions = products?.map((prod) => {
     return {
       value: prod._id,
@@ -107,11 +157,19 @@ const PurchaseForm = ({ accounts, products }) => {
       key: prod.productId
     }
   })
-
-  const supplierOptions = allSupplierAccounts?.map(sup => {
+  const discountTypeData = [{ label: "%", value: "percent" }, { label: "Rs", value: "amount" }]
+  const discountTypeOptions = discountTypeData?.map((item) => {
     return {
-      value: sup._id,
-      label: sup.name
+      label: item.label,
+      value: item.value,
+    }
+  })
+
+  const schemeUnitData = [{ label: "Carton", value: "carton" }, { label: "Box", value: "box" }]
+  const schemeUnitOptions = schemeUnitData?.map((item) => {
+    return {
+      label: item.label,
+      value: item.value,
     }
   })
 
@@ -142,113 +200,167 @@ const PurchaseForm = ({ accounts, products }) => {
           placeholder={'Select Supplier'}
           optionsMessage={'No Supplier Found...'}
         />
-        <table className='w-full my-7'>
-          <thead>
-            <tr>
-              <th>Product</th>
-              <th>Qty/Carton</th>
-              <th>Qty/Box</th>
-              <th>Rate</th>
-              <th>Discount</th>
-              <th>Scheme</th>
-              <th>Total</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>
-                <Select
-                  Controller={Controller}
-                  control={control}
-                  errors={errors}
-                  options={productOptions || []}
-                  isLoading={isLoading}
-                  name={'product'}
-                  placeholder={'Select Product'}
-                  optionsMessage={'No Product Found...'}
-                  filterOption={productFilterOption}
-                />
-              </td>
-              <td>
-                <Input
-                  id='qty1'
-                  type='text'
-                  register={register}
-                  errors={errors}
-                  disabled={isLoading}
-                  required
-                  className={'w-full'}
-                />
-              </td>
-              <td>
-                <Input
-                  id='qty2'
-                  type='text'
-                  register={register}
-                  errors={errors}
-                  disabled={isLoading}
-                  required
-                  className={'w-full'}
-                />
-              </td>
-              <td>
-                <Input
-                  id='rate'
-                  type='text'
-                  register={register}
-                  errors={errors}
-                  disabled={isLoading}
-                  required
-                  className={'w-full'}
-                />
-              </td>
-              <td>
-                <Input
-                  id='discount'
-                  type='text'
-                  register={register}
-                  errors={errors}
-                  disabled={isLoading}
-                  required
-                  className={'w-full'}
-                />
-              </td>
-              <td>
-                <Input
-                  id='scheme'
-                  type='text'
-                  register={register}
-                  errors={errors}
-                  disabled={isLoading}
-                  required
-                  className={'w-full'}
-                />
-              </td>
-              <td>
-                <Input
-                  id='total'
-                  type='text'
-                  register={register}
-                  errors={errors}
-                  disabled={isLoading}
-                  required
-                  className={'w-full'}
-                />
-              </td>
-            </tr>
-            {invoiceData?.map(item => (
-              <tr key={item._id}>
-                <td>{item.product}</td>
-                <td>{item.qty1}</td>
-                <td>{item.qty2}</td>
-                <td>{item.rate}</td>
-                <td>{item.discount}</td>
-                <td>{item.scheme}</td>
-                <td>{item.total}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        <div className='w-full my-7 border rounded-md'>
+          <Table className="text-md">
+            <TableHeader>
+              <TableRow>
+                <TableHead>Product</TableHead>
+                <TableHead>Qty/Carton</TableHead>
+                <TableHead>Qty/Box</TableHead>
+                <TableHead>Rate</TableHead>
+                <TableHead>Discount</TableHead>
+                <TableHead></TableHead>
+                <TableHead>Scheme</TableHead>
+                <TableHead>Total</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody className={cn("[&_tr:last-child]:border-0")}>
+              <TableRow>
+                <TableCell>
+                  <Select
+                    Controller={Controller}
+                    control={control}
+                    errors={errors}
+                    options={productOptions || []}
+                    isLoading={isLoading}
+                    name={'product'}
+                    placeholder={'Select Product'}
+                    optionsMessage={'No Product Found...'}
+                    filterOption={productFilterOption}
+                  />
+                </TableCell>
+                <TableCell>
+                  <Input
+                    id='qty1'
+                    type='text'
+                    register={register}
+                    errors={errors}
+                    disabled={isLoading}
+                    required
+                    className={'w-28'}
+                  />
+                </TableCell>
+                <TableCell>
+                  <Input
+                    id='qty2'
+                    type='text'
+                    register={register}
+                    errors={errors}
+                    disabled={isLoading}
+                    required
+                    className={'w-28'}
+                  />
+                </TableCell>
+                <TableCell>
+                  <Input
+                    id='rate'
+                    type='text'
+                    register={register}
+                    errors={errors}
+                    disabled={isLoading}
+                    required
+                    className={'w-28'}
+                  />
+                </TableCell>
+                <TableCell className='flex gap-2'>
+                  <Input
+                    id='discount'
+                    type='text'
+                    register={register}
+                    errors={errors}
+                    disabled={isLoading}
+                    required
+                    className={'w-28'}
+                  />
+                  <Select
+                    Controller={Controller}
+                    control={control}
+                    errors={errors}
+                    options={discountTypeOptions || []}
+                    isLoading={isLoading}
+                    name={'discountType'}
+                    placeholder={'Type'}
+                    optionsMessage={'No Discount Type'}
+                    className={'w-28'}
+                  />
+                </TableCell>
+                <TableCell></TableCell>
+                <TableCell className='flex gap-2'>
+                  <Input
+                    id='scheme'
+                    type='text'
+                    register={register}
+                    errors={errors}
+                    disabled={isLoading}
+                    required
+                    className={'w-28'}
+                  />
+                  <Select
+                    Controller={Controller}
+                    control={control}
+                    errors={errors}
+                    options={schemeUnitOptions || []}
+                    isLoading={isLoading}
+                    name={'schemeUnit'}
+                    placeholder={'Unit'}
+                    optionsMessage={'No Scheme Unit Found...'}
+                    className={'w-28'}
+                  />
+                </TableCell>
+                <TableCell>
+                  <Input
+                    id='total'
+                    type='text'
+                    register={register}
+                    errors={errors}
+                    disabled={true}
+                    required
+                    className={'w-28'}
+                  />
+                </TableCell>
+                <TableCell>
+                  <Button ghost>
+                    <PlusCircle size={20} />
+                  </Button>
+                </TableCell>
+              </TableRow>
+              {invoiceData?.map(item => (
+                <TableRow key={item.id} className="border-b transition-colors hover:bg-gray-100/50">
+                  <TableCell>{item.product}</TableCell>
+                  <TableCell>{item.qty1}</TableCell>
+                  <TableCell>{item.qty2}</TableCell>
+                  <TableCell>{item.rate}</TableCell>
+                  <TableCell>{item.discount}</TableCell>
+                  <TableCell></TableCell>
+                  <TableCell>{item.scheme}</TableCell>
+                  <TableCell>{item.total}</TableCell>
+                  <TableCell>
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button1
+                          variant="ghost"
+                          className="flex h-8 w-8 p-0 data-[state=open]:bg-muted"
+                        >
+                          <DotsHorizontalIcon className="w-4 h-4" />
+                          <span className="sr-only">Open menu</span>
+                        </Button1>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end" className="w-[160px]">
+                        {/* <DropdownMenuItem onClick={handleEdit}>Edit</DropdownMenuItem> */}
+                        <DropdownMenuItem>Edit</DropdownMenuItem>
+                        <DropdownMenuItem>
+                          {/* <AlertDialogTrigger className="w-full text-left"> */}
+                          Delete
+                          {/* </AlertDialogTrigger> */}
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </div>
 
         <Button
           type='submit'
