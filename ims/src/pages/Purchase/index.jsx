@@ -7,48 +7,48 @@ import useAxiosPrivate from '../../hooks/useAxiosPrivate';
 import { usePurchaseStore } from './store/purchaseStore';
 
 const Purchase = () => {
-  useTitle('Purchase Invoice');
+   useTitle('Purchase Invoice');
 
-  const setProducts = usePurchaseStore((state) => state.setProducts);
+   const setProducts = usePurchaseStore((state) => state.setProducts);
 
-  // API Functions
-  const axiosPrivate = useAxiosPrivate()
+   // API Functions
+   const axiosPrivate = useAxiosPrivate()
 
-  // Get All Accounts
-  const getAllAccounts = async () => {
-    const response = await axiosPrivate.get('/account')
-    return response.data
-  }
+   // Get All Accounts
+   const getAllAccounts = async () => {
+      const response = await axiosPrivate.get('/account')
+      return response.data
+   }
 
-  // Get All Products
-  const getAllProducts = async () => {
-    const response = await axiosPrivate.get('/product')
-    return response.data
-  }
+   // Get All Products
+   const getAllProducts = async () => {
+      const response = await axiosPrivate.get('/product')
+      return response.data
+   }
 
-  // React Queries
-  const { data: products } = useQuery({
-    queryFn: getAllProducts,
-    queryKey: ['products'],
-  })
+   // React Queries
+   const { data: products } = useQuery({
+      queryFn: getAllProducts,
+      queryKey: ['products'],
+   })
 
-  const { data: accounts } = useQuery({
-    queryFn: getAllAccounts,
-    queryKey: ['accounts'],
-  })
+   const { data: accounts } = useQuery({
+      queryFn: getAllAccounts,
+      queryKey: ['accounts'],
+   })
 
-  // useEffect(() => {
-  //   setProducts(products)
-  // }, [products])
+   // useEffect(() => {
+   //    setProducts(products)
+   // }, [products])
 
-  return (
-    <>
-      <h1 className='text-3xl font-bold'>Purchase Invoice</h1>
-      <ProductForm accounts={accounts} products={products} />
+   return (
+      <>
+         <h1 className='text-3xl font-bold'>Purchase Invoice</h1>
+         <ProductForm accounts={accounts} products={products} />
 
-      {/* <DataTablePage products={products} /> */}
-    </>
-  )
+         {/* <DataTablePage products={products} /> */}
+      </>
+   )
 }
 
 export default Purchase;
