@@ -27,25 +27,25 @@ const PurchaseForm = ({ accounts, products }) => {
 
    const completeResetValues = {
       product: '',
-      qty1: 0,
+      qty1: '',
       qty2: '',
-      rate: 0,
+      rate: '',
       discount: '',
       discountType: 'percent',
       scheme: '',
-      schemeUnit: 'box',
+      schemeUnit: 'qty2',
       total: 0,
    }
 
    let formDefaultValues = {
       product: '',
-      qty1: 0,
+      qty1: '',
       qty2: '',
-      rate: 0,
+      rate: '',
       discount: '',
       discountType: 'percent',
       scheme: '',
-      schemeUnit: 'box',
+      schemeUnit: 'qty2',
       total: 0,
    }
 
@@ -155,7 +155,7 @@ const PurchaseForm = ({ accounts, products }) => {
       }
    })
 
-   const schemeUnitData = [{ label: "Carton", value: "carton" }, { label: "Box", value: "box" }]
+   const schemeUnitData = [{ label: "Carton", value: "qty1" }, { label: "Box", value: "qty2" }]
    const schemeUnitOptions = schemeUnitData?.map((item) => {
       return {
          label: item.label,
@@ -173,31 +173,63 @@ const PurchaseForm = ({ accounts, products }) => {
 
 
    // All the realtime form Calculation
-   const [total, setTotal] = useState(0)
-
+   const productId = useWatch({ control, name: 'product' })
+   const qty1 = parseInt(useWatch({ control, name: 'qty1' })) || 0
+   const qty2 = parseInt(useWatch({ control, name: 'qty2' })) || 0
+   const rate = parseInt(useWatch({ control, name: 'rate' })) || 0
+   const discount = parseInt(useWatch({ control, name: 'discount' })) || 0
    const discountType = useWatch({ control, name: 'discountType' })
-   const discount = useWatch({ control, name: 'discount' })
-   const qty1 = useWatch({ control, name: 'qty1' })
-   const rate = useWatch({ control, name: 'rate' })
+   const scheme = parseInt(useWatch({ control, name: 'scheme' })) || 0
+   const schemeUnit = useWatch({ control, name: 'schemeUnit' })
+
+   const selectedProduct = products?.find((prod) => {
+      return prod?._id === productId
+   })
+
+   const calculateTotalItems = () => {
+      return qty2 + qty1 * selectedProduct?.packingSize
+   }
 
    const calculateDiscount = () => {
       if (discountType === 'percent') {
-         return Math.round((discount / 100) * total)
+         return Math.round((discount / 100) * calculateTotalItems() * rate)
       } else {
-         return parseInt(discount)
+         return discount
+      }
+   }
+
+   const calculateScheme = () => {
+      if (schemeUnit === 'qty2') {
+         return scheme * rate
+      }
+      else if (schemeUnit === 'qty1') {
+         return scheme * rate * selectedProduct?.packingSize
+      }
+   }
+
+   const calculateTotal = () => {
+      const totalItems = calculateTotalItems();
+      const discountAmount = calculateDiscount();
+      const schemeAmount = calculateScheme();
+
+      if (discountAmount) {
+         return totalItems * rate - discountAmount
+      }
+      else if (schemeAmount) {
+         return totalItems * rate - schemeAmount
+      }
+      else if (discountAmount && schemeAmount) {
+         return totalItems * rate - discountAmount - schemeAmount
+      }
+      else {
+         return totalItems * rate
       }
    }
 
    useEffect(() => {
-      setValue('total', qty1 * rate)
-      setTotal(qty1 * rate)
-   }, [qty1, rate])
+      setValue('total', calculateTotal())
+   }, [discount, discountType, qty1, qty2, rate, productId, scheme, schemeUnit])
 
-   useEffect(() => {
-      setValue('total', total - calculateDiscount())
-   }, [discount, discountType])
-
-   // console.log("Total=> " + total);
    return (
       <div className='px-4 py-6 my-5 bg-white rounded-lg shadow-md'>
          <h2 className='text-2xl font-bold'>
@@ -218,7 +250,7 @@ const PurchaseForm = ({ accounts, products }) => {
 
          <form onSubmit={mainHandleSubmit(mainOnSubmit)} id='main-form' className='mt-4 space-y-3'></form>
 
-         <div className='w-full my-7 border rounded-md'>
+         <div className='w-full border rounded-md my-7'>
             <Table className="text-md">
                <TableHeader>
                   <TableRow>
