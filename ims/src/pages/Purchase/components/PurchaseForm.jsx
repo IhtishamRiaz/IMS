@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import Input from '../../../components/Input'
 import Select from '../../../components/Select'
 import { useForm, Controller, useWatch } from "react-hook-form"
@@ -172,7 +172,7 @@ const PurchaseForm = ({ accounts, products }) => {
    };
 
 
-   // All the realtime form Calculation
+   // All the realtime Calculations
    const productId = useWatch({ control, name: 'product' })
    const qty1 = parseInt(useWatch({ control, name: 'qty1' })) || 0
    const qty2 = parseInt(useWatch({ control, name: 'qty2' })) || 0
@@ -182,17 +182,23 @@ const PurchaseForm = ({ accounts, products }) => {
    const scheme = parseInt(useWatch({ control, name: 'scheme' })) || 0
    const schemeUnit = useWatch({ control, name: 'schemeUnit' })
 
-   const selectedProduct = products?.find((prod) => {
-      return prod?._id === productId
-   })
+   const selectedProduct = useMemo(() => {
+      return products?.find((prod) => prod?._id === productId)
+   }, [productId, products])
 
    const calculateTotalItems = () => {
       return qty2 + qty1 * selectedProduct?.packingSize
    }
 
    const calculateDiscount = () => {
+      const totalItems = calculateTotalItems();
+
+      if (totalItems === 0) {
+         return 0;
+      }
+
       if (discountType === 'percent') {
-         return Math.round((discount / 100) * calculateTotalItems() * rate)
+         return Math.round((discount / 100) * totalItems * rate)
       } else {
          return discount
       }
@@ -212,14 +218,14 @@ const PurchaseForm = ({ accounts, products }) => {
       const discountAmount = calculateDiscount();
       const schemeAmount = calculateScheme();
 
-      if (discountAmount) {
+      if (discountAmount && schemeAmount) {
+         return totalItems * rate - discountAmount - schemeAmount
+      }
+      else if (discountAmount) {
          return totalItems * rate - discountAmount
       }
       else if (schemeAmount) {
          return totalItems * rate - schemeAmount
-      }
-      else if (discountAmount && schemeAmount) {
-         return totalItems * rate - discountAmount - schemeAmount
       }
       else {
          return totalItems * rate
@@ -228,7 +234,7 @@ const PurchaseForm = ({ accounts, products }) => {
 
    useEffect(() => {
       setValue('total', calculateTotal())
-   }, [discount, discountType, qty1, qty2, rate, productId, scheme, schemeUnit])
+   }, [productId, qty1, qty2, rate, discount, discountType, scheme, schemeUnit])
 
    return (
       <div className='px-4 py-6 my-5 bg-white rounded-lg shadow-md'>
