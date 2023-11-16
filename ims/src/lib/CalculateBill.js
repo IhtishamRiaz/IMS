@@ -1,19 +1,18 @@
-// import { useMemo } from "react"
 
 const calculateBill = (products, productId, qty1, qty2, rate, discount, discountType, scheme, schemeUnit) => {
 
-   // const selectedProduct = useMemo(() => {
-   //    return products?.find((prod) => prod?._id === productId)
-   // }, [productId, products])
-
    const selectedProduct = products?.find((prod) => prod?._id === productId)
+
+   rate = rate / selectedProduct?.packingSize
 
    const calculateTotalItems = () => {
       return qty2 + qty1 * selectedProduct?.packingSize
    }
 
    const calculateSubTotal = () => {
-      return qty2 + qty1 * selectedProduct?.packingSize * rate
+      const totalItems = calculateTotalItems();
+
+      return totalItems * rate
    }
 
    const calculateDiscount = () => {
@@ -43,8 +42,9 @@ const calculateBill = (products, productId, qty1, qty2, rate, discount, discount
       const totalItems = calculateTotalItems();
       const discountAmount = calculateDiscount();
       const schemeAmount = calculateScheme();
+      const subTotal = calculateSubTotal();
 
-      return totalItems * rate - discountAmount - schemeAmount
+      return subTotal - discountAmount - schemeAmount
 
       // if (discountAmount && schemeAmount) {
       //    return totalItems * rate - discountAmount - schemeAmount

@@ -13,10 +13,11 @@ const InvoiceItems = ({ invoiceData, products }) => {
    return (
       <>
          {invoiceData?.map(item => (
-            <TableRow key={item.id} className="border-b transition-colors hover:bg-gray-100/50">
+            <TableRow key={item.id} className="transition-colors border-b hover:bg-gray-100/50">
                <TableCell>{products?.find(prod => prod._id === item.productId)?.name}</TableCell>
                <TableCell>{item.qty1}</TableCell>
                <TableCell>{item.qty2}</TableCell>
+               <TableCell>{item.totalQty}</TableCell>
                <TableCell>{item.rate}</TableCell>
                <TableCell>{`${item.discount} ${item.discountType}`}</TableCell>
                <TableCell></TableCell>

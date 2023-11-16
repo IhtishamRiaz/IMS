@@ -26,10 +26,10 @@ const InvoiceSummary = ({ invoiceData, products }) => {
                <p>Total</p>
             </span>
             <span className='min-w-[80px] text-right font-medium leading-8'>
-               <p>{subTotal} Rs</p>
-               <p>{discountAmount} Rs</p>
-               <p>{schemeAmount} Rs</p>
-               <p>{total} Rs</p>
+               <p>{subTotal.toFixed(2)} Rs</p>
+               <p>{discountAmount.toFixed(2)} Rs</p>
+               <p>{schemeAmount.toFixed(2)} Rs</p>
+               <p>{total.toFixed(2)} Rs</p>
             </span>
          </div>
       </div>

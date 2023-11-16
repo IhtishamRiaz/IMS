@@ -25,11 +25,13 @@ import InvoiceSummary from './InvoiceSummary'
 
 const PurchaseForm = ({ accounts, products }) => {
    const [isLoading, setIsLoading] = useState(false)
+   const [invoiceData, setInvoiceData] = useState([])
 
    const completeResetValues = {
       productId: '',
       qty1: 0,
       qty2: 0,
+      totalQty: 0,
       rate: 0,
       discount: 0,
       discountType: '%',
@@ -42,6 +44,7 @@ const PurchaseForm = ({ accounts, products }) => {
       productId: '',
       qty1: 0,
       qty2: 0,
+      totalQty: 0,
       rate: 0,
       discount: 0,
       discountType: '%',
@@ -49,8 +52,6 @@ const PurchaseForm = ({ accounts, products }) => {
       schemeUnit: 'box',
       total: 0,
    }
-
-   const [invoiceData, setInvoiceData] = useState([])
 
    // API Functions
    const axiosPrivate = useAxiosPrivate()
@@ -86,6 +87,7 @@ const PurchaseForm = ({ accounts, products }) => {
       productId: Yup.string().required('Please select a product'),
       qty1: Yup.number().typeError("Must be a number").required('Please enter a qty1'),
       qty2: Yup.number().typeError("Must be a number").required('Please enter a qty2'),
+      totalQty: Yup.number().typeError("Must be a number").required('Please enter a Total Quantity'),
       rate: Yup.number().typeError("Must be a number").required('Please enter a rate'),
       discount: Yup.number().typeError("Must be a number").required('Please enter a discount'),
       discountType: Yup.string().required('Please select a type'),
@@ -156,8 +158,8 @@ const PurchaseForm = ({ accounts, products }) => {
    const productId = useWatch({ control, name: 'productId' })
    const qty1 = parseInt(useWatch({ control, name: 'qty1' })) || 0
    const qty2 = parseInt(useWatch({ control, name: 'qty2' })) || 0
-   const rate = parseInt(useWatch({ control, name: 'rate' })) || 0
-   const discount = parseInt(useWatch({ control, name: 'discount' })) || 0
+   let rate = parseFloat(useWatch({ control, name: 'rate' })) || 0
+   const discount = parseFloat(useWatch({ control, name: 'discount' })) || 0
    const discountType = useWatch({ control, name: 'discountType' })
    const scheme = parseInt(useWatch({ control, name: 'scheme' })) || 0
    const schemeUnit = useWatch({ control, name: 'schemeUnit' })
@@ -165,6 +167,8 @@ const PurchaseForm = ({ accounts, products }) => {
    const selectedProduct = useMemo(() => {
       return products?.find((prod) => prod?._id === productId)
    }, [productId, products])
+
+   rate = rate / selectedProduct?.packingSize
 
    const calculateTotalItems = () => {
       return qty2 + qty1 * selectedProduct?.packingSize
@@ -213,7 +217,8 @@ const PurchaseForm = ({ accounts, products }) => {
    }
 
    useEffect(() => {
-      setValue('total', calculateTotal() || 0)
+      setValue('total', calculateTotal().toFixed(2) || 0)
+      setValue('totalQty', calculateTotalItems() || 0)
    }, [productId, qty1, qty2, rate, discount, discountType, scheme, schemeUnit])
 
    return (
@@ -243,6 +248,7 @@ const PurchaseForm = ({ accounts, products }) => {
                      <TableHead>Product</TableHead>
                      <TableHead>Qty/Carton</TableHead>
                      <TableHead>Qty/Box</TableHead>
+                     <TableHead>Total Quantity</TableHead>
                      <TableHead>Rate</TableHead>
                      <TableHead>Discount</TableHead>
                      <TableHead></TableHead>
@@ -283,6 +289,17 @@ const PurchaseForm = ({ accounts, products }) => {
                            register={register}
                            errors={errors}
                            disabled={isLoading}
+                           required
+                           className={'w-28'}
+                        />
+                     </TableCell>
+                     <TableCell>
+                        <Input
+                           id='totalQty'
+                           type='text'
+                           register={register}
+                           errors={errors}
+                           disabled={true}
                            required
                            className={'w-28'}
                         />
