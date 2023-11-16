@@ -19,6 +19,7 @@ import {
 } from "../../../components/ui/table"
 import { Plus as PlusCircle } from 'lucide-react'
 import InvoiceItems from './InvoiceItems'
+import InvoiceSummary from './InvoiceSummary'
 
 
 
@@ -26,53 +27,30 @@ const PurchaseForm = ({ accounts, products }) => {
    const [isLoading, setIsLoading] = useState(false)
 
    const completeResetValues = {
-      product: '',
-      qty1: '',
-      qty2: '',
-      rate: '',
-      discount: '',
-      discountType: 'percent',
-      scheme: '',
-      schemeUnit: 'qty2',
+      productId: '',
+      qty1: 0,
+      qty2: 0,
+      rate: 0,
+      discount: 0,
+      discountType: '%',
+      scheme: 0,
+      schemeUnit: 'box',
       total: 0,
    }
 
    let formDefaultValues = {
-      product: '',
-      qty1: '',
-      qty2: '',
-      rate: '',
-      discount: '',
-      discountType: 'percent',
-      scheme: '',
-      schemeUnit: 'qty2',
+      productId: '',
+      qty1: 0,
+      qty2: 0,
+      rate: 0,
+      discount: 0,
+      discountType: '%',
+      scheme: 0,
+      schemeUnit: 'box',
       total: 0,
    }
 
-   const invoiceData = [
-      {
-         id: 1,
-         product: 'Bisconi',
-         qty1: '5',
-         qty2: '2',
-         rate: '650',
-         discount: '10%',
-         scheme: '0',
-         schemeUnit: 'box',
-         total: '6500',
-      },
-      {
-         id: 2,
-         product: 'Bisconi',
-         qty1: '5',
-         qty2: '2',
-         rate: '650',
-         discount: '10%',
-         scheme: '0',
-         schemeUnit: 'box',
-         total: '6500',
-      },
-   ]
+   const [invoiceData, setInvoiceData] = useState([])
 
    // API Functions
    const axiosPrivate = useAxiosPrivate()
@@ -105,7 +83,7 @@ const PurchaseForm = ({ accounts, products }) => {
 
    // Yup Validation Schema
    const PurchaseInvoiceSchema = Yup.object({
-      product: Yup.string().required('Please select a product'),
+      productId: Yup.string().required('Please select a product'),
       qty1: Yup.number().typeError("Must be a number").required('Please enter a qty1'),
       qty2: Yup.number().typeError("Must be a number").required('Please enter a qty2'),
       rate: Yup.number().typeError("Must be a number").required('Please enter a rate'),
@@ -124,6 +102,8 @@ const PurchaseForm = ({ accounts, products }) => {
    // On Submit
    const mainOnSubmit = (data) => {
       console.log("🚀 ~ file: PurchaseForm.jsx:129 ~ mainOnSubmit ~ data:", data)
+      setInvoiceData((prevState) => [...prevState, data])
+      reset(formDefaultValues)
       // setIsLoading(true)
    }
 
@@ -147,7 +127,7 @@ const PurchaseForm = ({ accounts, products }) => {
          key: prod.productId
       }
    })
-   const discountTypeData = [{ label: "%", value: "percent" }, { label: "Rs", value: "amount" }]
+   const discountTypeData = [{ label: "%", value: "%" }, { label: "Rs", value: "rs" }]
    const discountTypeOptions = discountTypeData?.map((item) => {
       return {
          label: item.label,
@@ -155,7 +135,7 @@ const PurchaseForm = ({ accounts, products }) => {
       }
    })
 
-   const schemeUnitData = [{ label: "Carton", value: "qty1" }, { label: "Box", value: "qty2" }]
+   const schemeUnitData = [{ label: "Carton", value: "carton" }, { label: "Box", value: "box" }]
    const schemeUnitOptions = schemeUnitData?.map((item) => {
       return {
          label: item.label,
@@ -173,7 +153,7 @@ const PurchaseForm = ({ accounts, products }) => {
 
 
    // All the realtime Calculations
-   const productId = useWatch({ control, name: 'product' })
+   const productId = useWatch({ control, name: 'productId' })
    const qty1 = parseInt(useWatch({ control, name: 'qty1' })) || 0
    const qty2 = parseInt(useWatch({ control, name: 'qty2' })) || 0
    const rate = parseInt(useWatch({ control, name: 'rate' })) || 0
@@ -197,7 +177,7 @@ const PurchaseForm = ({ accounts, products }) => {
          return 0;
       }
 
-      if (discountType === 'percent') {
+      if (discountType === '%') {
          return Math.round((discount / 100) * totalItems * rate)
       } else {
          return discount
@@ -205,10 +185,10 @@ const PurchaseForm = ({ accounts, products }) => {
    }
 
    const calculateScheme = () => {
-      if (schemeUnit === 'qty2') {
+      if (schemeUnit === 'box') {
          return scheme * rate
       }
-      else if (schemeUnit === 'qty1') {
+      else if (schemeUnit === 'carton') {
          return scheme * rate * selectedProduct?.packingSize
       }
    }
@@ -233,7 +213,7 @@ const PurchaseForm = ({ accounts, products }) => {
    }
 
    useEffect(() => {
-      setValue('total', calculateTotal())
+      setValue('total', calculateTotal() || 0)
    }, [productId, qty1, qty2, rate, discount, discountType, scheme, schemeUnit])
 
    return (
@@ -279,7 +259,7 @@ const PurchaseForm = ({ accounts, products }) => {
                            errors={errors}
                            options={productOptions || []}
                            isLoading={isLoading}
-                           name={'product'}
+                           name={'productId'}
                            placeholder={'Select Product'}
                            optionsMessage={'No Product Found...'}
                            filterOption={productFilterOption}
@@ -384,10 +364,11 @@ const PurchaseForm = ({ accounts, products }) => {
                         </Button>
                      </TableCell>
                   </TableRow>
-                  <InvoiceItems invoiceData={invoiceData} />
+                  <InvoiceItems invoiceData={invoiceData} products={products} />
                </TableBody>
             </Table>
          </div>
+         <InvoiceSummary invoiceData={invoiceData} products={products} />
          {/* <Button
                type='submit'
                isLoading={isLoading}
