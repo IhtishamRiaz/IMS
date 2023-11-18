@@ -20,6 +20,7 @@ import {
 import { Plus as PlusCircle } from 'lucide-react'
 import InvoiceItems from './InvoiceItems'
 import InvoiceSummary from './InvoiceSummary'
+import calculateBill from '../../../lib/CalculateBill'
 
 
 
@@ -129,21 +130,10 @@ const PurchaseForm = ({ accounts, products }) => {
          key: prod.productId
       }
    })
-   const discountTypeData = [{ label: "%", value: "%" }, { label: "Rs", value: "rs" }]
-   const discountTypeOptions = discountTypeData?.map((item) => {
-      return {
-         label: item.label,
-         value: item.value,
-      }
-   })
 
-   const schemeUnitData = [{ label: "Carton", value: "carton" }, { label: "Box", value: "box" }]
-   const schemeUnitOptions = schemeUnitData?.map((item) => {
-      return {
-         label: item.label,
-         value: item.value,
-      }
-   })
+   const discountTypeOptions = [{ label: "%", value: "%" }, { label: "Rs", value: "rs" }]
+
+   const schemeUnitOptions = [{ label: "Carton", value: "carton" }, { label: "Box", value: "box" }]
 
    const productFilterOption = (option, inputValue) => {
       const { label, data: { key } } = option;
@@ -161,65 +151,12 @@ const PurchaseForm = ({ accounts, products }) => {
    let rate = parseFloat(useWatch({ control, name: 'rate' })) || 0
    const discount = parseFloat(useWatch({ control, name: 'discount' })) || 0
    const discountType = useWatch({ control, name: 'discountType' })
-   const scheme = parseInt(useWatch({ control, name: 'scheme' })) || 0
-   const schemeUnit = useWatch({ control, name: 'schemeUnit' })
-
-   const selectedProduct = useMemo(() => {
-      return products?.find((prod) => prod?._id === productId)
-   }, [productId, products])
-
-   rate = rate / selectedProduct?.packingSize
-
-   const calculateTotalItems = () => {
-      return qty2 + qty1 * selectedProduct?.packingSize
-   }
-
-   const calculateDiscount = () => {
-      const totalItems = calculateTotalItems();
-
-      if (totalItems === 0) {
-         return 0;
-      }
-
-      if (discountType === '%') {
-         return Math.round((discount / 100) * totalItems * rate)
-      } else {
-         return discount
-      }
-   }
-
-   const calculateScheme = () => {
-      if (schemeUnit === 'box') {
-         return scheme * rate
-      }
-      else if (schemeUnit === 'carton') {
-         return scheme * rate * selectedProduct?.packingSize
-      }
-   }
-
-   const calculateTotal = () => {
-      const totalItems = calculateTotalItems();
-      const discountAmount = calculateDiscount();
-      const schemeAmount = calculateScheme();
-
-      if (discountAmount && schemeAmount) {
-         return totalItems * rate - discountAmount - schemeAmount
-      }
-      else if (discountAmount) {
-         return totalItems * rate - discountAmount
-      }
-      else if (schemeAmount) {
-         return totalItems * rate - schemeAmount
-      }
-      else {
-         return totalItems * rate
-      }
-   }
 
    useEffect(() => {
-      setValue('total', calculateTotal().toFixed(2) || 0)
-      setValue('totalQty', calculateTotalItems() || 0)
-   }, [productId, qty1, qty2, rate, discount, discountType, scheme, schemeUnit])
+      const { total, totalQty } = calculateBill(products, productId, qty1, qty2, rate, discount, discountType)
+      setValue('total', total.toFixed(2) || 0)
+      setValue('totalQty', totalQty || 0)
+   }, [productId, qty1, qty2, rate, discount, discountType])
 
    return (
       <div className='px-4 py-6 my-5 bg-white rounded-lg shadow-md'>
