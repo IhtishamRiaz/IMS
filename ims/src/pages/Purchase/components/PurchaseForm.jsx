@@ -5,7 +5,7 @@ import { useForm, Controller, useWatch } from "react-hook-form"
 import { yupResolver } from "@hookform/resolvers/yup"
 import * as Yup from "yup"
 import Button from '../../../components/Button'
-import { useQueryClient } from '@tanstack/react-query'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 import useAxiosPrivate from '../../../hooks/useAxiosPrivate'
 import { toast } from 'sonner'
 import { cn } from '../../../lib/utils'
@@ -21,17 +21,27 @@ import { Plus as PlusCircle } from 'lucide-react'
 import InvoiceItems from './InvoiceItems'
 import InvoiceSummary from './InvoiceSummary'
 import calculateBill from '../../../lib/CalculateBill'
-
-
+import SimpleSelect from '../../../components/SimpleSelect'
 
 const PurchaseForm = ({ accounts, products }) => {
    const [isLoading, setIsLoading] = useState(false)
-   const [invoiceData, setInvoiceData] = useState([])
+   const [invoiceItems, setInvoiceItems] = useState([]);
+   const [invoiceData, setInvoiceData] = useState({
+      supplier: '',
+      subTotal: 0,
+      discount: 0,
+      total: 0,
+      remarks: '',
+      adjustment: 0,
+      adjustmentSource: 'self',
+      item: [],
+   })
+   console.log("🚀 ~ file: PurchaseForm.jsx:37 ~ PurchaseForm ~ invoiceData:", invoiceData)
 
    const completeResetValues = {
       productId: '',
-      qty1: 0,
-      qty2: 0,
+      cartons: 0,
+      boxes: 0,
       totalQty: 0,
       rate: 0,
       discount: 0,
@@ -43,8 +53,8 @@ const PurchaseForm = ({ accounts, products }) => {
 
    let formDefaultValues = {
       productId: '',
-      qty1: 0,
-      qty2: 0,
+      cartons: 0,
+      boxes: 0,
       totalQty: 0,
       rate: 0,
       discount: 0,
@@ -56,7 +66,7 @@ const PurchaseForm = ({ accounts, products }) => {
 
    // API Functions
    const axiosPrivate = useAxiosPrivate()
-   const addPurchase = async (data) => {
+   const addPurchaseInvoice = async (data) => {
       axiosPrivate.post('/purchase', data)
          .then((res) => {
             toast.success(res?.data?.message)
@@ -71,23 +81,22 @@ const PurchaseForm = ({ accounts, products }) => {
    }
 
    // React Queries
-
    const queryClient = useQueryClient()
 
-   // const { mutate: addProductMutation } = useMutation({
-   //   mutationFn: addProduct,
-   //   onSuccess: () => {
-   //     queryClient.invalidateQueries(['products'])
-   //     queryClient.refetchQueries(['products'])
-   //   }
-   // })
+   const { mutate: addPurchaseMutation } = useMutation({
+      mutationFn: addPurchaseInvoice,
+      onSuccess: () => {
+         queryClient.invalidateQueries(['purchase'])
+         queryClient.refetchQueries(['purchase'])
+      }
+   })
 
 
    // Yup Validation Schema
    const PurchaseInvoiceSchema = Yup.object({
       productId: Yup.string().required('Please select a product'),
-      qty1: Yup.number().typeError("Must be a number").required('Please enter a qty1'),
-      qty2: Yup.number().typeError("Must be a number").required('Please enter a qty2'),
+      cartons: Yup.number().typeError("Must be a number").required('Please enter a cartons'),
+      boxes: Yup.number().typeError("Must be a number").required('Please enter a boxes'),
       totalQty: Yup.number().typeError("Must be a number").required('Please enter a Total Quantity'),
       rate: Yup.number().typeError("Must be a number").required('Please enter a rate'),
       discount: Yup.number().typeError("Must be a number").required('Please enter a discount'),
@@ -104,10 +113,12 @@ const PurchaseForm = ({ accounts, products }) => {
 
    // On Submit
    const mainOnSubmit = (data) => {
-      console.log("🚀 ~ file: PurchaseForm.jsx:129 ~ mainOnSubmit ~ data:", data)
-      setInvoiceData((prevState) => [...prevState, data])
+      setInvoiceItems((prevState) => [...prevState, data])
+      setInvoiceData((prevState) => ({
+         ...prevState,
+         item: [...prevState.item, data]
+      }))
       reset(formDefaultValues)
-      // setIsLoading(true)
    }
 
    // Get all Suppliers and Products
@@ -146,17 +157,33 @@ const PurchaseForm = ({ accounts, products }) => {
 
    // All the realtime Calculations
    const productId = useWatch({ control, name: 'productId' })
-   const qty1 = parseInt(useWatch({ control, name: 'qty1' })) || 0
-   const qty2 = parseInt(useWatch({ control, name: 'qty2' })) || 0
+   const cartons = parseInt(useWatch({ control, name: 'cartons' })) || 0
+   const boxes = parseInt(useWatch({ control, name: 'boxes' })) || 0
    let rate = parseFloat(useWatch({ control, name: 'rate' })) || 0
    const discount = parseFloat(useWatch({ control, name: 'discount' })) || 0
    const discountType = useWatch({ control, name: 'discountType' })
 
    useEffect(() => {
-      const { total, totalQty } = calculateBill(products, productId, qty1, qty2, rate, discount, discountType)
+      const { total, totalQty } = calculateBill(products, productId, cartons, boxes, rate, discount, discountType)
       setValue('total', total.toFixed(2) || 0)
       setValue('totalQty', totalQty || 0)
-   }, [productId, qty1, qty2, rate, discount, discountType])
+   }, [productId, cartons, boxes, rate, discount, discountType])
+
+   // Api Call
+   const submitInvoice = () => {
+      setIsLoading(true)
+      const data = {
+         supplier: invoiceData.supplier,
+         subTotal: invoiceData.subTotal,
+         discount: invoiceData.discount,
+         total: invoiceData.total,
+         remarks: invoiceData.remarks,
+         adjustment: invoiceData.adjustment,
+         adjustmentSource: invoiceData.adjustmentSource,
+         item: invoiceItems
+      }
+      addPurchaseMutation(data)
+   }
 
    return (
       <div className='px-4 py-6 my-5 bg-white rounded-lg shadow-md'>
@@ -164,21 +191,20 @@ const PurchaseForm = ({ accounts, products }) => {
             Create Purchase Invoice
          </h2>
 
-         {/* <Select
-            Controller={Controller}
-            control={control}
-            errors={errors}
+         <SimpleSelect
             options={supplierOptions || []}
             isLoading={isLoading}
-            name={'supplier'}
             label={'Supplier'}
+            id={'supplier'}
             placeholder={'Select Supplier'}
             optionsMessage={'No Supplier Found...'}
-         /> */}
+            value={invoiceData.supplier}
+            onChange={(e) => setInvoiceData((prevState) => ({ ...prevState, supplier: e.value }))}
+         />
 
          <form onSubmit={mainHandleSubmit(mainOnSubmit)} id='main-form' className='mt-4 space-y-3'></form>
 
-         <div className='w-full border rounded-md my-7'>
+         <div className='border rounded-md my-7'>
             <Table className="text-md">
                <TableHeader>
                   <TableRow>
@@ -210,24 +236,24 @@ const PurchaseForm = ({ accounts, products }) => {
                      </TableCell>
                      <TableCell>
                         <Input
-                           id='qty1'
+                           id='cartons'
                            type='text'
                            register={register}
                            errors={errors}
                            disabled={isLoading}
                            required
-                           className={'w-28'}
+                           className={'max-w-28 w-full'}
                         />
                      </TableCell>
                      <TableCell>
                         <Input
-                           id='qty2'
+                           id='boxes'
                            type='text'
                            register={register}
                            errors={errors}
                            disabled={isLoading}
                            required
-                           className={'w-28'}
+                           className={'max-w-28 w-full'}
                         />
                      </TableCell>
                      <TableCell>
@@ -238,7 +264,7 @@ const PurchaseForm = ({ accounts, products }) => {
                            errors={errors}
                            disabled={true}
                            required
-                           className={'w-28'}
+                           className={'max-w-28 w-full'}
                         />
                      </TableCell>
                      <TableCell>
@@ -249,7 +275,7 @@ const PurchaseForm = ({ accounts, products }) => {
                            errors={errors}
                            disabled={isLoading}
                            required
-                           className={'w-28'}
+                           className={'max-w-28 w-full'}
                         />
                      </TableCell>
                      <TableCell className='flex gap-2'>
@@ -260,7 +286,7 @@ const PurchaseForm = ({ accounts, products }) => {
                            errors={errors}
                            disabled={isLoading}
                            required
-                           className={'w-28'}
+                           className={'max-w-28 w-full'}
                         />
                         <Select
                            Controller={Controller}
@@ -283,7 +309,7 @@ const PurchaseForm = ({ accounts, products }) => {
                            errors={errors}
                            disabled={isLoading}
                            required
-                           className={'w-28'}
+                           className={'max-w-28 w-full'}
                         />
                         <Select
                            Controller={Controller}
@@ -294,7 +320,7 @@ const PurchaseForm = ({ accounts, products }) => {
                            name={'schemeUnit'}
                            placeholder={'Unit'}
                            optionsMessage={'No Scheme Unit Found...'}
-                           className={'w-28'}
+                           className={'w-40'}
                         />
                      </TableCell>
                      <TableCell>
@@ -305,7 +331,7 @@ const PurchaseForm = ({ accounts, products }) => {
                            errors={errors}
                            disabled={true}
                            required
-                           className={'w-28'}
+                           className={'max-w-28 w-full'}
                         />
                      </TableCell>
                      <TableCell>
@@ -318,18 +344,17 @@ const PurchaseForm = ({ accounts, products }) => {
                         </Button>
                      </TableCell>
                   </TableRow>
-                  <InvoiceItems invoiceData={invoiceData} products={products} />
+                  <InvoiceItems invoiceItems={invoiceItems} products={products} />
                </TableBody>
             </Table>
          </div>
-         <InvoiceSummary invoiceData={invoiceData} products={products} />
-         {/* <Button
-               type='submit'
-               isLoading={isLoading}
-               form={'main-form'}
-            >
-               Add Account
-            </Button> */}
+         <InvoiceSummary invoiceItems={invoiceItems} products={products} invoiceData={invoiceData} setInvoiceData={setInvoiceData} />
+         <Button
+            isLoading={isLoading}
+            onClick={submitInvoice}
+         >
+            Submit Invoice
+         </Button>
 
       </div>
    )
