@@ -1,7 +1,7 @@
 
-const calculateBill = (products, productId, cartons, boxes, rate, discount, discountType) => {
+const calculateBill = (products, product, cartons, boxes, rate, discount, discountType) => {
 
-   const selectedProduct = products?.find((prod) => prod?._id === productId)
+   const selectedProduct = products?.find((prod) => prod?._id === product)
 
    const calculateRate = () => {
       return rate / selectedProduct?.packingSize

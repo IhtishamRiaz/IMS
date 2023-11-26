@@ -9,7 +9,7 @@ import { usePurchaseStore } from './store/purchaseStore';
 const Purchase = () => {
    useTitle('Purchase Invoice');
 
-   const setProducts = usePurchaseStore((state) => state.setProducts);
+   const setPurchases = usePurchaseStore((state) => state.setPurchases);
 
    // API Functions
    const axiosPrivate = useAxiosPrivate()
@@ -25,6 +25,11 @@ const Purchase = () => {
       const response = await axiosPrivate.get('/product')
       return response.data
    }
+   // Get All Purchases
+   const getAllPurchases = async () => {
+      const response = await axiosPrivate.get('/purchase')
+      return response.data
+   }
 
    // React Queries
    const { data: products } = useQuery({
@@ -37,16 +42,21 @@ const Purchase = () => {
       queryKey: ['accounts'],
    })
 
-   // useEffect(() => {
-   //    setProducts(products)
-   // }, [products])
+   const { data: purchases } = useQuery({
+      queryFn: getAllPurchases,
+      queryKey: ['purchases'],
+   })
+
+   useEffect(() => {
+      setPurchases(purchases)
+   }, [purchases])
 
    return (
       <>
          <h1 className='text-3xl font-bold'>Purchase Invoice</h1>
          <ProductForm accounts={accounts} products={products} />
 
-         {/* <DataTablePage products={products} /> */}
+         <DataTablePage products={products} purchases={purchases} />
       </>
    )
 }

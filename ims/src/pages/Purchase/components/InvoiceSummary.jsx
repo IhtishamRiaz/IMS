@@ -4,14 +4,14 @@ import Input from '../../../components/Input.jsx';
 import SimpleSelect from '../../../components/SimpleSelect.jsx';
 import Textarea from '../../../components/Textarea.jsx';
 
-const InvoiceSummary = ({ invoiceItems, products, invoiceData, setInvoiceData }) => {
+const InvoiceSummary = ({ products, invoiceData, setInvoiceData }) => {
 
    let subTotal = 0, discountAmount = 0, total = 0;
 
-   invoiceItems?.forEach(item => {
-      const { productId, cartons, boxes, rate, discount, discountType, } = item
+   invoiceData?.items?.forEach(item => {
+      const { product, cartons, boxes, rate, discount, discountType, } = item
 
-      const calculationResult = calculateBill(products, productId, cartons, boxes, rate, discount, discountType)
+      const calculationResult = calculateBill(products, product, cartons, boxes, rate, discount, discountType)
 
       subTotal += calculationResult?.subTotal
       discountAmount += calculationResult?.discountAmount
@@ -21,7 +21,12 @@ const InvoiceSummary = ({ invoiceItems, products, invoiceData, setInvoiceData })
    total = total + invoiceData.adjustment
 
    useEffect(() => {
-      setInvoiceData((prev) => ({ ...prev, subTotal: +subTotal.toFixed(2), discount: +discountAmount.toFixed(2), total: +total.toFixed(2) }))
+      setInvoiceData((prev) => ({
+         ...prev,
+         subTotal: +subTotal.toFixed(2),
+         discountAmount: +discountAmount.toFixed(2),
+         grandTotal: +total.toFixed(2)
+      }))
    }, [total, subTotal, discountAmount])
 
    const handleAdjustmentValueChange = (e) => {

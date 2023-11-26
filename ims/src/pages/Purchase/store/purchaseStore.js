@@ -1,15 +1,12 @@
 import { create } from 'zustand'
 
 export const usePurchaseStore = create((set) => ({
-  purchases: [],
-  setPurchases: (purchases) => set({ purchases }),
+   purchases: [],
+   setPurchases: (purchases) => set({ purchases }),
 
-  products: [],
-  setProducts: (products) => set({ products }),
+   mode: '',
+   setMode: (mode) => set({ mode }),
 
-  isEdit: false,
-  setIsEdit: (isEdit) => set({ isEdit }),
-
-  purchaseToEdit: null,
-  setPurchaseToEdit: (purchase) => set({ purchaseToEdit: purchase }),
+   selectedPurchase: null,
+   setSelectedPurchase: (purchase) => set({ selectedPurchase: purchase }),
 }))

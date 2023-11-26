@@ -9,12 +9,12 @@ import { DotsHorizontalIcon } from "@radix-ui/react-icons"
 import { Button as Button1 } from '../../../components/ui/button'
 import { TableCell, TableRow } from "../../../components/ui/table"
 
-const InvoiceItems = ({ invoiceItems, products }) => {
+const InvoiceItems = ({ invoiceData, products }) => {
    return (
       <>
-         {invoiceItems?.map(item => (
-            <TableRow key={item.productId} className="transition-colors border-b hover:bg-gray-100/50">
-               <TableCell>{products?.find(prod => prod._id === item.productId)?.name}</TableCell>
+         {invoiceData?.items?.map(item => (
+            <TableRow key={item.product} className="transition-colors border-b hover:bg-gray-100/50">
+               <TableCell>{products?.find(prod => prod._id === item.product)?.name}</TableCell>
                <TableCell>{item.cartons}</TableCell>
                <TableCell>{item.boxes}</TableCell>
                <TableCell>{item.totalQty}</TableCell>

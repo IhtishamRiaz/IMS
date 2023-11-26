@@ -22,37 +22,42 @@ import InvoiceItems from './InvoiceItems'
 import InvoiceSummary from './InvoiceSummary'
 import calculateBill from '../../../lib/CalculateBill'
 import SimpleSelect from '../../../components/SimpleSelect'
+import { usePurchaseStore } from '../store/purchaseStore'
 
 const PurchaseForm = ({ accounts, products }) => {
+
+   const selectedPurchase = usePurchaseStore((state) => state.selectedPurchase)
+   const setSelectedPurchase = usePurchaseStore((state) => state.setSelectedPurchase)
+   const mode = usePurchaseStore((state) => state.mode)
+   const setMode = usePurchaseStore((state) => state.setMode)
+
    const [isLoading, setIsLoading] = useState(false)
-   const [invoiceItems, setInvoiceItems] = useState([]);
    const [invoiceData, setInvoiceData] = useState({
       supplier: '',
       subTotal: 0,
-      discount: 0,
-      total: 0,
+      discountAmount: 0,
+      grandTotal: 0,
       remarks: '',
       adjustment: 0,
       adjustmentSource: 'self',
-      item: [],
+      items: [],
    })
-   console.log("🚀 ~ file: PurchaseForm.jsx:37 ~ PurchaseForm ~ invoiceData:", invoiceData)
+
+   useEffect(() => {
+      setInvoiceData({
+         supplier: selectedPurchase?.supplier?._id || '',
+         subTotal: selectedPurchase?.subTotal || 0,
+         discountAmount: selectedPurchase?.discountAmount || 0,
+         grandTotal: selectedPurchase?.grandTotal || 0,
+         remarks: selectedPurchase?.remarks || '',
+         adjustment: selectedPurchase?.adjustment || 0,
+         adjustmentSource: selectedPurchase?.adjustmentSource || 'self',
+         items: selectedPurchase?.items || [],
+      })
+   }, [selectedPurchase])
 
    const completeResetValues = {
-      productId: '',
-      cartons: 0,
-      boxes: 0,
-      totalQty: 0,
-      rate: 0,
-      discount: 0,
-      discountType: '%',
-      scheme: 0,
-      schemeUnit: 'box',
-      total: 0,
-   }
-
-   let formDefaultValues = {
-      productId: '',
+      product: '',
       cartons: 0,
       boxes: 0,
       totalQty: 0,
@@ -66,6 +71,7 @@ const PurchaseForm = ({ accounts, products }) => {
 
    // API Functions
    const axiosPrivate = useAxiosPrivate()
+
    const addPurchaseInvoice = async (data) => {
       axiosPrivate.post('/purchase', data)
          .then((res) => {
@@ -91,10 +97,9 @@ const PurchaseForm = ({ accounts, products }) => {
       }
    })
 
-
    // Yup Validation Schema
    const PurchaseInvoiceSchema = Yup.object({
-      productId: Yup.string().required('Please select a product'),
+      product: Yup.string().required('Please select a product'),
       cartons: Yup.number().typeError("Must be a number").required('Please enter a cartons'),
       boxes: Yup.number().typeError("Must be a number").required('Please enter a boxes'),
       totalQty: Yup.number().typeError("Must be a number").required('Please enter a Total Quantity'),
@@ -108,17 +113,16 @@ const PurchaseForm = ({ accounts, products }) => {
 
    const { register, handleSubmit: mainHandleSubmit, control, formState: { errors }, reset, setValue } = useForm({
       resolver: yupResolver(PurchaseInvoiceSchema),
-      defaultValues: formDefaultValues
+      defaultValues: completeResetValues
    });
 
    // On Submit
    const mainOnSubmit = (data) => {
-      setInvoiceItems((prevState) => [...prevState, data])
       setInvoiceData((prevState) => ({
          ...prevState,
-         item: [...prevState.item, data]
+         items: [...prevState.items, data]
       }))
-      reset(formDefaultValues)
+      reset(completeResetValues)
    }
 
    // Get all Suppliers and Products
@@ -143,7 +147,6 @@ const PurchaseForm = ({ accounts, products }) => {
    })
 
    const discountTypeOptions = [{ label: "%", value: "%" }, { label: "Rs", value: "rs" }]
-
    const schemeUnitOptions = [{ label: "Carton", value: "carton" }, { label: "Box", value: "box" }]
 
    const productFilterOption = (option, inputValue) => {
@@ -154,9 +157,8 @@ const PurchaseForm = ({ accounts, products }) => {
       );
    };
 
-
    // All the realtime Calculations
-   const productId = useWatch({ control, name: 'productId' })
+   const product = useWatch({ control, name: 'product' })
    const cartons = parseInt(useWatch({ control, name: 'cartons' })) || 0
    const boxes = parseInt(useWatch({ control, name: 'boxes' })) || 0
    let rate = parseFloat(useWatch({ control, name: 'rate' })) || 0
@@ -164,25 +166,41 @@ const PurchaseForm = ({ accounts, products }) => {
    const discountType = useWatch({ control, name: 'discountType' })
 
    useEffect(() => {
-      const { total, totalQty } = calculateBill(products, productId, cartons, boxes, rate, discount, discountType)
+      const { total, totalQty } = calculateBill(products, product, cartons, boxes, rate, discount, discountType)
       setValue('total', total.toFixed(2) || 0)
       setValue('totalQty', totalQty || 0)
-   }, [productId, cartons, boxes, rate, discount, discountType])
+   }, [product, cartons, boxes, rate, discount, discountType])
 
    // Api Call
    const submitInvoice = () => {
       setIsLoading(true)
-      const data = {
-         supplier: invoiceData.supplier,
-         subTotal: invoiceData.subTotal,
-         discount: invoiceData.discount,
-         total: invoiceData.total,
-         remarks: invoiceData.remarks,
-         adjustment: invoiceData.adjustment,
-         adjustmentSource: invoiceData.adjustmentSource,
-         item: invoiceItems
-      }
-      addPurchaseMutation(data)
+      addPurchaseMutation(invoiceData)
+      setInvoiceData({
+         supplier: '',
+         subTotal: 0,
+         discountAmount: 0,
+         grandTotal: 0,
+         remarks: '',
+         adjustment: 0,
+         adjustmentSource: 'self',
+         items: [],
+      })
+   }
+
+   const resetForm = () => {
+      reset(completeResetValues)
+      setInvoiceData({
+         supplier: '',
+         subTotal: 0,
+         discountAmount: 0,
+         grandTotal: 0,
+         remarks: '',
+         adjustment: 0,
+         adjustmentSource: 'self',
+         items: [],
+      })
+      setMode('')
+      setSelectedPurchase(null)
    }
 
    return (
@@ -228,7 +246,7 @@ const PurchaseForm = ({ accounts, products }) => {
                            errors={errors}
                            options={productOptions || []}
                            isLoading={isLoading}
-                           name={'productId'}
+                           name={'product'}
                            placeholder={'Select Product'}
                            optionsMessage={'No Product Found...'}
                            filterOption={productFilterOption}
@@ -344,18 +362,20 @@ const PurchaseForm = ({ accounts, products }) => {
                         </Button>
                      </TableCell>
                   </TableRow>
-                  <InvoiceItems invoiceItems={invoiceItems} products={products} />
+                  <InvoiceItems invoiceData={invoiceData} products={products} />
                </TableBody>
             </Table>
          </div>
-         <InvoiceSummary invoiceItems={invoiceItems} products={products} invoiceData={invoiceData} setInvoiceData={setInvoiceData} />
+         <InvoiceSummary products={products} invoiceData={invoiceData} setInvoiceData={setInvoiceData} />
          <Button
             isLoading={isLoading}
             onClick={submitInvoice}
          >
             Submit Invoice
          </Button>
-
+         {
+            mode && <Button danger onClick={resetForm} >Exit {mode}</Button>
+         }
       </div>
    )
 }

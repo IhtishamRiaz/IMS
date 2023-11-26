@@ -12,6 +12,7 @@ import userRoutes from "./routes/userRoutes.js"
 import addressRoutes from "./routes/addressRoutes.js"
 import accountRoutes from './routes/accountRoutes.js'
 import productRoutes from './routes/productRoutes.js'
+import purchaseRoutes from './routes/purchaseRoutes.js'
 
 dotenv.config();
 const app = express();
@@ -33,18 +34,20 @@ app.use('/address', addressRoutes);
 app.use('/account', accountRoutes);
 // Product Routes
 app.use('/product', productRoutes)
+// Purchase Routes
+app.use('/purchase', purchaseRoutes)
 
 
 
 app.use(errorHandler);
 
 mongoose.connection.once('open', () => {
-  console.log('Connected to MongoDB');
-  const PORT = process.env.PORT || 8080;
-  app.listen(PORT, () => console.log(`Server Running on port ${process.env.PORT}`));
+   console.log('Connected to MongoDB');
+   const PORT = process.env.PORT || 8080;
+   app.listen(PORT, () => console.log(`Server Running on port ${process.env.PORT}`));
 });
 
 mongoose.connection.on('error', (error) => {
-  console.log(error);
-  logEvents(`${error.no}: ${error.code}\t${error.syscall}\t${error.hostname}`, 'mongoErrLog.log');
+   console.log(error);
+   logEvents(`${error.no}: ${error.code}\t${error.syscall}\t${error.hostname}`, 'mongoErrLog.log');
 });
