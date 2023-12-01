@@ -4,7 +4,7 @@ import Input from '../../../components/Input.jsx';
 import SimpleSelect from '../../../components/SimpleSelect.jsx';
 import Textarea from '../../../components/Textarea.jsx';
 
-const InvoiceSummary = ({ products, invoiceData, setInvoiceData }) => {
+const InvoiceSummary = ({ products, invoiceData, setInvoiceData, isLoading }) => {
 
    let subTotal = 0, discountAmount = 0, total = 0;
 
@@ -61,6 +61,7 @@ const InvoiceSummary = ({ products, invoiceData, setInvoiceData }) => {
                      value={invoiceData.adjustment}
                      onChange={(e) => handleAdjustmentValueChange(e)}
                      className='w-16 py-1 ml-auto'
+                     disabled={isLoading}
                   />
                </p>
             </div>
@@ -74,6 +75,7 @@ const InvoiceSummary = ({ products, invoiceData, setInvoiceData }) => {
                      optionsMessage="No Options"
                      onChange={handleAdjustmentSourceChange}
                      className={'w-full'}
+                     isLoading={isLoading}
                   />
                </p>
             </div>
@@ -85,6 +87,7 @@ const InvoiceSummary = ({ products, invoiceData, setInvoiceData }) => {
                      fullWidth={true}
                      onChange={(e) => handleAdjustmentRemarkChange(e)}
                      className='ml-auto resize-none'
+                     disabled={isLoading}
                   />
                </p>
             </div>

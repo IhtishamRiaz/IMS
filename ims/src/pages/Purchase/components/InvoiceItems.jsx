@@ -8,12 +8,46 @@ import {
 import { DotsHorizontalIcon } from "@radix-ui/react-icons"
 import { Button as Button1 } from '../../../components/ui/button'
 import { TableCell, TableRow } from "../../../components/ui/table"
+import { usePurchaseStore } from '../store/purchaseStore'
 
-const InvoiceItems = ({ invoiceData, products }) => {
+const InvoiceItems = ({ invoiceData, setInvoiceData, products, reset }) => {
+
+   const mode = usePurchaseStore((state) => state.mode)
+
+   const handleEdit = (item) => {
+      if (mode === "view") return
+
+      const completeResetValues = {
+         product: item.product,
+         cartons: item.cartons,
+         boxes: item.boxes,
+         totalQty: item.totalQty,
+         rate: item.rate,
+         discount: item.discount,
+         discountType: item.discountType,
+         scheme: item.scheme,
+         schemeUnit: item.schemeUnit,
+         total: item.total
+      }
+      reset(completeResetValues)
+      setInvoiceData((prev) => ({
+         ...prev,
+         items: prev.items.filter((i) => i._id !== item._id)
+      }))
+   }
+   const handleDelete = (item) => {
+      if (mode === "view") return
+
+      setInvoiceData((prev) => ({
+         ...prev,
+         items: prev.items.filter((i) => i._id !== item._id)
+      }))
+   }
+
    return (
       <>
          {invoiceData?.items?.map(item => (
-            <TableRow key={item.product} className="transition-colors border-b hover:bg-gray-100/50">
+            <TableRow key={item._id} className="transition-colors border-b hover:bg-gray-100/50">
                <TableCell>{products?.find(prod => prod._id === item.product)?.name}</TableCell>
                <TableCell>{item.cartons}</TableCell>
                <TableCell>{item.boxes}</TableCell>
@@ -35,13 +69,8 @@ const InvoiceItems = ({ invoiceData, products }) => {
                         </Button1>
                      </DropdownMenuTrigger>
                      <DropdownMenuContent align="end" className="w-[160px]">
-                        {/* <DropdownMenuItem onClick={handleEdit}>Edit</DropdownMenuItem> */}
-                        <DropdownMenuItem>Edit</DropdownMenuItem>
-                        <DropdownMenuItem>
-                           {/* <AlertDialogTrigger className="w-full text-left"> */}
-                           Delete
-                           {/* </AlertDialogTrigger> */}
-                        </DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => handleEdit(item)}>Edit</DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => handleDelete(item)}>Delete</DropdownMenuItem>
                      </DropdownMenuContent>
                   </DropdownMenu>
                </TableCell>

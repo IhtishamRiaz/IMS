@@ -118,6 +118,7 @@ const PurchaseForm = ({ accounts, products }) => {
 
    // On Submit
    const mainOnSubmit = (data) => {
+      data._id = Math.random().toString(36).slice(2, 9) + Date.now()
       setInvoiceData((prevState) => ({
          ...prevState,
          items: [...prevState.items, data]
@@ -201,7 +202,15 @@ const PurchaseForm = ({ accounts, products }) => {
       })
       setMode('')
       setSelectedPurchase(null)
+      setIsLoading(false)
    }
+
+   useEffect(() => {
+      if (mode === "view") {
+         setIsLoading(true)
+      }
+   }, [mode])
+
 
    return (
       <div className='px-4 py-6 my-5 bg-white rounded-lg shadow-md'>
@@ -357,22 +366,27 @@ const PurchaseForm = ({ accounts, products }) => {
                            ghost
                            type='submit'
                            form={'main-form'}
+                           disabled={isLoading}
                         >
                            <PlusCircle size={20} />
                         </Button>
                      </TableCell>
                   </TableRow>
-                  <InvoiceItems invoiceData={invoiceData} products={products} />
+                  <InvoiceItems invoiceData={invoiceData} setInvoiceData={setInvoiceData} products={products} reset={reset} />
                </TableBody>
             </Table>
          </div>
-         <InvoiceSummary products={products} invoiceData={invoiceData} setInvoiceData={setInvoiceData} />
-         <Button
-            isLoading={isLoading}
-            onClick={submitInvoice}
-         >
-            Submit Invoice
-         </Button>
+         <InvoiceSummary products={products} invoiceData={invoiceData} setInvoiceData={setInvoiceData} isLoading={isLoading} />
+         {
+            mode !== "view" && (
+               <Button
+                  isLoading={isLoading}
+                  onClick={submitInvoice}
+               >
+                  Submit Invoice
+               </Button>
+            )
+         }
          {
             mode && <Button danger onClick={resetForm} >Exit {mode}</Button>
          }
