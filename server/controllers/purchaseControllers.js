@@ -1,12 +1,34 @@
 import { Purchase } from '../models/purchaseModel.js'
+import { Product } from '../models/productModel.js'
+import { Account } from '../models/accountModel.js'
 import { validateNewPurchase } from '../validations/purchaseValidation.js'
 
-async function getNextPurchaseId() {
+const getNextPurchaseId = async () => {
    const maxPurchase = await Purchase.findOne({}, {}, { sort: { purchaseId: -1 } });
    if (maxPurchase) {
       return maxPurchase.purchaseId + 1;
    }
    return 1;
+}
+
+const removeIdFromItems = (data) => {
+   data?.items?.map((item) => {
+      delete item._id;
+   })
+}
+
+const updateProductStock = async (data) => {
+   data?.items?.map(async (item) => {
+      const product = await Product.findById(item.product)
+      product.stock = product.stock + item.totalQty
+      await product.save()
+   })
+}
+
+const updateAccountBalance = async (data) => {
+   const account = await Account.findById(data.supplier)
+   account.balance = account.balance - data.grandTotal
+   await account.save()
 }
 
 // @desc Add new Purchase
@@ -26,7 +48,12 @@ const addPurchase = async (req, res) => {
       const nextPurchaseId = await getNextPurchaseId();
       data.purchaseId = nextPurchaseId
 
+      removeIdFromItems(data)
+
       const purchase = await Purchase.create(data)
+
+      updateProductStock(data)
+      updateAccountBalance(data)
 
       if (purchase) {
          return res.status(201).json({ message: `New Purchase Added!` })

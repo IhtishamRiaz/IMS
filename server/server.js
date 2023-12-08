@@ -14,6 +14,7 @@ import accountRoutes from './routes/accountRoutes.js'
 import productRoutes from './routes/productRoutes.js'
 import purchaseRoutes from './routes/purchaseRoutes.js'
 
+
 dotenv.config();
 const app = express();
 
@@ -36,6 +37,7 @@ app.use('/account', accountRoutes);
 app.use('/product', productRoutes)
 // Purchase Routes
 app.use('/purchase', purchaseRoutes)
+
 
 
 

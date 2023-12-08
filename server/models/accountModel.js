@@ -33,6 +33,10 @@ const accountSchema = new mongoose.Schema({
    isSalesman: {
       type: Boolean,
       required: false
+   },
+   balance: {
+      type: Number,
+      required: true
    }
 }, { timestamps: true })
 
