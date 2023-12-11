@@ -13,6 +13,7 @@ import addressRoutes from "./routes/addressRoutes.js"
 import accountRoutes from './routes/accountRoutes.js'
 import productRoutes from './routes/productRoutes.js'
 import purchaseRoutes from './routes/purchaseRoutes.js'
+import saleRoutes from './routes/saleRoutes.js'
 
 
 dotenv.config();
@@ -37,6 +38,8 @@ app.use('/account', accountRoutes);
 app.use('/product', productRoutes)
 // Purchase Routes
 app.use('/purchase', purchaseRoutes)
+// Sale Routes
+app.use('/sale', saleRoutes)
 
 
 

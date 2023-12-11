@@ -33,7 +33,7 @@ const PurchaseForm = ({ accounts, products }) => {
 
    const [isLoading, setIsLoading] = useState(false)
    const [invoiceData, setInvoiceData] = useState({
-      supplier: '',
+      customer: '',
       subTotal: 0,
       discountAmount: 0,
       grandTotal: 0,
@@ -45,7 +45,7 @@ const PurchaseForm = ({ accounts, products }) => {
 
    useEffect(() => {
       setInvoiceData({
-         supplier: selectedPurchase?.supplier?._id || '',
+         customer: selectedPurchase?.customer?._id || '',
          subTotal: selectedPurchase?.subTotal || 0,
          discountAmount: selectedPurchase?.discountAmount || 0,
          grandTotal: selectedPurchase?.grandTotal || 0,
@@ -72,8 +72,8 @@ const PurchaseForm = ({ accounts, products }) => {
    // API Functions
    const axiosPrivate = useAxiosPrivate()
 
-   const addPurchaseInvoice = async (data) => {
-      axiosPrivate.post('/purchase', data)
+   const addSaleInvoice = async (data) => {
+      axiosPrivate.post('/sale', data)
          .then((res) => {
             toast.success(res?.data?.message)
          })
@@ -89,13 +89,43 @@ const PurchaseForm = ({ accounts, products }) => {
    // React Queries
    const queryClient = useQueryClient()
 
-   const { mutate: addPurchaseMutation } = useMutation({
-      mutationFn: addPurchaseInvoice,
+   const { mutate: addSaleMutation, error: addSaleError } = useMutation({
+      mutationFn: addSaleInvoice,
       onSuccess: () => {
-         queryClient.invalidateQueries(['purchase'])
-         queryClient.refetchQueries(['purchase'])
+         queryClient.invalidateQueries(['sale'])
+         queryClient.refetchQueries(['sale'])
       }
    })
+
+   // Api Call
+   const submitInvoice = () => {
+      setIsLoading(true)
+
+      if (!invoiceData.customer) {
+         toast.error("Please select a customer")
+         setIsLoading(false)
+         return
+      }
+
+      if (!invoiceData.items.length) {
+         toast.error("Please add items")
+         setIsLoading(false)
+         return
+      }
+
+      addSaleMutation(invoiceData)
+
+      setInvoiceData({
+         customer: '',
+         subTotal: 0,
+         discountAmount: 0,
+         grandTotal: 0,
+         remarks: '',
+         adjustment: 0,
+         adjustmentSource: 'self',
+         items: [],
+      })
+   }
 
    // Yup Validation Schema
    const PurchaseInvoiceSchema = Yup.object({
@@ -126,16 +156,11 @@ const PurchaseForm = ({ accounts, products }) => {
       reset(completeResetValues)
    }
 
-   // Get all Suppliers and Products
-   const allSupplierAccounts = accounts?.filter((acc) => {
-      return acc.accountType?.name === 'supplier'
-   })
-
    // React Select Options
-   const supplierOptions = allSupplierAccounts?.map(sup => {
+   const customerOptions = accounts?.map(account => {
       return {
-         value: sup._id,
-         label: sup.name
+         value: account._id,
+         label: account.name
       }
    })
 
@@ -172,39 +197,10 @@ const PurchaseForm = ({ accounts, products }) => {
       setValue('totalQty', totalQty || 0)
    }, [product, cartons, boxes, rate, discount, discountType])
 
-   // Api Call
-   const submitInvoice = () => {
-      setIsLoading(true)
-
-      if (!invoiceData.supplier) {
-         toast.error("Please select a supplier")
-         setIsLoading(false)
-         return
-      }
-
-      if (!invoiceData.items.length) {
-         toast.error("Please add items")
-         setIsLoading(false)
-         return
-      }
-
-      addPurchaseMutation(invoiceData)
-      setInvoiceData({
-         supplier: '',
-         subTotal: 0,
-         discountAmount: 0,
-         grandTotal: 0,
-         remarks: '',
-         adjustment: 0,
-         adjustmentSource: 'self',
-         items: [],
-      })
-   }
-
    const resetForm = () => {
       reset(completeResetValues)
       setInvoiceData({
-         supplier: '',
+         customer: '',
          subTotal: 0,
          discountAmount: 0,
          grandTotal: 0,
@@ -227,18 +223,18 @@ const PurchaseForm = ({ accounts, products }) => {
    return (
       <div className='px-4 py-6 my-5 bg-white rounded-lg shadow-md'>
          <h2 className='text-2xl font-bold'>
-            Create Purchase Invoice
+            Create Sale Invoice
          </h2>
 
          <SimpleSelect
-            options={supplierOptions || []}
+            options={customerOptions || []}
             isLoading={isLoading}
-            label={'Supplier'}
-            name={'supplier'}
-            placeholder={'Select Supplier'}
-            optionsMessage={'No Supplier Found...'}
-            value={invoiceData.supplier}
-            onChange={(e) => setInvoiceData((prevState) => ({ ...prevState, supplier: e.value }))}
+            label={'Customer'}
+            name={'customer'}
+            placeholder={'Select Customer'}
+            optionsMessage={'No Account Found...'}
+            value={invoiceData.customer}
+            onChange={(e) => setInvoiceData((prevState) => ({ ...prevState, customer: e.value }))}
          />
 
          <form onSubmit={mainHandleSubmit(mainOnSubmit)} id='main-form' className='mt-4 space-y-3'></form>

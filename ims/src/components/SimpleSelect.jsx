@@ -2,20 +2,20 @@ import React from 'react'
 import ReactSelect from "react-select";
 import { cn } from '../lib/utils';
 
-const SimpleSelect = ({ id, isLoading = false, placeholder, optionsMessage, label, value, options, className, ...props }) => {
+const SimpleSelect = ({ name, isLoading = false, placeholder, optionsMessage, label, value, options, className, errors = {}, ...props }) => {
    return (
       <>
          <section className={cn('w-56', className)}>
             {label &&
                <label
-                  htmlFor={id}
+                  htmlFor={name}
                   className="block text-sm font-medium leading-6 text-gray-600"
                >
                   {label}
                </label>
             }
             <ReactSelect
-               id={id}
+               id={name}
                isSearchable
                options={options}
                isDisabled={isLoading}
@@ -32,6 +32,7 @@ const SimpleSelect = ({ id, isLoading = false, placeholder, optionsMessage, labe
                   },
                })}
             />
+            {errors[name] && <p className='absolute text-sm text-red-600'>{errors[name].message}</p>}
          </section>
       </>
    )

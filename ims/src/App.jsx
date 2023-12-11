@@ -9,6 +9,7 @@ import Dashboard from './pages/Dashboard'
 import Accounts from './pages/Accounts'
 import Products from './pages/Products'
 import Purchase from './pages/Purchase'
+import Sale from './pages/Sale'
 
 // Components
 import SideNav from './components/SideNav.jsx'
@@ -57,6 +58,7 @@ function App() {
                      <Route path='accounts' element={<Accounts />} />
                      <Route path='products' element={<Products />} />
                      <Route path='purchase' element={<Purchase />} />
+                     <Route path='sale' element={<Sale />} />
                      <Route path='unauthorised' element={<Unauthorised />} />
                   </Route>
                </Route>
