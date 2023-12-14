@@ -2,14 +2,14 @@ import React, { useEffect } from 'react'
 import useTitle from '../../hooks/useTitle';
 import DataTablePage from "./Table/page"
 import { useQuery } from '@tanstack/react-query';
-import ProductForm from './components/PurchaseForm';
+import SaleForm from './components/PurchaseForm';
 import useAxiosPrivate from '../../hooks/useAxiosPrivate';
-import { usePurchaseStore } from './store/purchaseStore';
+import { useSaleStore } from './store/saleStore';
 
 const Sale = () => {
    useTitle('Sale Invoice');
 
-   // const setSales = useSaleStore((state) => state.setSales);
+   const setSales = useSaleStore((state) => state.setSales);
 
    // API Functions
    const axiosPrivate = useAxiosPrivate()
@@ -47,16 +47,16 @@ const Sale = () => {
       queryKey: ['sales'],
    })
 
-   // useEffect(() => {
-   //    setSales(sales)
-   // }, [sales])
+   useEffect(() => {
+      setSales(sales)
+   }, [sales])
 
    return (
       <>
          <h1 className='text-3xl font-bold'>Sale Invoice</h1>
-         <ProductForm accounts={accounts} products={products} />
+         <SaleForm accounts={accounts} products={products} />
 
-         {/* <DataTablePage products={products} purchases={purchases} /> */}
+         <DataTablePage products={products} sales={sales} />
       </>
    )
 }

@@ -3,39 +3,39 @@ import { DataTable } from "./components/data-table"
 
 // import DataTableColumns from "./components/columns"
 
-export default function DataTablePage({ purchases }) {
+export default function DataTablePage({ sales }) {
 
-   const data = purchases?.map(purchase => {
-      const date = new Date(purchase.createdAt);
+   const data = sales?.map(sale => {
+      const date = new Date(sale.createdAt);
       const formattedDate = date.toLocaleDateString('en-GB');
 
       return {
-         mainId: purchase._id,
-         id: purchase.purchaseId,
-         supplier: purchase?.supplier?.name,
-         subTotal: purchase.subTotal,
-         grandTotal: purchase.grandTotal,
-         discountAmount: purchase.discountAmount,
+         mainId: sale._id,
+         id: sale.saleId,
+         customer: sale?.customer?.name,
+         subTotal: sale.subTotal,
+         grandTotal: sale.grandTotal,
+         discountAmount: sale.discountAmount,
          date: formattedDate,
-         remarks: purchase.remarks
+         remarks: sale.remarks
       }
    })
 
    // Extracting All Filter Options
 
-   // Extracting Suppliers
-   const duplicateSuppliers = purchases?.map(purchase => {
+   // Extracting Customers
+   const duplicateCustomers = sales?.map(sale => {
       return {
-         value: purchase?.supplier?.name,
-         label: capitalizeEachFirstWord(purchase?.supplier?.name),
+         value: sale?.customer?.name,
+         label: capitalizeEachFirstWord(sale?.customer?.name),
       }
    })
-   const suppliers = [...new Map(duplicateSuppliers?.map(item => [item.value, item])).values()]
+   const customers = [...new Map(duplicateCustomers?.map(item => [item.value, item])).values()]
 
    return (
       <>
          <div className="px-4 py-6 bg-white rounded-lg shadow-md">
-            <DataTable data={data || []} suppliers={suppliers} />
+            <DataTable data={data || []} customers={customers} />
          </div>
       </>
    );

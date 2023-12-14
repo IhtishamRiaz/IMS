@@ -5,7 +5,7 @@ import { useForm, Controller, useWatch } from "react-hook-form"
 import { yupResolver } from "@hookform/resolvers/yup"
 import * as Yup from "yup"
 import Button from '../../../components/Button'
-import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { defaultShouldDehydrateMutation, useMutation, useQueryClient } from '@tanstack/react-query'
 import useAxiosPrivate from '../../../hooks/useAxiosPrivate'
 import { toast } from 'sonner'
 import { cn } from '../../../lib/utils'
@@ -22,14 +22,15 @@ import InvoiceItems from './InvoiceItems'
 import InvoiceSummary from './InvoiceSummary'
 import calculateBill from '../../../lib/CalculateBill'
 import SimpleSelect from '../../../components/SimpleSelect'
-import { usePurchaseStore } from '../store/purchaseStore'
+import { useSaleStore } from '../store/saleStore'
+import StockDisplay from './StockDisplay'
 
-const PurchaseForm = ({ accounts, products }) => {
+const SaleForm = ({ accounts, products }) => {
 
-   const selectedPurchase = usePurchaseStore((state) => state.selectedPurchase)
-   const setSelectedPurchase = usePurchaseStore((state) => state.setSelectedPurchase)
-   const mode = usePurchaseStore((state) => state.mode)
-   const setMode = usePurchaseStore((state) => state.setMode)
+   const selectedSale = useSaleStore((state) => state.selectedSale)
+   const setSelectedSale = useSaleStore((state) => state.setSelectedSale)
+   const mode = useSaleStore((state) => state.mode)
+   const setMode = useSaleStore((state) => state.setMode)
 
    const [isLoading, setIsLoading] = useState(false)
    const [invoiceData, setInvoiceData] = useState({
@@ -45,16 +46,16 @@ const PurchaseForm = ({ accounts, products }) => {
 
    useEffect(() => {
       setInvoiceData({
-         customer: selectedPurchase?.customer?._id || '',
-         subTotal: selectedPurchase?.subTotal || 0,
-         discountAmount: selectedPurchase?.discountAmount || 0,
-         grandTotal: selectedPurchase?.grandTotal || 0,
-         remarks: selectedPurchase?.remarks || '',
-         adjustment: selectedPurchase?.adjustment || 0,
-         adjustmentSource: selectedPurchase?.adjustmentSource || 'self',
-         items: selectedPurchase?.items || [],
+         customer: selectedSale?.customer?._id || '',
+         subTotal: selectedSale?.subTotal || 0,
+         discountAmount: selectedSale?.discountAmount || 0,
+         grandTotal: selectedSale?.grandTotal || 0,
+         remarks: selectedSale?.remarks || '',
+         adjustment: selectedSale?.adjustment || 0,
+         adjustmentSource: selectedSale?.adjustmentSource || 'self',
+         items: selectedSale?.items || [],
       })
-   }, [selectedPurchase])
+   }, [selectedSale])
 
    const completeResetValues = {
       product: '',
@@ -76,6 +77,16 @@ const PurchaseForm = ({ accounts, products }) => {
       axiosPrivate.post('/sale', data)
          .then((res) => {
             toast.success(res?.data?.message)
+            setInvoiceData({
+               customer: '',
+               subTotal: 0,
+               discountAmount: 0,
+               grandTotal: 0,
+               remarks: '',
+               adjustment: 0,
+               adjustmentSource: 'self',
+               items: [],
+            })
          })
          .catch((error) => {
             toast.error(error?.response?.data?.message)
@@ -114,17 +125,6 @@ const PurchaseForm = ({ accounts, products }) => {
       }
 
       addSaleMutation(invoiceData)
-
-      setInvoiceData({
-         customer: '',
-         subTotal: 0,
-         discountAmount: 0,
-         grandTotal: 0,
-         remarks: '',
-         adjustment: 0,
-         adjustmentSource: 'self',
-         items: [],
-      })
    }
 
    // Yup Validation Schema
@@ -210,7 +210,7 @@ const PurchaseForm = ({ accounts, products }) => {
          items: [],
       })
       setMode('')
-      setSelectedPurchase(null)
+      setSelectedSale(null)
       setIsLoading(false)
    }
 
@@ -226,16 +226,19 @@ const PurchaseForm = ({ accounts, products }) => {
             Create Sale Invoice
          </h2>
 
-         <SimpleSelect
-            options={customerOptions || []}
-            isLoading={isLoading}
-            label={'Customer'}
-            name={'customer'}
-            placeholder={'Select Customer'}
-            optionsMessage={'No Account Found...'}
-            value={invoiceData.customer}
-            onChange={(e) => setInvoiceData((prevState) => ({ ...prevState, customer: e.value }))}
-         />
+         <div className='flex items-center gap-20'>
+            <SimpleSelect
+               options={customerOptions || []}
+               isLoading={isLoading}
+               label={'Customer'}
+               name={'customer'}
+               placeholder={'Select Customer'}
+               optionsMessage={'No Account Found...'}
+               value={invoiceData.customer}
+               onChange={(e) => setInvoiceData((prevState) => ({ ...prevState, customer: e.value }))}
+            />
+            <StockDisplay products={products} selectedProductId={product} />
+         </div>
 
          <form onSubmit={mainHandleSubmit(mainOnSubmit)} id='main-form' className='mt-4 space-y-3'></form>
 
@@ -402,4 +405,4 @@ const PurchaseForm = ({ accounts, products }) => {
    )
 }
 
-export default PurchaseForm
+export default SaleForm

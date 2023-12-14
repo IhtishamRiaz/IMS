@@ -7,7 +7,7 @@ import { DataTableViewOptions } from "../../../../components/table/data-table-vi
 import { DataTableFacetedFilter } from "../../../../components/table/data-table-faceted-filter"
 
 
-export function DataTableToolbar({ table, suppliers }) {
+export function DataTableToolbar({ table, customers }) {
 
    const isFiltered = table.getState().columnFilters.length > 0
 
@@ -30,11 +30,11 @@ export function DataTableToolbar({ table, suppliers }) {
                }
                className="h-8 w-[150px] lg:w-[250px]"
             /> */}
-            {table.getColumn("supplier") && (
+            {table.getColumn("customer") && (
                <DataTableFacetedFilter
-                  column={table.getColumn("supplier")}
-                  title="supplier"
-                  options={suppliers}
+                  column={table.getColumn("customer")}
+                  title="customer"
+                  options={customers}
                />
             )}
             {isFiltered && (

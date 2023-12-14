@@ -8,11 +8,11 @@ import {
 import { DotsHorizontalIcon } from "@radix-ui/react-icons"
 import { Button as Button1 } from '../../../components/ui/button'
 import { TableCell, TableRow } from "../../../components/ui/table"
-import { usePurchaseStore } from '../store/purchaseStore'
+import { useSaleStore } from '../store/saleStore'
 
 const InvoiceItems = ({ invoiceData, setInvoiceData, products, reset }) => {
 
-   const mode = usePurchaseStore((state) => state.mode)
+   const mode = useSaleStore((state) => state.mode)
 
    const handleEdit = (item) => {
       if (mode === "view") return

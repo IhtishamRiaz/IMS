@@ -28,7 +28,7 @@ import { DataTableToolbar } from "./data-table-toolbar"
 import { capitalizeEachFirstWord } from "../../../../lib/utils"
 
 
-export function DataTable({ data, suppliers }) {
+export function DataTable({ data, customers }) {
 
    // ========================== Columns ==========================
    const columns = [
@@ -67,24 +67,24 @@ export function DataTable({ data, suppliers }) {
          enableSorting: false,
          enableHiding: false,
       },
-      // Supplier
+      // Customers
       {
-         accessorKey: "supplier",
+         accessorKey: "customer",
          header: ({ column }) => (
-            <DataTableColumnHeader column={column} title="Supplier" />
+            <DataTableColumnHeader column={column} title="Customer" />
          ),
          cell: ({ row }) => {
-            const supplier = suppliers.find(
-               (supplier) => supplier.value === row.getValue("supplier")
+            const customer = customers.find(
+               (customer) => customer.value === row.getValue("customer")
             )
 
-            if (!supplier) {
+            if (!customer) {
                return null
             }
 
             return (
                <span className="font-medium">
-                  {capitalizeEachFirstWord(row.getValue("supplier"))}
+                  {capitalizeEachFirstWord(row.getValue("customer"))}
                </span>
             )
          },
@@ -217,7 +217,7 @@ export function DataTable({ data, suppliers }) {
 
    return (
       <div className="space-y-4">
-         <DataTableToolbar table={table} suppliers={suppliers} />
+         <DataTableToolbar table={table} customers={customers} />
          <div className="border rounded-md">
             <Table>
                <TableHeader>

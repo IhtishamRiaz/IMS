@@ -28,7 +28,7 @@ import {
 import { Trash2 } from 'lucide-react';
 
 // import { labels } from "../data/data"
-import { usePurchaseStore } from "../../store/purchaseStore"
+import { useSaleStore } from "../../store/saleStore"
 import useAxiosPrivate from "../../../../hooks/useAxiosPrivate"
 import toast from "react-hot-toast"
 import { capitalizeEachFirstWord } from "../../../../lib/utils"
@@ -36,20 +36,20 @@ import { capitalizeEachFirstWord } from "../../../../lib/utils"
 
 export function DataTableRowActions({ row }) {
 
-   const purchases = usePurchaseStore((state) => state.purchases)
-   const setSelectedPurchase = usePurchaseStore((state) => state.setSelectedPurchase)
-   const setMode = usePurchaseStore((state) => state.setMode)
+   const sales = useSaleStore((state) => state.sales)
+   const setSelectedSale = useSaleStore((state) => state.setSelectedSale)
+   const setMode = useSaleStore((state) => state.setMode)
 
-   const currentPurchase = purchases?.find(purchase => purchase._id === row.original.mainId)
-   const name = capitalizeEachFirstWord(currentPurchase?.supplier?.name || 'nil')
+   const currentSale = sales?.find(sale => sale._id === row.original.mainId)
+   const name = capitalizeEachFirstWord(currentSale?.customer?.name || 'nil')
 
    const handleEdit = () => {
-      setSelectedPurchase(currentPurchase)
+      setSelectedSale(currentSale)
       setMode('edit')
    }
 
    const handleView = () => {
-      setSelectedPurchase(currentPurchase)
+      setSelectedSale(currentSale)
       setMode('view')
    }
 
@@ -57,7 +57,7 @@ export function DataTableRowActions({ row }) {
    const axiosPrivate = useAxiosPrivate()
 
    // Api Functions
-   const deletePurchase = async () => {
+   const deleteSale = async () => {
       axiosPrivate
          .delete(`/product/${currentProduct._id}`)
          .then((res) => {
@@ -71,15 +71,13 @@ export function DataTableRowActions({ row }) {
    // // React Query
    const queryClient = useQueryClient()
 
-   const { mutate: deletePurchaseMutation } = useMutation({
-      mutationFn: deletePurchase,
+   const { mutate: deleteSaleMutation } = useMutation({
+      mutationFn: deleteSale,
       onSuccess: () => {
-         queryClient.invalidateQueries(['purchases'])
-         queryClient.refetchQueries(['purchases'])
+         queryClient.invalidateQueries(['sales'])
+         queryClient.refetchQueries(['sales'])
       }
    })
-
-   const task = row
 
    return (
       <>
@@ -121,7 +119,7 @@ export function DataTableRowActions({ row }) {
                </AlertDialogHeader>
                <AlertDialogFooter>
                   <AlertDialogCancel>Cancel</AlertDialogCancel>
-                  <AlertDialogAction onClick={deletePurchaseMutation}>Delete</AlertDialogAction>
+                  <AlertDialogAction onClick={deleteSaleMutation}>Delete</AlertDialogAction>
                </AlertDialogFooter>
             </AlertDialogContent>
          </AlertDialog>
