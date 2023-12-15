@@ -2,7 +2,7 @@ import React from 'react'
 
 const StockDisplay = ({ products, selectedProductId }) => {
 
-   const selectedProduct = products.find(product => product._id === selectedProductId)
+   const selectedProduct = products?.find(product => product._id === selectedProductId)
    const cartons = Math.floor(selectedProduct?.stock / selectedProduct?.packingSize) || 0
    const boxes = selectedProduct?.stock % selectedProduct?.packingSize || 0
 

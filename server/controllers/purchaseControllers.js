@@ -17,6 +17,7 @@ const removeIdFromItems = (data) => {
    })
 }
 
+// Update product stock
 const updateProductStock = async (data) => {
    data?.items?.map(async (item) => {
       const product = await Product.findById(item.product)
@@ -24,10 +25,26 @@ const updateProductStock = async (data) => {
       await product.save()
    })
 }
+// Update product stock when Delting Purchase
+const deleteProductStock = async (data) => {
+   data?.items?.map(async (item) => {
+      const product = await Product.findById(item.product)
+      product.stock = product.stock - item.totalQty
+      await product.save()
+   })
+}
 
+// Updating Account Balance
 const updateAccountBalance = async (data) => {
    const account = await Account.findById(data.supplier)
    account.balance = account.balance - data.grandTotal
+   await account.save()
+}
+
+// Updating Account Balance when Deleting Purchase
+const deleteAccountBalance = async (data) => {
+   const account = await Account.findById(data.supplier)
+   account.balance = account.balance + data.grandTotal
    await account.save()
 }
 
@@ -88,7 +105,35 @@ const getAllPurchases = async (req, res) => {
    }
 }
 
+// @desc Delete Purchase
+// @route DELETE /purchase/id
+// @access Private
+const deletePurchase = async (req, res) => {
+   try {
+      const id = req.params.id
+
+      const purchase = await Purchase.findById(id)
+      if (!purchase) {
+         return res.status(400).json({ message: 'Purchase Not Found!' })
+      }
+      deleteProductStock(purchase)
+      deleteAccountBalance(purchase)
+
+      const deletedPurchase = await Purchase.findByIdAndDelete(id)
+
+      if (deletedPurchase) {
+         return res.status(201).json({ message: `Purchase ${deletedPurchase?.name} Deleted!` })
+      } else {
+         return res.status(400).json({ message: 'Failed to Delete Purchase!' })
+      }
+
+   } catch (error) {
+      return res.status(500).json({ message: 'Failed to Delete Purchase!', error })
+   }
+}
+
 export {
    addPurchase,
-   getAllPurchases
+   getAllPurchases,
+   deletePurchase
 }

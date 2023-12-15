@@ -59,7 +59,7 @@ export function DataTableRowActions({ row }) {
    // Api Functions
    const deletePurchase = async () => {
       axiosPrivate
-         .delete(`/product/${currentProduct._id}`)
+         .delete(`/purchase/${currentPurchase._id}`)
          .then((res) => {
             toast.success(res?.data?.message)
          })
@@ -113,7 +113,7 @@ export function DataTableRowActions({ row }) {
                      <Trash2 size={56} className="text-red-500" />
                   </AlertDialogTitle>
                   <AlertDialogDescription>
-                     Are you sure you want to delete this account?
+                     Are you sure you want to delete purchase of?
                      <span className="text-lg font-bold">
                         {name}
                      </span>
