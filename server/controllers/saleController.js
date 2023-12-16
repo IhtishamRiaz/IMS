@@ -17,6 +17,8 @@ const removeIdFromItems = (data) => {
    })
 }
 
+
+// Update product stock
 const updateProductStock = async (data) => {
    const insufficientStockProducts = [];
    await Promise.all(
@@ -36,11 +38,29 @@ const updateProductStock = async (data) => {
       : null
 }
 
+// Update product stock when Delting Sale
+const deleteProductStock = async (data) => {
+   data?.items?.map(async (item) => {
+      const product = await Product.findById(item.product)
+      product.stock = product.stock + item.totalQty
+      await product.save()
+   })
+}
+
+// Updating Account Balance
 const updateAccountBalance = async (data) => {
    const account = await Account.findById(data.customer)
    account.balance = account.balance + data.grandTotal
    await account.save()
 }
+
+// Updating Account Balance when Deleting Sale
+const deleteAccountBalance = async (data) => {
+   const account = await Account.findById(data.customer)
+   account.balance = account.balance - data.grandTotal
+   await account.save()
+}
+
 
 // @desc Add new Sale
 // @route POST /sale
@@ -103,7 +123,36 @@ const getAllSales = async (req, res) => {
    }
 }
 
+// @desc Delete Sale
+// @route DELETE /sale/id
+// @access Private
+const deleteSale = async (req, res) => {
+   try {
+      const id = req.params.id
+
+      const sale = await Sale.findById(id)
+      if (!sale) {
+         return res.status(400).json({ message: 'Sale Not Found!' })
+      }
+
+      deleteProductStock(sale)
+      deleteAccountBalance(sale)
+
+      const deletedSale = await Sale.findByIdAndDelete(id)
+
+      if (deletedSale) {
+         return res.status(201).json({ message: `Sale Successfully Deleted!` })
+      } else {
+         return res.status(400).json({ message: 'Failed to Delete Sale!' })
+      }
+
+   } catch (error) {
+      return res.status(500).json({ message: 'Failed to Delete Sale!', error })
+   }
+}
+
 export {
    addSale,
-   getAllSales
+   getAllSales,
+   deleteSale
 }

@@ -30,7 +30,7 @@ import { Trash2 } from 'lucide-react';
 // import { labels } from "../data/data"
 import { usePurchaseStore } from "../../store/purchaseStore"
 import useAxiosPrivate from "../../../../hooks/useAxiosPrivate"
-import toast from "react-hot-toast"
+import { toast } from "sonner"
 import { capitalizeEachFirstWord } from "../../../../lib/utils"
 
 
@@ -75,7 +75,7 @@ export function DataTableRowActions({ row }) {
       mutationFn: deletePurchase,
       onSuccess: () => {
          queryClient.invalidateQueries(['purchases'])
-         queryClient.refetchQueries(['purchases'])
+         queryClient.refetchQueries(['purchases'], { force: true })
       }
    })
 
@@ -113,7 +113,7 @@ export function DataTableRowActions({ row }) {
                      <Trash2 size={56} className="text-red-500" />
                   </AlertDialogTitle>
                   <AlertDialogDescription>
-                     Are you sure you want to delete purchase of?
+                     Are you sure you want to delete purchase of
                      <span className="text-lg font-bold">
                         {name}
                      </span>

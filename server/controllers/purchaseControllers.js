@@ -25,6 +25,7 @@ const updateProductStock = async (data) => {
       await product.save()
    })
 }
+
 // Update product stock when Delting Purchase
 const deleteProductStock = async (data) => {
    data?.items?.map(async (item) => {
@@ -116,13 +117,14 @@ const deletePurchase = async (req, res) => {
       if (!purchase) {
          return res.status(400).json({ message: 'Purchase Not Found!' })
       }
+
       deleteProductStock(purchase)
       deleteAccountBalance(purchase)
 
       const deletedPurchase = await Purchase.findByIdAndDelete(id)
 
       if (deletedPurchase) {
-         return res.status(201).json({ message: `Purchase ${deletedPurchase?.name} Deleted!` })
+         return res.status(201).json({ message: `Purchase Successfully Deleted!` })
       } else {
          return res.status(400).json({ message: 'Failed to Delete Purchase!' })
       }

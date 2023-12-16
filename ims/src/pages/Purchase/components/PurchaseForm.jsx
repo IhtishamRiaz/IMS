@@ -92,8 +92,8 @@ const PurchaseForm = ({ accounts, products }) => {
    const { mutate: addPurchaseMutation } = useMutation({
       mutationFn: addPurchaseInvoice,
       onSuccess: () => {
-         queryClient.invalidateQueries(['purchase'])
-         queryClient.refetchQueries(['purchase'])
+         queryClient.invalidateQueries(['purchases'])
+         queryClient.refetchQueries(['purchases'], { force: true })
       }
    })
 

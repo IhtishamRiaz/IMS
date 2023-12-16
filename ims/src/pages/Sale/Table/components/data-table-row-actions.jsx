@@ -30,7 +30,7 @@ import { Trash2 } from 'lucide-react';
 // import { labels } from "../data/data"
 import { useSaleStore } from "../../store/saleStore"
 import useAxiosPrivate from "../../../../hooks/useAxiosPrivate"
-import toast from "react-hot-toast"
+import { toast } from "sonner"
 import { capitalizeEachFirstWord } from "../../../../lib/utils"
 
 
@@ -59,7 +59,7 @@ export function DataTableRowActions({ row }) {
    // Api Functions
    const deleteSale = async () => {
       axiosPrivate
-         .delete(`/product/${currentProduct._id}`)
+         .delete(`/sale/${currentSale._id}`)
          .then((res) => {
             toast.success(res?.data?.message)
          })
@@ -75,7 +75,7 @@ export function DataTableRowActions({ row }) {
       mutationFn: deleteSale,
       onSuccess: () => {
          queryClient.invalidateQueries(['sales'])
-         queryClient.refetchQueries(['sales'])
+         queryClient.refetchQueries(['sales'], { force: true })
       }
    })
 
@@ -111,7 +111,7 @@ export function DataTableRowActions({ row }) {
                      <Trash2 size={56} className="text-red-500" />
                   </AlertDialogTitle>
                   <AlertDialogDescription>
-                     Are you sure you want to delete this account?
+                     Are you sure you want to delete sale of
                      <span className="text-lg font-bold">
                         {name}
                      </span>

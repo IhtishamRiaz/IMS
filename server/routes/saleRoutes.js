@@ -1,6 +1,6 @@
 import express from "express"
 const router = express.Router()
-import { addSale, getAllSales } from '../controllers/saleController.js'
+import { addSale, getAllSales, deleteSale } from '../controllers/saleController.js'
 import verifyJWT from '../middleware/verifyJWT.js'
 
 router.use(verifyJWT)
@@ -10,7 +10,7 @@ router.route('/')
    .get(getAllSales)
 // .put(updatesale)
 
-// router.route('/:id')
-//    .delete(deletesale)
+router.route('/:id')
+   .delete(deleteSale)
 
 export default router
