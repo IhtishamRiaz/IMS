@@ -17,35 +17,52 @@ const removeIdFromItems = (data) => {
    })
 }
 
-// Update product stock
-const updateProductStock = async (data) => {
-   data?.items?.map(async (item) => {
-      const product = await Product.findById(item.product)
-      product.stock = product.stock + item.totalQty
-      await product.save()
-   })
+// Adding product stock
+const addProductStock = async (data) => {
+   await Promise.all(
+      data?.items?.map(async (item) => {
+         const product = await Product.findById(item.product)
+         product.stock = product.stock + item.totalQty
+         await product.save()
+      })
+   )
 }
 
-// Update product stock when Delting Purchase
+// Deleting product stock
 const deleteProductStock = async (data) => {
-   data?.items?.map(async (item) => {
-      const product = await Product.findById(item.product)
-      product.stock = product.stock - item.totalQty
-      await product.save()
-   })
+   await Promise.all(
+      data?.items?.map(async (item) => {
+         const product = await Product.findById(item.product)
+         product.stock = product.stock - item.totalQty
+         await product.save()
+      })
+   )
 }
 
-// Updating Account Balance
-const updateAccountBalance = async (data) => {
+// Updating Product Stock
+const updateProductStock = async (data, previousPurchase) => {
+   deleteProductStock(previousPurchase)
+   addProductStock(data)
+}
+
+// Adding Account Balance when adding Purchase
+const addAccountBalance = async (data) => {
    const account = await Account.findById(data.supplier)
    account.balance = account.balance - data.grandTotal
    await account.save()
 }
 
-// Updating Account Balance when Deleting Purchase
+// Deleting Account Balance when deleting Purchase
 const deleteAccountBalance = async (data) => {
    const account = await Account.findById(data.supplier)
    account.balance = account.balance + data.grandTotal
+   await account.save()
+}
+
+// Updating Account Balance when updating Purchase
+const updateAccountBalance = async (data, previousPurchase) => {
+   const account = await Account.findById(data.supplier)
+   account.balance = account.balance + previousPurchase.grandTotal - data.grandTotal
    await account.save()
 }
 
@@ -70,8 +87,8 @@ const addPurchase = async (req, res) => {
 
       const purchase = await Purchase.create(data)
 
-      updateProductStock(data)
-      updateAccountBalance(data)
+      addProductStock(data)
+      addAccountBalance(data)
 
       if (purchase) {
          return res.status(201).json({ message: `New Purchase Added!` })
@@ -134,8 +151,38 @@ const deletePurchase = async (req, res) => {
    }
 }
 
+// @desc Update Purchase
+// @route PUT /purchase/id
+// @access Private
+const updatePurchase = async (req, res) => {
+   try {
+      const data = req.body
+
+      const previousPurchase = await Purchase.findById(data._id)
+      if (!previousPurchase) {
+         return res.status(400).json({ message: 'Purchase Not Found!' })
+      }
+
+      removeIdFromItems(data)
+
+      updateAccountBalance(data, previousPurchase)
+      updateProductStock(data, previousPurchase)
+
+      const updatedPurchase = await Purchase.findByIdAndUpdate(data._id, data, { new: true })
+
+      if (updatedPurchase) {
+         return res.status(201).json({ message: `Purchase Successfully Updated!` })
+      } else {
+         return res.status(400).json({ message: 'Failed to Update Purchase!' })
+      }
+   } catch (error) {
+      return res.status(500).json({ message: 'Failed to Update Purchase!', error })
+   }
+}
+
 export {
    addPurchase,
    getAllPurchases,
-   deletePurchase
+   deletePurchase,
+   updatePurchase
 }

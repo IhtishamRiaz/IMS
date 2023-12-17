@@ -45,14 +45,7 @@ const PurchaseForm = ({ accounts, products }) => {
 
    useEffect(() => {
       setInvoiceData({
-         supplier: selectedPurchase?.supplier?._id || '',
-         subTotal: selectedPurchase?.subTotal || 0,
-         discountAmount: selectedPurchase?.discountAmount || 0,
-         grandTotal: selectedPurchase?.grandTotal || 0,
-         remarks: selectedPurchase?.remarks || '',
-         adjustment: selectedPurchase?.adjustment || 0,
-         adjustmentSource: selectedPurchase?.adjustmentSource || 'self',
-         items: selectedPurchase?.items || [],
+         ...selectedPurchase
       })
    }, [selectedPurchase])
 
@@ -85,6 +78,19 @@ const PurchaseForm = ({ accounts, products }) => {
             reset(completeResetValues)
          })
    }
+   const editPurchaseInvoice = async (data) => {
+      axiosPrivate.put('/purchase', data)
+         .then((res) => {
+            toast.success(res?.data?.message)
+         })
+         .catch((error) => {
+            toast.error(error?.response?.data?.message)
+         })
+         .finally(() => {
+            setIsLoading(false)
+            reset(completeResetValues)
+         })
+   }
 
    // React Queries
    const queryClient = useQueryClient()
@@ -93,7 +99,14 @@ const PurchaseForm = ({ accounts, products }) => {
       mutationFn: addPurchaseInvoice,
       onSuccess: () => {
          queryClient.invalidateQueries(['purchases'])
-         queryClient.refetchQueries(['purchases'], { force: true })
+         queryClient.refetchQueries(['purchases'])
+      }
+   })
+   const { mutate: editPurchaseMutation } = useMutation({
+      mutationFn: editPurchaseInvoice,
+      onSuccess: () => {
+         queryClient.invalidateQueries(['purchases'])
+         queryClient.refetchQueries(['purchases'])
       }
    })
 
@@ -188,7 +201,12 @@ const PurchaseForm = ({ accounts, products }) => {
          return
       }
 
-      addPurchaseMutation(invoiceData)
+      if (mode === 'edit') {
+         editPurchaseMutation(invoiceData)
+      } else {
+         addPurchaseMutation(invoiceData)
+      }
+
       setInvoiceData({
          supplier: '',
          subTotal: 0,

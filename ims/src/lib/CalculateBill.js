@@ -1,6 +1,5 @@
 
 const calculateBill = (products, product, cartons, boxes, rate, discount, discountType) => {
-
    const selectedProduct = products?.find((prod) => prod?._id === product)
 
    const calculateRate = () => {

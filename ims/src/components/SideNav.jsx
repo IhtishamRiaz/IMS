@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { ChevronFirst, MoreVertical, LifeBuoy, Receipt, Boxes, ShoppingCart, UserCircle, BarChart3, LayoutDashboard, Settings, ChevronLast } from 'lucide-react'
+import { ChevronFirst, MoreVertical, CircleDollarSignIcon, LifeBuoy, Receipt, Boxes, ShoppingCart, UserCircle, BarChart3, LayoutDashboard, Settings, ChevronLast } from 'lucide-react'
 import { cn } from '../lib/utils'
 import { Link, useLocation } from 'react-router-dom';
 import useLogout from '../hooks/useLogout'
@@ -24,6 +24,7 @@ const SideNav = () => {
       { text: 'Products', icon: Boxes, href: '/app/products' },
       { text: 'Purchase', icon: ShoppingCart, href: '/app/purchase' },
       { text: 'Sale', icon: Receipt, href: '/app/sale' },
+      { text: 'Payments', icon: CircleDollarSignIcon, href: '/app/payments' },
       { text: 'Settings', icon: Settings },
       { text: 'Help', icon: LifeBuoy },
    ]
@@ -50,7 +51,7 @@ const SideNav = () => {
                {items.map(({ text, icon, href }, index) => {
                   return (
                      <React.Fragment key={text}>
-                        {(index === 6) ? <hr className='my-3' /> : null}
+                        {(index === 7) ? <hr className='my-3' /> : null}
                         <SidebarItem text={text} icon={icon} expanded={expanded} href={href} />
                      </React.Fragment>
                   );
@@ -106,14 +107,14 @@ export const SidebarItem = ({ icon: Icon, text, expanded, href }) => {
                      : 'hover:bg-brand-100 text-gray-600'
                )}
          >
-            {<Icon size={20} />}
+            <Icon size={20} />
             <span className={cn(`overflow-hidden transition-all`, expanded ? 'w-52 ml-3' : 'w-0')}>
                {text}
             </span>
             {/* Tooltip */}
             {!expanded &&
                <div
-                  className='absolute z-50 invisible px-2 py-1 ml-6 text-sm transition-all -translate-x-3 rounded-md w-max left-full bg-brand-100 text-brand-800 opacity-20 group-hover:visible group-hover:opacity-100 group-hover:translate-x-0'
+                  className='absolute z-[5000000px] invisible px-2 py-1 ml-6 text-sm transition-all -translate-x-3 rounded-md w-max left-full bg-brand-100 text-brand-800 opacity-20 group-hover:visible group-hover:opacity-100 group-hover:translate-x-0'
                >
                   {text}
                </div>

@@ -91,7 +91,7 @@ const getAllAccounts = async (req, res) => {
 }
 
 // @desc Update Account
-// @route PATCH /account
+// @route PUT /account
 // @access Private
 const updateAccount = async (req, res) => {
    try {

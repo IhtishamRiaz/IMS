@@ -18,8 +18,8 @@ const removeIdFromItems = (data) => {
 }
 
 
-// Update product stock
-const updateProductStock = async (data) => {
+// Add product stock
+const addProductStock = async (data) => {
    const insufficientStockProducts = [];
    await Promise.all(
       data?.items?.map(async (item) => {
@@ -38,26 +38,42 @@ const updateProductStock = async (data) => {
       : null
 }
 
-// Update product stock when Delting Sale
+// Delete product stock
 const deleteProductStock = async (data) => {
-   data?.items?.map(async (item) => {
-      const product = await Product.findById(item.product)
-      product.stock = product.stock + item.totalQty
-      await product.save()
-   })
+   await Promise.all(
+      data?.items?.map(async (item) => {
+         const product = await Product.findById(item.product)
+         product.stock = product.stock + item.totalQty
+         await product.save()
+      })
+   )
 }
 
-// Updating Account Balance
-const updateAccountBalance = async (data) => {
+// Updating Product Stock
+const updateProductStock = async (data, previousPurchase) => {
+   deleteProductStock(previousPurchase)
+   const stockError = await addProductStock(data)
+   if (stockError) return stockError
+}
+
+// Adding Account Balance
+const addAccountBalance = async (data) => {
    const account = await Account.findById(data.customer)
    account.balance = account.balance + data.grandTotal
    await account.save()
 }
 
-// Updating Account Balance when Deleting Sale
+// Deleting Account Balance
 const deleteAccountBalance = async (data) => {
    const account = await Account.findById(data.customer)
    account.balance = account.balance - data.grandTotal
+   await account.save()
+}
+
+// Updating Account Balance
+const updateAccountBalance = async (data, previousPurchase) => {
+   const account = await Account.findById(data.supplier)
+   account.balance = account.balance - previousPurchase.grandTotal + data.grandTotal
    await account.save()
 }
 
@@ -83,12 +99,12 @@ const addSale = async (req, res) => {
 
       const sale = await Sale.create(data)
 
-      const stockError = await updateProductStock(data)
+      const stockError = await addProductStock(data)
       if (stockError) {
          return res.status(400).json({ message: stockError })
       }
 
-      updateAccountBalance(data)
+      addAccountBalance(data)
 
       if (sale) {
          return res.status(201).json({ message: `New Sale Added!` })
@@ -151,8 +167,39 @@ const deleteSale = async (req, res) => {
    }
 }
 
+// @desc Update Sale
+// @route PUT /sale/id
+// @access Private
+const updateSale = async (req, res) => {
+   try {
+      const data = req.body
+
+      const previousSale = await Sale.findById(data._id)
+      if (!previousSale) {
+         return res.status(400).json({ message: 'Sale Not Found!' })
+      }
+
+      const stockError = updateProductStock(data, previousSale)
+      if (stockError) {
+         return res.status(400).json({ message: stockError })
+      }
+      updateAccountBalance(data, previousSale)
+
+      const updatedSale = await Sale.findByIdAndUpdate(data._id, data, { new: true })
+
+      if (updatedSale) {
+         return res.status(201).json({ message: `Sale Successfully Updated!` })
+      } else {
+         return res.status(400).json({ message: 'Failed to Update Sale!' })
+      }
+   } catch (error) {
+      return res.status(500).json({ message: 'Failed to Update Sale!', error })
+   }
+}
+
 export {
    addSale,
    getAllSales,
-   deleteSale
+   deleteSale,
+   updateSale
 }

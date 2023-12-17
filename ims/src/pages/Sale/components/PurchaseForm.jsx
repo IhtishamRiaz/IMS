@@ -1,11 +1,11 @@
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Input from '../../../components/Input'
 import Select from '../../../components/Select'
 import { useForm, Controller, useWatch } from "react-hook-form"
 import { yupResolver } from "@hookform/resolvers/yup"
 import * as Yup from "yup"
 import Button from '../../../components/Button'
-import { defaultShouldDehydrateMutation, useMutation, useQueryClient } from '@tanstack/react-query'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 import useAxiosPrivate from '../../../hooks/useAxiosPrivate'
 import { toast } from 'sonner'
 import { cn } from '../../../lib/utils'
@@ -46,14 +46,7 @@ const SaleForm = ({ accounts, products }) => {
 
    useEffect(() => {
       setInvoiceData({
-         customer: selectedSale?.customer?._id || '',
-         subTotal: selectedSale?.subTotal || 0,
-         discountAmount: selectedSale?.discountAmount || 0,
-         grandTotal: selectedSale?.grandTotal || 0,
-         remarks: selectedSale?.remarks || '',
-         adjustment: selectedSale?.adjustment || 0,
-         adjustmentSource: selectedSale?.adjustmentSource || 'self',
-         items: selectedSale?.items || [],
+         ...selectedSale
       })
    }, [selectedSale])
 
@@ -97,11 +90,42 @@ const SaleForm = ({ accounts, products }) => {
          })
    }
 
+   const editSaleInvoice = async (data) => {
+      axiosPrivate.put('/sale', data)
+         .then((res) => {
+            toast.success(res?.data?.message)
+            setInvoiceData({
+               customer: '',
+               subTotal: 0,
+               discountAmount: 0,
+               grandTotal: 0,
+               remarks: '',
+               adjustment: 0,
+               adjustmentSource: 'self',
+               items: [],
+            })
+         })
+         .catch((error) => {
+            toast.error(error?.response?.data?.message)
+         })
+         .finally(() => {
+            setIsLoading(false)
+            reset(completeResetValues)
+         })
+   }
+
    // React Queries
    const queryClient = useQueryClient()
 
-   const { mutate: addSaleMutation, error: addSaleError } = useMutation({
+   const { mutate: addSaleMutation } = useMutation({
       mutationFn: addSaleInvoice,
+      onSuccess: () => {
+         queryClient.invalidateQueries(['sale'])
+         queryClient.refetchQueries(['sale'])
+      }
+   })
+   const { mutate: editSaleMutation } = useMutation({
+      mutationFn: editSaleInvoice,
       onSuccess: () => {
          queryClient.invalidateQueries(['sale'])
          queryClient.refetchQueries(['sale'])
@@ -124,7 +148,11 @@ const SaleForm = ({ accounts, products }) => {
          return
       }
 
-      addSaleMutation(invoiceData)
+      if (mode === "edit") {
+         editSaleMutation(invoiceData)
+      } else {
+         addSaleMutation(invoiceData)
+      }
    }
 
    // Yup Validation Schema
